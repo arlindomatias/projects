@@ -1,41 +1,73 @@
-######################## Pacotes ########################
-library(tidyverse)
-library(GEOquery)
-library(limma)
-library(dplyr)
-library(ggplot2)
-library(clusterProfiler)
-library(org.Mm.eg.db)
-library(enrichplot)
-library(EnhancedVolcano)
-library(pheatmap)
-library(enrichplot)
-library(DOSE)
-library(escape)
-library(readxl)
-library(Cairo)
-library(DESeq2)
-library(apeglm)
-library(pathview)
+######################## Packages ########################
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install(version = "3.21")
+# .libPaths("~/R/library")
 
-# Função para salvar tabela com verificação de extensão
-save <- function(tabela, nome_arquivo){
-  if (!grepl("\\.csv$", nome_arquivo, ignore.case = TRUE)) {
-    nome_arquivo <- paste0(nome_arquivo, ".csv")
+library("tidyverse")
+library("GEOquery")
+library("limma")
+library("dplyr")
+library("ggplot2")
+library("clusterProfiler")
+library("org.Mm.eg.db")
+library("enrichplot")
+library("EnhancedVolcano")
+library("pheatmap")
+library("enrichplot")
+library("DOSE")
+library("escape")
+library("readxl")
+library("Cairo")
+library("DESeq2")
+library("apeglm")
+library("pathview")
+
+######################## Adjusts ########################
+par(mar=c(4.1, 4.1, 3.1, 2.1), cex.axis = 2, cex.lab = 2) 
+palette(c("#3399FF", "#CC0000", "#66A61E"))
+dev.new(width= 15, height=15, noRStudioGD = TRUE) 
+options(scipen=0) 
+
+######################## Functions ######################
+# Save result tables
+save_table <- function(table, file_name){
+  if (!grepl("\\.csv$", file_name, ignore.case = TRUE)) {
+    file_name <- paste0(file_name, ".csv")
   }
-  write.csv(tabela, file = nome_arquivo, row.names = TRUE)
+  write.csv(tabela, file = file_name, row.names = TRUE)
 }
 
-par(mar=c(4.1, 4.1, 3.1, 2.1), cex.axis = 0.3, cex.lab = 2) 
-palette(c("#3399FF", "#CC0000", "#66A61E"))
-dev.new(width= 100, height=100, noRStudioGD = TRUE)
-options(scipen=0)
+# Fast save of the last plot
+fast_save <- ggsave(paste0("graph_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".png"),
+             plot = last_plot(),
+             dpi = 300,
+             width = 8, height = 8, 
+             units = "in",    
+             device = "png",    
+             bg = "white")   
 
-# Baixa metadados e arquivos associados
-gse <- getGEO("GSE178812", GSEMatrix = TRUE)[[1]]
+## Função aprimorada para salvar gráficos
+picture_save <- function(file_name = paste0("graph_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".png"), 
+               plot_obj = last_plot(), largura = 2000, altura = 2000, resolucao = 300, formato = "png") {
+  if (formato == "png") {
+    CairoPNG(filename = file_name, width = largura, height = altura, res = resolucao)
+  } else if (formato == "eps") {
+    CairoPS(file = file_name, width = largura / resolucao, height = altura / resolucao, onefile = FALSE)
+  } else if (formato == "pdf") {
+    CairoPDF(file = file_name, width = largura / resolucao, height = altura / resolucao)
+  } else {
+    stop("Unsurported format. Use 'png', 'eps' ou 'pdf'.")
+  }
+  on.exit(dev.off())  
+  print(plot_obj)     
+}
+
+######################## Import Data ###################
+gse <- getGEO("GSE236404", GSEMatrix = TRUE)[[1]]
 fvarLabels(gse) <- make.names(fvarLabels(gse))
 info <- pData(gse) # Metadados das amostras
-
+counts <- exprs(gse)
 counts <- read_excel("GSE178812_Doxo-counts.xlsx")
 colnames(counts)[1] <- "SYMBOL"
 
