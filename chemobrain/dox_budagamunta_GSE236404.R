@@ -12,6 +12,7 @@ library("dplyr")
 library("ggplot2")
 library("clusterProfiler")
 library("org.Mm.eg.db")
+library("org.Rn.eg.db")
 library("enrichplot")
 library("EnhancedVolcano")
 library("pheatmap")
@@ -68,56 +69,50 @@ picture_save <- function(file_name = paste0("graph_", format(Sys.time(), "%Y%m%d
 gse <- getGEO("GSE236404", GSEMatrix = TRUE)[[1]]
 fvarLabels(gse) <- make.names(fvarLabels(gse))
 info <- pData(gse)
+fdata <- fData(gse)
 info <- info[info$`treatment:ch1` != "Dox + ABT-263",]
 
 counts <- read_csv("GSE236404_DOX_Normalized_Count-6-23-23.csv.gz")
 counts <- counts[ , c(1:2, order(colnames(counts)[3:ncol(counts)]) + 2)]
 counts <- counts[ , -c(11:18)]
 
-# Extrair grupos dos metadados
-group <- make.names(gse$`treatment:ch1`)[1:6]
-group <- factor(group)
-levels(group)[levels(group) == "Doxo.treated"] <- "CHEM"
-levels(group)[levels(group) == "Sham"] <- "VEH"
+# Create groups
+group <- make.names(info$`treatment:ch1`) %>% factor()
+levels(group)[levels(group) == "Dox"] <- "CHEM"
+levels(group)[levels(group) == "Vehicle"] <- "VEH"
 
 # Criar colData e garantir os nomes das amostras
 colData <- data.frame(condition = group)
-rownames(colData) <- rownames(info)[1:6]
+rownames(colData) <- rownames(info)
 
 # Ajustar colnames de counts
 counts_raw <- counts %>%
-  group_by(SYMBOL) %>%
+  group_by(gene_id) %>%
   summarise(
-    SYMBOL = dplyr::first(SYMBOL),
+    gene_id = dplyr::first(gene_id),
     across(where(is.numeric), mean)
   ) %>% data.frame()
 
-rownames(counts_raw) <- counts_raw$SYMBOL
-counts_raw$SYMBOL <- NULL
-colnames(counts_raw) <- info$geo_accession
+rownames(counts_raw) <- counts_raw$gene_id
+counts_raw$gene_id <- NULL
+colnames(counts_raw) <- rownames(info)
 
-# Mapear Symbol -> ENTREZ
-keytable <- bitr(counts$SYMBOL,
-                          fromType = "SYMBOL",
+# Map ENSEMBL -> ENTREZ
+keytable <- bitr(counts$gene_id,
+                          fromType = "ENSEMBL",
                           toType = "ENTREZID",
-                          OrgDb = org.Mm.eg.db)
+                          OrgDb = org.Rn.eg.db)
 keytable <- na.omit(keytable)
 
-# Garantir que são inteiros
-id_count <- round(as.matrix(counts_raw))
-storage.mode(id_count) <- "integer"
-id_count <- data.frame(id_count)[1:6]
 
-# Criar objeto DESeq2
-dds <- DESeqDataSetFromMatrix(countData = id_count,
-                              colData = colData,
-                              design = ~ condition)
+# Analysis
+limma_table <- normalizeBetweenArrays(counts_raw) %>% data.frame()
+design <- model.matrix(~colData$condition + 0, limma_table)
+colnames(design) <- levels(group)
 
-dds <- DESeq(dds, fitType = "local")
-result <- results(dds)
-tt <- data.frame(result)
-tt$SYMBOL <- rownames(tt)
-tt2 <- merge(keytable, tt, by = "SYMBOL")
+vooma_graph <- vooma(limma_table, design, plot = T)
+vooma_graph$genes <- fdata
+
 
 # Filtro: genes com FDR < 0.02 e |logFC| > 1
 tt_filtered <- subset(tt2, pvalue < 0.01 & abs(log2FoldChange) > 0.5)
