@@ -2,7 +2,8 @@
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install(version = "3.21")
-# .libPaths("~/R/library")
+.libPaths("~/R/library")
+setwd("~/R/wd")
 
 library("tidyverse")
 library("GEOquery")
@@ -66,10 +67,12 @@ picture_save <- function(file_name = paste0("graph_", format(Sys.time(), "%Y%m%d
 ######################## Import Data ###################
 gse <- getGEO("GSE236404", GSEMatrix = TRUE)[[1]]
 fvarLabels(gse) <- make.names(fvarLabels(gse))
-info <- pData(gse) # Metadados das amostras
-counts <- exprs(gse)
-counts <- read_excel("GSE178812_Doxo-counts.xlsx")
-colnames(counts)[1] <- "SYMBOL"
+info <- pData(gse)
+info <- info[info$`treatment:ch1` != "Dox + ABT-263",]
+
+counts <- read_csv("GSE236404_DOX_Normalized_Count-6-23-23.csv.gz")
+counts <- counts[ , c(1:2, order(colnames(counts)[3:ncol(counts)]) + 2)]
+counts <- counts[ , -c(11:18)]
 
 # Extrair grupos dos metadados
 group <- make.names(gse$`treatment:ch1`)[1:6]
