@@ -66,21 +66,51 @@ picture_save <- function(file_name = paste0("graph_", format(Sys.time(), "%Y%m%d
 }
 
 ######################## Import Data ###################
-gse <- getGEO("GSE236404", GSEMatrix = TRUE)[[1]]
-fvarLabels(gse) <- make.names(fvarLabels(gse))
-info <- pData(gse)
-fdata <- fData(gse)
-info <- info[info$`treatment:ch1` != "Dox + ABT-263",]
+# Obter informações dos dados pelo Geoquery
+gset <- getGEO("GSE236404")[[1]]
+fvarLabels(gset) <- make.names(fvarLabels(gset))
+counts <- exprs(gset) # Matriz de expressão / Nem sempre disponível, baixar manualmente
+metadados <- pData(gset) # Metadados das amostras
+features <- fData(gset) # Anotação das features (genes, probes, etc.)
 
-counts <- read_csv("GSE236404_DOX_Normalized_Count-6-23-23.csv.gz")
-counts <- counts[ , c(1:2, order(colnames(counts)[3:ncol(counts)]) + 2)]
-counts <- counts[ , -c(11:18)]
+# Importar e filtrar os dados 
+import_gse <- function(count_file, metadata_file){
+  stopifnot(file.exists(count_file), file.exists(metadata_file))
+  raw_counts <- read.csv(count_file, stringsAsFactors = FALSE)
+  colData <- read.csv(metadata_file, row.names = 1)
+  colData_filtered <- colData[colData$Treatment %in% c("Vehicle", "Dox"), ]
+  
+  list(
+    raw_counts = raw_counts,
+    colData = colData,
+    colData_filtered = colData_filtered
+  )
+}
 
-# Create groups
-group <- make.names(info$`treatment:ch1`) %>% factor()
-levels(group)[levels(group) == "Dox"] <- "CHEM"
-levels(group)[levels(group) == "Vehicle"] <- "VEH"
+gse_data <- import_gse(
+  "GSE236404_DOX_Normalized_Count-6-23-23.csv.gz",
+  "GSE236404_DG-DOX-Sample-Attributes-12-16-22.csv.gz"
+)
 
+raw_counts <- gse_data$raw_counts
+colData <- gse_data$colData
+colData_filtered <- gse_data$colData_filtered
+
+######################## Pré-Processamento ########################
+# Tira a média dos genes duplicados
+counts <- raw_table %>%
+  group_by(gene_name) %>%
+  summarise(across(where(is.numeric), mean)
+  ) %>% data.frame()
+
+rownames(counts) <- counts$gene_name
+
+# Filtrar colunas com base nas amostras filtradas
+sample_ids <- rownames(gse_data$colData_filtered)
+counts <- counts[, sample_ids]
+
+# Transformar em log2(counts + 1)
+counts <- log2(counts + 1)
 # Criar colData e garantir os nomes das amostras
 colData <- data.frame(condition = group)
 rownames(colData) <- rownames(info)
@@ -104,8 +134,35 @@ keytable <- bitr(counts$gene_id,
                           OrgDb = org.Rn.eg.db)
 keytable <- na.omit(keytable)
 
+######################## Pré-Processamento ########################
+# Tira a média dos genes duplicados
+counts <- raw_table %>%
+  group_by(gene_name) %>%
+  summarise(across(where(is.numeric), mean)
+  ) %>% data.frame()
+
+rownames(counts) <- counts$gene_name
 
 # Analysis
+################### Cálculo de expressão diferencial ###################
+# Função para análise diferencial
+analise <- function(data, sample_metadata, group_column = "Treatment") {
+  group <- factor(sample_metadata[[group_column]])
+  
+  design <- model.matrix(~0 + group)
+  colnames(design) <- levels(group)
+  
+  fit <- lmFit(data, design)
+  contrast_matrix <- makeContrasts(Dox_vs_Vehicle = Dox - Vehicle, levels = design)
+  fit2 <- eBayes(contrasts.fit(fit, contrast_matrix))
+  
+  top_genes <- topTable(fit2, coef = "Dox_vs_Vehicle", number = Inf)
+  
+  list(top_genes = top_genes,
+       design = design,
+       groups = colnames(design),
+       fit2 = fit2)
+}
 limma_table <- normalizeBetweenArrays(counts_raw) %>% data.frame()
 design <- model.matrix(~colData$condition + 0, limma_table)
 colnames(design) <- levels(group)
