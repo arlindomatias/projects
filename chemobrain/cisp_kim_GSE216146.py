@@ -8,25 +8,20 @@ import numpy as np
 import gc
 import dtale
 from scipy.sparse import csr_matrix
-import matplotlib.pyplot as plt
+import matplotlib
 import gseapy as gp #this method requires internet connection
 from scipy import stats
 from matplotlib.pyplot import rc_context
 
-
-
-
 # Verificar diretório de trabalho
 os.chdir("/home/arlindo/R/wd")
+matplotlib.use('Agg')
 print(os.getcwd())
 
-# Converter df em panda
-pdf = pd.DataFrame
-# dtale.show(df) abrir o df em uma janela
-dt = dtale.show
-
-# Atalho para limpar a memória
-clear = gc.collect
+# Atalhos
+pdf = pd.DataFrame # Converter df em panda
+dt = dtale.show # Abrir o df em uma janela
+clear = gc.collect # Limpar a memória
 clear()
 
 # Importar dados
@@ -136,7 +131,7 @@ veh_data.obs
 sc.pl.umap(veh_data, color=['leiden'])
 
 ################# Integration #################
-def pp(csv_path):
+def pp(biosample):
     adata = sc.read_csv(csv_path).T
     sc.pp.filter_genes(adata, min_cells=10)
     sc.pp.highly_variable_genes(adata, n_top_genes=2000, subset=True, flavor='seurat_v3')
