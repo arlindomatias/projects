@@ -1,172 +1,218 @@
-# Pacotes
+# Importar pacotes e funções
 import os
 import scanpy as sc
 import pandas as pd
 import seaborn as sns
 import scvi
 import numpy as np
-import gc
-import dtale
-from scipy.sparse import csr_matrix
-import matplotlib
-import gseapy as gp #this method requires internet connection
+import matplotlib.pyplot as plt
+import gseapy as gp
+
+from dtale import show as dt
+from scipy.sparse import csr_matrix, issparse
+from pandas import DataFrame as pdf
+from gc import collect as clear
 from scipy import stats
 from matplotlib.pyplot import rc_context
+from celltypist import models, annotate
 
-# Verificar diretório de trabalho
-os.chdir("/home/arlindo/R/wd")
-matplotlib.use('Agg')
-print(os.getcwd())
-
-# Atalhos
-pdf = pd.DataFrame # Converter df em panda
-dt = dtale.show # Abrir o df em uma janela
-clear = gc.collect # Limpar a memória
+# Ajustes
+sc.settings.set_figure_params(dpi_save = 300, facecolor = "white", format = "png") # Resolução
+os.chdir("/home/arlindo/R/wd/SC") # Diretório de trabalho
 clear()
 
-# Importar dados
-raw = sc.read_h5ad("GSE216146_chemo_brain.h5ad", backed='r') # Importa arquivo bruto em modo de leitura
-raw.obs['group_batch'] = raw.obs['pathology'].astype(str) + '_' + raw.obs['batch'].astype(str) # Subset de batch e tratamento
-raw.obs['biosample'].unique() # Ver as amostras biológicas
+# Importar dados e isolar amostra
+raw = sc.read_h5ad("GSE216146_chemo_brain.h5ad", backed='r', as_sparse=()) # Importa arquivo bruto em modo de leitura
+print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Verificar IDs controle
+biosample = 'D21-2746' # Definir a amostra
+sample_id = raw.obs['biosample'].isin([biosample]) # ID selecionado
+sample_data =  sc.AnnData(X=raw[sample_id, :].raw.X.copy(),
+                         obs=raw[sample_id, :].obs.copy(),
+                         var=raw[sample_id, :].raw.var.copy())
 
-# Identificar subsets isoladamente
-used_samples_ids = raw.obs['pathology'].isin(['PN', 'CN']) # Identifica apenas as amostras de interesse
-veh_ids = raw.obs['pathology'].isin(['PN']) # IDs veh
-chem_ids = raw.obs['pathology'].isin(['CN']) # IDs chem
-b1_ids = raw.obs['batch'].isin(['D20']) # IDs Bateria 1
-b2_ids = raw.obs['batch'].isin(['D21']) # Ids Bateria 2
+sample_data.write_h5ad(f"{biosample}_data.h5ad") # Salvar arquivo
 
-# Dados usados
-adata = raw[used_samples_ids, :] # Apenas os dados de interesse
-adata.obs['group_batch'].unique() # verifica se a tag de batch e tratamento está inclusa
-adata.obs['group_batch'].value_counts() # mostra a quantidade de células em cada condição
-
-clear()
-
-# Doublet remove
-veh_data = raw[veh_ids, :].to_memory() # até aqui não travou
-sc.pp.filter_genes(veh_data, min_cells = 10) # Filtrar apenas genes presentes em n células ou mais
-sc.pp.highly_variable_genes(veh_data, n_top_genes = 1000, subset = True, flavor = 'seurat_v3') # Filtrar apenas os n genes mais representativos
-scvi.model.SCVI.setup_anndata(veh_data)
-vae = scvi.model.SCVI(veh_data, n_hidden=64, n_latent=10, n_layers=1)
-vae.train(max_epochs=200, batch_size=256)
-solo = scvi.external.SOLO.from_scvi_model(vae)
-solo.train(max_epochs=200, batch_size=256)
-df = solo.predict()
-df['prediction'] = solo.predict(soft = False)
-#df.index = df.index.map(lambda x: x[:-9])
-df.groupby('prediction').count()
-df['dif'] = df.doublet - df.singlet
-dt(df)
-sns.displot(df[df.prediction == 'doublet'], x = 'dif')
-doublet = df[(df.prediction == 'doublet') & (df.dif > 0.4)]
-dt(doublet)
+df_var = pdf(sample_data.var)  # info dos genes
+df_obs = pdf(sample_data.obs)  # info das células
+counts_dense = sample_data.raw.X.toarray() if hasattr(sample_data.raw.X, "toarray") else sample_data.raw.X
+counts_df = pd.DataFrame(counts_dense, index=sample_data.obs_names, columns=sample_data.var_names)
 
 clear()
-
-veh_data.obs['doublet'] = veh_data.obs.index.isin(doublet.index)
-dt(veh_data.obs)
-veh_data = veh_data[~veh_data.obs.doublet]
-veh_data
 
 # Preprocessing
-veh_data.var
-veh_data.var['mt'] = veh_data.var.index.str.startswith('mt-')
-dt(veh_data.var)
+## Quality Control
+### Mitochondrial genes
+sample_data.var['mt'] = sample_data.var.index.str.startswith('Mt-')
+### Ribosomal genes
+sample_data.var['ribo'] = sample_data.var.index.str.startswith(('Rps', 'Rpl'))
+### Hemoglobin genes
+sample_data.var['hb'] = sample_data.var.index.str.contains("^Hb[ab]-")
 
-ribo_url = "http://software.broadinstitute.org/gsea/msigdb/download_geneset.jsp?geneSetName=KEGG_RIBOSOME&fileType=txt"
-ribo_genes = pd.read_table(ribo_url, skiprows=2, header = None)
-ribo_genes
+### Calculate metrics and filter data
+sc.pp.calculate_qc_metrics(sample_data, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
+sc.pp.filter_genes(sample_data, min_cells=3)
+sample_data.obs.sort_values('total_counts')
+sc.pp.filter_cells(sample_data, min_genes=100)
 
-veh_data.var['ribo'] = veh_data.var_names.isin(ribo_genes[0].values)
-sc.pp.calculate_qc_metrics(veh_data, qc_vars=['mt', 'ribo'], percent_top=None, log1p=False, inplace=True)
-veh_data.var.sort_values('n_cells_by_counts')
-sc.pp.filter_genes(veh_data, min_cells=3)
-veh_data.obs.sort_values('n_genes_by_counts')
-veh_data.obs.sort_values('total_counts')
-sc.pp.filter_cells(veh_data, min_genes=200)
-sc.pl.violin(veh_data, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
+upper_lim = np.quantile(sample_data.obs.n_genes_by_counts.values, .98)
+upper_lim = 4500
+sample_data = sample_data[sample_data.obs.n_genes_by_counts < upper_lim]
+sample_data = sample_data[sample_data.obs.pct_counts_mt < 20]
+sample_data = sample_data[sample_data.obs.pct_counts_ribo < 20]
+
+sc.pl.violin(sample_data, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
              jitter=0.4, multi_panel=True)
 
-veh_df = pdf(veh_data.obs)
+sc.pl.scatter(sample_data, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")
 
-upper_lim = np.quantile(veh_data.obs.n_genes_by_counts.values, .98)
-upper_lim = 350
+## Doublet removal
+### With ML
+scvi.settings.dl_num_workers = 5
+scvi.settings.batch_size = 256
+scvi.model.SCVI.setup_anndata(sample_data)
+vae = scvi.model.SCVI(sample_data)
+vae.train() # Passo demorado
+clear()
+solo = scvi.external.SOLO.from_scvi_model(vae)
+solo.train() # Passo demorado
+sp = solo.predict()
+sp['prediction'] = solo.predict(soft = False)
+#sp.index = sp.index.map(lambda x: x[:-9])
+sp.groupby('prediction').count() # Verificar doublets
+sp['dif'] = sp.doublet - sp.singlet
+sns.displot(sp[sp.prediction == 'doublet'], x = 'dif')
+doublet = sp[(sp.prediction == 'doublet') & (sp.dif > 0.5)]
+clear()
 
-veh_data = veh_data[veh_data.obs.n_genes_by_counts < upper_lim]
-veh_data.obs
+sample_data.obs['doublet'] = sample_data.obs.index.isin(doublet.index)
+sample_data = sample_data[~sample_data.obs.doublet]
+print(sample_data.obs)
 
-veh_data = veh_data[veh_data.obs.pct_counts_mt < 20]
-veh_data = veh_data[veh_data.obs.pct_counts_ribo < 2]
-veh_data
+### With ScanPy
+sc.pp.scrublet(sample_data, batch_key="batch")
+doublets = sample_data.obs[sample_data.obs['predicted_doublet'] == True]
+sample_data.obs['doublet'] = sample_data.obs.index.isin(doublets.index)
+sample_data = sample_data[~sample_data.obs.doublet]
 
-# Normalization
-veh_data.X.sum(axis = 1)
-sc.pp.normalize_total(veh_data, target_sum=1e4) #normalize every cell to 10,000 UMI
-veh_data.X.sum(axis = 1)
+## Normalization
+sample_data.layers["counts"] = sample_data.X.copy()
+sc.pp.normalize_total(sample_data, target_sum=1e4)
+sc.pp.log1p(sample_data)
 
-sc.pp.log1p(veh_data) #change to log counts
-dt(veh_data.obs)
-veh_data.X.sum(axis = 1)
-veh_data.raw = veh_data
+## Feature Selection
+sc.pp.highly_variable_genes(sample_data, n_top_genes = 2000, batch_key="batch") # Filtrar apenas os n genes mais representativos
+sc.pl.highly_variable_genes(raw)
 
-# Clustering
-sc.pp.highly_variable_genes(veh_data, n_top_genes = 1000)
-veh_data.var
-sc.pl.highly_variable_genes(veh_data)
-veh_data = veh_data[:, veh_data.var.highly_variable]
+## Dimensionality Reduction
+sc.tl.pca(sample_data)
+sc.pl.pca_variance_ratio(sample_data, n_pcs=50, log=True)
+sc.pl.pca(
+    sample_data,
+    color=['n_genes_by_counts', 'n_genes_by_counts', 'total_counts','total_counts'],
+    dimensions=[(0, 1), (2, 3), (0, 1), (2, 3)],
+    ncols=2,
+    size=2) # PCA
 
-sc.pp.regress_out(veh_data, ['total_counts', 'pct_counts_mt', 'pct_counts_ribo'])
-sc.pp.scale(veh_data, max_value=10)
-sc.tl.pca(veh_data, svd_solver='arpack')
-sc.pl.pca_variance_ratio(veh_data, log=True, n_pcs = 50)
+sc.pp.neighbors(sample_data)
+sc.tl.umap(sample_data)
+sc.pl.umap(
+    sample_data,
+    color="total_counts",
+    # Setting a smaller point size to get prevent overlap
+    size=2)
 
-sc.pp.neighbors(veh_data, n_pcs = 30)
-sc.tl.umap(veh_data)
-sc.pl.umap(veh_data)
+## Clustering
+sc.tl.leiden(sample_data, flavor="igraph", n_iterations=2)
+sc.pl.umap(sample_data, color=["leiden"])
 
-sc.tl.leiden(veh_data, resolution = 0.5)
-veh_data.obs
+## Re-assess QC
+sc.pl.umap(
+    sample_data,
+    color=["leiden", "predicted_doublet", "doublet_score"],
+    # increase horizontal space between panels
+    wspace=0.5,
+    size=3)
 
-sc.pl.umap(veh_data, color=['leiden'])
+sc.pl.umap(
+    sample_data,
+    color=["leiden", "log1p_total_counts", "pct_counts_mt", "log1p_n_genes_by_counts"],
+    wspace=0.5,
+    ncols=2,
+    size=2)
+
+## Cell-type annotation
+### Colors
+for res in [0.02, 0.5, 2.0]:
+    sc.tl.leiden(
+        sample_data, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
+    )
+sc.pl.umap(
+    sample_data,
+    color=["leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"],
+    legend_loc="on data", size=2)
+marker_genes = {
+    "Neuron": ["Snap25", "Rbfox3", "Syt1"],
+    "Astrocyte": ["Gfap", "Aldh1l1", "Slc1a3"],
+    "Microglia": ["Cx3cr1", "P2ry12", "Tmem119"],
+    "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
+    "Endothelial": ["Pecam1", "Cldn5", "Flt1"]
+}
+### Manual Annotation
+sc.pl.dotplot(sample_data, marker_genes, groupby="leiden_res_0.02", standard_scale="var")
+
+### Celltypist Annotation
+models.download_models(force_update = True)
+models.models_description()
+model = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')  # Mouse
+model
+
+predictions = annotate(sample_data, model=model, majority_voting=True)
+pred_labels_df = predictions.predicted_labels.copy()
+sample_data.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
+sc.pl.umap(sample_data, color='cell_type_celltypist', size=20, palette='tab20')
+print(sample_data.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
 
 ################# Integration #################
-def pp(biosample):
-    adata = sc.read_csv(csv_path).T
-    sc.pp.filter_genes(adata, min_cells=10)
-    sc.pp.highly_variable_genes(adata, n_top_genes=2000, subset=True, flavor='seurat_v3')
-    scvi.model.SCVI.setup_anndata(adata)
-    vae = scvi.model.SCVI(adata)
-    vae.train()
-    solo = scvi.external.SOLO.from_scvi_model(vae)
-    solo.train()
-    df = solo.predict()
-    df['prediction'] = solo.predict(soft=False)
-    df.index = df.index.map(lambda x: x[:-2])
-    df['dif'] = df.doublet - df.singlet
-    doublets = df[(df.prediction == 'doublet') & (df.dif > 1)]
+samples = raw.obs['biosample'].unique()
+print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Grupo controle
+print(raw[raw.obs['pathology'] == 'CN'].obs['biosample']) # Grupo chem
+biosample = 'D20-6407' # Definir amostra
 
-    adata = sc.read_csv(csv_path).T
-    adata.obs['Sample'] = csv_path.split('_')[2]  # 'raw_counts/GSM5226574_C51ctr_raw_counts.csv'
-
-    adata.obs['doublet'] = adata.obs.index.isin(doublets.index)
-    adata = adata[~adata.obs.doublet]
-
-    sc.pp.filter_cells(adata, min_genes=200)  # get rid of cells with fewer than 200 genes
-    # sc.pp.filter_genes(adata, min_cells=3) #get rid of genes that are found in fewer than 3 cells
-    adata.var['mt'] = adata.var_names.str.startswith('mt-')  # annotate the group of mitochondrial genes as 'mt'
-    adata.var['ribo'] = adata.var_names.isin(ribo_genes[0].values)
-    sc.pp.calculate_qc_metrics(adata, qc_vars=['mt', 'ribo'], percent_top=None, log1p=False, inplace=True)
-    upper_lim = np.quantile(adata.obs.n_genes_by_counts.values, .98)
+def pp(biosample = biosample):
+    # Identificar células e importar dados
+    data_id = raw.obs['biosample'].isin([biosample])
+    adata = sc.AnnData(X=raw[data_id, :].raw.X.copy(),
+                         obs=raw[data_id, :].obs.copy(),
+                         var=raw[data_id, :].raw.var.copy())
+    # QC
+    adata.var['mt'] = adata.var.index.str.startswith('Mt-')
+    adata.var['ribo'] = adata.var.index.str.startswith(('Rps', 'Rpl'))
+    adata.var['hb'] = adata.var.index.str.contains("^Hb[ab]-")
+    sc.pp.calculate_qc_metrics(adata, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
+    sc.pp.filter_genes(adata, min_cells=3)
+    adata.obs.sort_values('total_counts')
+    # Doublet detection
+    sc.pp.filter_cells(adata, min_genes=100)
     adata = adata[adata.obs.n_genes_by_counts < upper_lim]
     adata = adata[adata.obs.pct_counts_mt < 20]
-    adata = adata[adata.obs.pct_counts_ribo < 2]
-
+    adata = adata[adata.obs.pct_counts_ribo < 20]
+    sc.pp.scrublet(adata, batch_key="batch")
+    doublets = adata.obs[adata.obs['predicted_doublet'] == True]
+    adata.obs['doublet'] = adata.obs.index.isin(doublets.index)
+    adata = adata[~adata.obs.doublet]
+    # Normalization
+    adata.layers["counts"] = adata.X.copy()
+    sc.pp.normalize_total(adata, target_sum=1e4)
+    sc.pp.log1p(adata)
+    # Feature Selection
+    sc.pp.highly_variable_genes(adata, n_top_genes=2000, batch_key="batch")
+    # Save
+    adata.write_h5ad(f"{biosample}_data.h5ad")
     return adata
 
 out = []
-for file in os.listdir('raw_counts/'):
-    out.append(pp('raw_counts/' + file))
+for sample in raw.obs['biosample'].unique():
+    out.append(pp(sample))
 
 adata = sc.concat(out)
 
