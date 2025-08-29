@@ -32,22 +32,22 @@ dev.new(width= 100, height=100, noRStudioGD = TRUE)
 options(scipen=0)
 
 # Baixa metadados e arquivos associados
-gse <- getGEO("GSE295281", GSEMatrix = TRUE)[[1]]
+gse <- getGEO("GSE178812", GSEMatrix = TRUE)[[1]]
 fvarLabels(gse) <- make.names(fvarLabels(gse))
 info <- pData(gse) # Metadados das amostras
-counts <- read.csv("GSE295281_ACT_combined_count_matrix_v02.csv.gz", 
-                   row.names = 2)
-colnames(counts)[colnames(counts) == "Gene.Name"] <- "SYMBOL"
+
+counts <- read_excel("GSE178812_Doxo-counts.xlsx")
+colnames(counts)[1] <- "SYMBOL"
 
 # Extrair grupos dos metadados
-group <- make.names(gse$`characteristics_ch1.4`)
+group <- make.names(gse$`treatment:ch1`)[1:6]
 group <- factor(group)
-levels(group)[levels(group) == "treatment..2.mg.kg.doxorubicin..A...50.mg.kg.cyclophosphamide..C...5.mg.kg.paclitaxel..T."] <- "CHEM"
-levels(group)[levels(group) == "treatment..saline..0.9..sodium.chloride."] <- "VEH"
+levels(group)[levels(group) == "Doxo.treated"] <- "CHEM"
+levels(group)[levels(group) == "Sham"] <- "VEH"
 
 # Criar colData e garantir os nomes das amostras
 colData <- data.frame(condition = group)
-rownames(colData) <- rownames(info)
+rownames(colData) <- rownames(info)[1:6]
 
 # Ajustar colnames de counts
 counts_raw <- counts %>%
@@ -61,24 +61,17 @@ rownames(counts_raw) <- counts_raw$SYMBOL
 counts_raw$SYMBOL <- NULL
 colnames(counts_raw) <- info$geo_accession
 
-
-# Obter IDs ENSEMBL
-keytable <- data.frame("ENSEMBL" = rownames(counts), "SYMBOL" = counts$SYMBOL)
-
-
-# Mapear ENSEMBL -> ENTREZ
-ensembl_to_entrez <- bitr(keytable$ENSEMBL,
-                          fromType = "ENSEMBL",
+# Mapear Symbol -> ENTREZ
+keytable <- bitr(counts$SYMBOL,
+                          fromType = "SYMBOL",
                           toType = "ENTREZID",
                           OrgDb = org.Mm.eg.db)
-ensembl_to_entrez <- na.omit(ensembl_to_entrez)
-
-keytable <- merge(ensembl_to_entrez, keytable, by = "ENSEMBL")
+keytable <- na.omit(keytable)
 
 # Garantir que são inteiros
 id_count <- round(as.matrix(counts_raw))
 storage.mode(id_count) <- "integer"
-id_count <- data.frame(id_count)
+id_count <- data.frame(id_count)[1:6]
 
 # Criar objeto DESeq2
 dds <- DESeqDataSetFromMatrix(countData = id_count,
@@ -86,55 +79,53 @@ dds <- DESeqDataSetFromMatrix(countData = id_count,
                               design = ~ condition)
 
 dds <- DESeq(dds, fitType = "local")
-
-
 result <- results(dds)
 tt <- data.frame(result)
 tt$SYMBOL <- rownames(tt)
 tt2 <- merge(keytable, tt, by = "SYMBOL")
 
-# Filtro: genes com FDR < 0.05 e |logFC| > 1
-tt_filtered <- subset(tt2, padj < 0.05 & abs(log2FoldChange) > 0.5)
-tt_filtered_up <- subset(tt2, padj < 0.05 & log2FoldChange > 0.5)
-tt_filtered_down <- subset(tt2, padj < 0.05 & log2FoldChange < -0.5)
-tt_filtered2 <- subset(tt2, padj < 0.01 & abs(log2FoldChange) > 2)
+# Filtro: genes com FDR < 0.02 e |logFC| > 1
+tt_filtered <- subset(tt2, pvalue < 0.01 & abs(log2FoldChange) > 0.5)
+tt_filtered_up <- subset(tt2, pvalue < 0.01 & log2FoldChange > 0.5)
+tt_filtered_down <- subset(tt2, pvalue < 0.01 & log2FoldChange < - 0.5)
 
 plotPCA(vst(dds))
 
-write.table(tt, "C:/Users/AsRock/Documents/tt.txt")
+write.table(tt, "C:/Users/AsRock/Documents/cavalier.txt")
 
 ## Volcano plot
 # Adicionar coluna para categorização
 tt2$threshold <- "Not significant"
-tt2$threshold[tt2$padj < 0.05 & tt2$log2FoldChange > 1] <- "Upregulated"
-tt2$threshold[tt2$padj < 0.05 & tt2$log2FoldChange < -1] <- "Downregulated"
+tt2$threshold[tt2$pvalue < 0.01 & tt2$log2FoldChange > 0.2] <- "Upregulated"
+tt2$threshold[tt2$pvalue < 0.01 & tt2$log2FoldChange < - 0.2] <- "Downregulated"
 
 # Renderizar
-v           <- EnhancedVolcano(tt2, 
-                               lab = tt2$SYMBOL,         # Labels dos pontos (nomes dos genes)
-                               x = 'log2FoldChange',                 # Coluna com os dados de log2 fold change
-                               y = 'padj',             # Coluna com os dados de p-valor ajustado (FDR)
-                               xlab = bquote(~Log[2]~ 'fold change'),
-                               title = "Chemotherapy-induced gene expression change", # Título do gráfico
-                               caption = paste("Total genes:", nrow(tt)),  # Legenda com número de genes
-                               pCutoff = 0.01,              # Limite de p-valor (ou FDR) para destacar genes
-                               FCcutoff = 2,                # Limite mínimo de log2FC para considerar relevante
-                               pointSize = 3.0,             # Tamanho dos pontos (bolinhas) no gráfico
-                               labSize = 3,
-                               xlim = c(-25, 25),             # Limites do eixo X
-                               ylim = c(0, 40),              # Limites do eixo Y
-                               col = c("gray", "#3399FF", "#009933", "#CC0000"),  # Cores: NS, Down, Up, ambos
-                               colAlpha = 0.5,              # Transparência dos pontos
-                               legendLabels = c("NS", "Log2FC", "FDR", "FDR & Log2FC"), # Legenda das cores
-                               legendLabSize = 10,          # Tamanho do texto da legenda
-                               legendIconSize = 10,        # Tamanho dos ícones da legenda
-                               drawConnectors = TRUE,       # Desenhar linhas ligando labels aos pontos
-                               widthConnectors = 0.3,        # Espessura das linhas que ligam os labels
-                               max.overlaps = 20
+v <- EnhancedVolcano(tt2, 
+                      lab = tt2$SYMBOL,   # Labels dos pontos (nomes dos genes)
+                      x = 'log2FoldChange',    # Coluna com os dados de log2 fold change
+                      y = 'pvalue',             # Coluna com os dados de p-valor ajustado (FDR)
+                      xlab = bquote(~Log[2]~ 'fold change'),
+                      title = "Chemotherapy-induced gene expression change", # Título do gráfico
+                      caption = paste("Total genes:", nrow(tt)),  # Legenda com número de genes
+                      pCutoff = 0.01,      # Limite de p-valor (ou FDR) para destacar genes
+                      FCcutoff = 1,       # Limite mínimo de log2FC para considerar relevante
+                      pointSize = 3.0,      # Tamanho dos pontos (bolinhas) no gráfico
+                      labSize = 3,
+                      xlim = c(-6, 6),    # Limites do eixo X
+                      ylim = c(0, 6),    # Limites do eixo Y
+                      col = c("gray", "#3399FF", "#009933", "#CC0000"),  # Cores: NS, Down, Up, ambos
+                      colAlpha = 0.5,              # Transparência dos pontos
+                      legendLabels = c("NS", "Log2FC", "FDR", "FDR & Log2FC"), # Legenda das cores
+                      legendLabSize = 7,          # Tamanho do texto da legenda
+                      legendIconSize = 7,        # Tamanho dos ícones da legenda
+                      drawConnectors = TRUE,       # Desenhar linhas ligando labels aos pontos
+                      widthConnectors = 0.3,      # Espessura das linhas que ligam os labels
+                      max.overlaps = 30
 )
 
 #heatmap
-deg_counts <- counts_raw[rownames(counts_raw) %in% tt_filtered2$SYMBOL, ]
+deg_counts <- counts_raw[1:6]
+deg_counts <- deg_counts[rownames(counts_raw) %in% tt_filtered$SYMBOL, ]
 heatmap <- pheatmap(deg_counts, 
                     annotation_col = colData, 
                     show_rownames = T, 
@@ -142,28 +133,24 @@ heatmap <- pheatmap(deg_counts,
                     scale = "row")
 
 
-
-
-boxplot <- boxplot(tt_counts, 
+boxplot <- boxplot(deg_counts, 
                    boxwex=0.6, 
                    notch=T, 
                    main= "Normalized expression", 
                    outline=FALSE, 
                    las=2, 
-                   col= tt_counts) 
+                   col= deg_counts) 
 
 ## Histograma de valores p e fdr 
-hist(tt$padj, col = "grey", border = "white", xlab = "FDR",
+hist(tt$padj, col = "grey", border = "white", xlab = "p value",
      ylab = "Number of genes", main = "FDR distribution")
-
-tt_filtered <- merge(keytable, tt_filtered, by = "ENSEMBL")
 
 ego_total <- enrichGO(gene = tt_filtered$SYMBOL,
                 #universe = counts$SYMBOL,
                 OrgDb         = org.Mm.eg.db,   
                 keyType       = "SYMBOL",
                 ont           = "CC", #BP, MF, CC
-                pAdjustMethod = "BH",
+                pAdjustMethod = "none",
                 pvalueCutoff  = 0.05)
 
 ego_up <- enrichGO(gene = tt_filtered_up$SYMBOL,
@@ -171,7 +158,7 @@ ego_up <- enrichGO(gene = tt_filtered_up$SYMBOL,
                       OrgDb         = org.Mm.eg.db,   
                       keyType       = "SYMBOL",
                       ont           = "CC",
-                      pAdjustMethod = "BH",
+                      pAdjustMethod = "none",
                       pvalueCutoff  = 0.05,
                       qvalueCutoff  = 0.05)
 
@@ -180,7 +167,7 @@ ego_down <- enrichGO(gene = tt_filtered_down$SYMBOL,
                    OrgDb         = org.Mm.eg.db,   
                    keyType       = "SYMBOL",
                    ont           = "CC",
-                   pAdjustMethod = "BH",
+                   pAdjustMethod = "none",
                    pvalueCutoff  = 0.05,
                    qvalueCutoff  = 0.05)
 # Gráficos
@@ -191,18 +178,19 @@ dotplot(ego_down,
 
 
 barplot(ego_total, 
-        showCategory=50,
+        showCategory=20,
         font.size = 8,
         title = "Gene Enrichment Analysis",
         label_format = 60,) + scale_color_gradientn(colors = c("#0099ff", "#6600ff", "#ff0000"))
 
 
-
-
 # Preparar matriz de contagem com ENTREZ
-entrez_count <- counts
-entrez_count$"ENSEMBL" <- rownames(entrez_count)
-entrez_count <- merge(ensembl_to_entrez, entrez_count, by = "ENSEMBL")
+entrez_count <- counts_raw[1:6]
+entrez_count$"SYMBOL" <- rownames(entrez_count)
+entrez_count <- merge(tt2, entrez_count, by = "SYMBOL")
+
+# Filtrar apenas os genes diferencialmente expressos
+entrez_sig <- entrez_count[entrez_count$SYMBOL %in% tt_filtered$SYMBOL, ]
 
 # Remover duplicatas por ENTREZID
 entrez_single <- entrez_count %>%
@@ -211,25 +199,11 @@ entrez_single <- entrez_count %>%
     SYMBOL = dplyr::first(SYMBOL),
     across(where(is.numeric), mean)
   )
-keytable <- entrez_count[!duplicated(entrez_count$SYMBOL), 1:3]
+entrez_single <- entrez_single[!is.na(entrez_single$log2FoldChange), ]
 
-
-# Filtrar apenas os genes diferencialmente expressos
-entrez_sig <- entrez_single[entrez_single$SYMBOL %in% tt_filtered$SYMBOL, ]
-
-
-## Criar lista de ranking dos genes
-tt_entrez_single <- tt %>%
-  group_by(ENTREZID) %>%
-  summarise(
-    ENTREZID = dplyr::first(ENTREZID),
-    across(where(is.numeric), mean)
-  )
-
-tt_entrez_single  <- tt_entrez_single[complete.cases(tt_entrez_single), ]
-gene_list <- sort(tt_entrez_single$log2FoldChange, decreasing = TRUE)
-names(gene_list) <- tt_entrez_single$ENTREZID
-
+# Criar lista
+gene_list <- sort(entrez_single$log2FoldChange, decreasing = TRUE)
+names(gene_list) <- entrez_single$ENTREZID
 
 ## GSEA usando GO
 gse_GO_all <- gseGO(geneList= gene_list, 
@@ -288,10 +262,9 @@ ridgeplot(gse_GO_bp,
   showCategory = 10,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_format = 100,
+  label_format = 50,
   decreasing = TRUE
 )
-
 
 cnetplot(gse_GO_mf,
          layout = igraph::layout_nicely,
@@ -306,9 +279,6 @@ cnetplot(gse_GO_mf,
          foldChange = gene_list,
          hilight = "none",
          hilight_alpha = 0.3)
-
-
-
 
 emapplot(gse_GO_mf,
          layout = igraph::layout_with_kk,
@@ -329,26 +299,18 @@ emapplot(gse_GO_mf,
          nCluster = NULL
 )
 
-sets <- data.frame(gse_GO_all@result[["Description"]])
+go_sets <- data.frame(gse_GO_all@result[["Description"]])
 
-gseaplot(gse_GO_all,
-         geneSetID = 21,
-         by = "runningScore", 
-         title = gse_GO_all$Description[21],
-         color = "black",
-         color.line = "green",
-         color.vline = "#FA5860",
-         )
-
+id_go = 704
 gseaplot2(gse_GO_all, 
-          geneSetID = 648,
+          geneSetID = id_go,
           pvalue_table = TRUE,
-          title = gse_GO_all$Description[648],
+          title = gse_GO_all$Description[id_go],
           color = c("#E495A5", "#86B875", "#7DB0DD"), 
           ES_geom = "line")
 
 
-gsearank(gse_GO_all, 20, title = gse_GO_all[20, "Description"])
+gsearank(gse_GO_all, 711, title = gse_GO_all[711, "Description"])
 
 
 ## GSEA KEGG (Precisa ser ENTREZ ID) INCOMPLETO
@@ -370,11 +332,12 @@ dotplot(gse_kegg,
         split=".sign") + facet_grid(.~.sign)
 
 gse_kegg <- pairwise_termsim(gse_kegg)
+
 emapplot(gse_kegg)
 
 cnetplot(gse_kegg,
          layout = igraph::layout_nicely,
-         showCategory = 30,
+         showCategory = 10,
          color_category = "#E5C494",
          size_category = 1,
          color_item = "#B3B3B3",
@@ -386,25 +349,23 @@ cnetplot(gse_kegg,
          hilight = "none",
          hilight_alpha = 0.3)
 
-ridgeplot(gse_kegg) + labs(x = "enrichment distribution")
+ridgeplot(gse_kegg,
+          #showCategory = 10,
+          #fill = "p.adjust",
+          #core_enrichment = TRUE,
+          #label_format = 30
+          ) + labs(x = "enrichment distribution")
 
 
 path <- pathview(gene.data = gene_list,
-         pathway.id="mmu04979", 
+         pathway.id="mmu00071", 
          species = "mmu")
 
-path2 <- pathview(gene.data= gene_list, 
-                  pathway.id="mmu04979", 
-                  species = "mmu", 
-                  kegg.native = F)
-
-knitr::include_graphics("mmu04979.pathview.png")
-
-
+id = 67
 gseaplot2(gse_kegg, 
-          geneSetID = 23,
+          geneSetID = id,
           pvalue_table = TRUE,
-          title = gse_kegg$Description[23],
+          title = gse_kegg$Description[id],
           color = c("#E495A5", "#86B875", "#7DB0DD"), 
           ES_geom = "line")
 
