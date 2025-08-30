@@ -39,113 +39,6 @@ counts_df = pd.DataFrame(counts_dense, index=sample_data.obs_names, columns=samp
 
 clear()
 
-## Doublet removal
-### With ML
-scvi.settings.dl_num_workers = 5
-scvi.settings.batch_size = 256
-scvi.model.SCVI.setup_anndata(sample_data)
-vae = scvi.model.SCVI(sample_data)
-vae.train() # Passo demorado
-clear()
-solo = scvi.external.SOLO.from_scvi_model(vae)
-solo.train() # Passo demorado
-sp = solo.predict()
-sp['prediction'] = solo.predict(soft = False)
-#sp.index = sp.index.map(lambda x: x[:-9])
-sp.groupby('prediction').count() # Verificar doublets
-sp['dif'] = sp.doublet - sp.singlet
-sns.displot(sp[sp.prediction == 'doublet'], x = 'dif')
-doublet = sp[(sp.prediction == 'doublet') & (sp.dif > 0.5)]
-clear()
-
-sample_data.obs['doublet'] = sample_data.obs.index.isin(doublet.index)
-sample_data = sample_data[~sample_data.obs.doublet]
-print(sample_data.obs)
-
-### With ScanPy
-sc.pp.scrublet(sample_data, batch_key="batch")
-doublets = sample_data.obs[sample_data.obs['predicted_doublet'] == True]
-sample_data.obs['doublet'] = sample_data.obs.index.isin(doublets.index)
-sample_data = sample_data[~sample_data.obs.doublet]
-
-## Normalization
-sample_data.layers["counts"] = sample_data.X.copy()
-sc.pp.normalize_total(sample_data, target_sum=1e4)
-sc.pp.log1p(sample_data)
-
-## Feature Selection
-sc.pp.highly_variable_genes(sample_data, n_top_genes = 2000, batch_key="batch") # Filtrar apenas os n genes mais representativos
-sc.pl.highly_variable_genes(raw)
-
-## Dimensionality Reduction
-sc.tl.pca(sample_data)
-sc.pl.pca_variance_ratio(sample_data, n_pcs=50, log=True)
-sc.pl.pca(
-    sample_data,
-    color=['n_genes_by_counts', 'n_genes_by_counts', 'total_counts','total_counts'],
-    dimensions=[(0, 1), (2, 3), (0, 1), (2, 3)],
-    ncols=2,
-    size=2) # PCA
-
-sc.pp.neighbors(sample_data)
-sc.tl.umap(sample_data)
-sc.pl.umap(
-    sample_data,
-    color="total_counts",
-    # Setting a smaller point size to get prevent overlap
-    size=2)
-
-## Clustering
-sc.tl.leiden(sample_data, flavor="igraph", n_iterations=2)
-sc.pl.umap(sample_data, color=["leiden"])
-
-## Re-assess QC
-sc.pl.umap(
-    sample_data,
-    color=["leiden", "predicted_doublet", "doublet_score"],
-    # increase horizontal space between panels
-    wspace=0.5,
-    size=3)
-
-sc.pl.umap(
-    sample_data,
-    color=["leiden", "log1p_total_counts", "pct_counts_mt", "log1p_n_genes_by_counts"],
-    wspace=0.5,
-    ncols=2,
-    size=2)
-
-## Cell-type annotation
-### Colors
-for res in [0.02, 0.5, 2.0]:
-    sc.tl.leiden(
-        sample_data, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
-    )
-sc.pl.umap(
-    sample_data,
-    color=["leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"],
-    legend_loc="on data", size=2)
-marker_genes = {
-    "Neuron": ["Snap25", "Rbfox3", "Syt1"],
-    "Astrocyte": ["Gfap", "Aldh1l1", "Slc1a3"],
-    "Microglia": ["Cx3cr1", "P2ry12", "Tmem119"],
-    "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
-    "Endothelial": ["Pecam1", "Cldn5", "Flt1"]
-}
-### Manual Annotation
-sc.pl.dotplot(sample_data, marker_genes, groupby="leiden_res_0.02", standard_scale="var")
-
-### Celltypist Annotation
-models.download_models(force_update = True)
-models.models_description()
-model = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')  # Mouse
-model
-
-predictions = annotate(sample_data, model=model, majority_voting=True)
-pred_labels_df = predictions.predicted_labels.copy()
-sample_data.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
-sc.pl.umap(sample_data, color='cell_type_celltypist', size=20, palette='tab20')
-print(sample_data.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
-
 ################# Integration #################
 samples = raw.obs['biosample'].unique()
 print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Grupo controle
@@ -160,7 +53,6 @@ def pp(biosample):
                          var=raw[data_id, :].raw.var.copy())
 
     # Doublet detection
-
     doublets = adata.obs[adata.obs['predicted_doublet'] == True]
     adata.obs['doublet'] = adata.obs.index.isin(doublets.index)
     adata = adata[~adata.obs.doublet]
@@ -201,41 +93,86 @@ adata = adata[adata.obs.pct_counts_ribo < 20]
 ### Visualize cleaned data
 sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
              jitter=0.4, multi_panel=True)
-sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")
-
-
-# Save changes to a new file
+sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")# Save changes to a new file
 #adata.X = csr_matrix(adata.X)
 adata.obs.groupby('biosample')
 adata.write_h5ad('combined.h5ad')
 adata = sc.read_h5ad('combined.h5ad')
 
+# Feature Selection
+sc.pp.highly_variable_genes(adata, n_top_genes = 2000, batch_key="batch") # Filtrar apenas os n genes mais representativos
+sc.pl.highly_variable_genes(adata)
 
+## Dimensionality Reduction
+sc.tl.pca(adata)
+sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
+sc.pl.pca(
+    adata,
+    color=['n_genes_by_counts', 'n_genes_by_counts', 'total_counts','total_counts'],
+    dimensions=[(0, 1), (2, 3), (0, 1), (2, 3)],
+    ncols=2,
+    size=2) # PCA
 
-
-
-# sc.pp.highly_variable_genes(adata, n_top_genes=3000, subset = True, layer = 'counts',
-#                            flavor = "seurat_v3", batch_key="Sample") #no batch_key if one sample
-
-
-scvi.model.SCVI.setup_anndata(adata, layer = "counts",
-                             categorical_covariate_keys=["Sample"],
-                             continuous_covariate_keys=['pct_counts_mt', 'total_counts', 'pct_counts_ribo'])
-
-
-
-model = scvi.model.SCVI(adata)
-
-model.train() #may take a while without GPU
-adata.obsm['X_scVI'] = model.get_latent_representation()
-
-adata.layers['scvi_normalized'] = model.get_normalized_expression(library_size = 1e4)
-sc.pp.neighbors(adata, use_rep = 'X_scVI')
+sc.pp.neighbors(adata)
 sc.tl.umap(adata)
-sc.tl.leiden(adata, resolution = 0.5)
-sc.pl.umap(adata, color = ['leiden', 'Sample'], frameon = False)
+sc.pl.umap(
+    adata,
+    color="total_counts",
+    # Setting a smaller point size to get prevent overlap
+    size=2)
 
-adata.write_h5ad('integrated.h5ad')
+## Clustering
+sc.tl.leiden(adata, flavor="igraph", n_iterations=2)
+sc.pl.umap(adata, color=["leiden"])
+
+## Re-assess QC
+sc.pl.umap(
+    adata,
+    color=["leiden", "predicted_doublet", "doublet_score"],
+    # increase horizontal space between panels
+    wspace=0.5,
+    size=3)
+
+sc.pl.umap(
+    adata,
+    color=["leiden", "log1p_total_counts", "pct_counts_mt", "log1p_n_genes_by_counts"],
+    wspace=0.5,
+    ncols=2,
+    size=2)
+
+## Cell-type annotation
+### Colors
+for res in [0.02, 0.5, 2.0]:
+    sc.tl.leiden(
+        sample_data, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
+    )
+sc.pl.umap(
+    adata,
+    color=["leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"],
+    legend_loc="on data", size=2)
+marker_genes = {
+    "Neuron": ["Snap25", "Rbfox3", "Syt1"],
+    "Astrocyte": ["Gfap", "Aldh1l1", "Slc1a3"],
+    "Microglia": ["Cx3cr1", "P2ry12", "Tmem119"],
+    "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
+    "Endothelial": ["Pecam1", "Cldn5", "Flt1"]
+}
+### Manual Annotation
+sc.pl.dotplot(sample_data, marker_genes, groupby="leiden_res_0.02", standard_scale="var")
+
+### Celltypist Annotation
+models.download_models(force_update = True)
+models.models_description()
+model = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')  # Mouse
+model
+
+predictions = annotate(sample_data, model=model, majority_voting=True)
+pred_labels_df = predictions.predicted_labels.copy()
+sample_data.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
+sc.pl.umap(sample_data, color='cell_type_celltypist', size=20, palette='tab20')
+print(sample_data.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
+
+
 
 # Label Cells Types
 sc.tl.leiden(adata, resolution = 1)
