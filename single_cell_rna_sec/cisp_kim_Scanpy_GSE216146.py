@@ -56,7 +56,6 @@ def pp(biosample):
     adata = sc.AnnData(X=raw[data_id, :].raw.X.copy(),
                          obs=raw[data_id, :].obs.copy(),
                          var=raw[data_id, :].raw.var.copy())
-
     # Doublet detection
     doublets = adata.obs[adata.obs['predicted_doublet'] == True]
     adata.obs['doublet'] = adata.obs.index.isin(doublets.index)
@@ -105,72 +104,53 @@ sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo
 adata.obs.groupby('biosample')
 adata.write_h5ad('combined.h5ad')
 adata = sc.read_h5ad('combined.h5ad')
+adata = adata.to_memory()
 
 # Feature Selection
 sc.pp.highly_variable_genes(adata, n_top_genes = 2000, batch_key="batch") # Filtrar apenas os n genes mais representativos
 sc.pl.highly_variable_genes(adata)
 
-## Dimensionality Reduction
-### PCA
+# Dimensionality Reduction
+## Clustering
+sc.tl.leiden(adata, flavor="igraph", n_iterations=2, resolution=0.05)
+
+## PCA
 sc.tl.pca(adata)
 sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
 sc.pl.pca(
     adata,
-    color=['n_genes_by_counts', 'n_genes_by_counts', 'total_counts','total_counts'],
-    dimensions=[(0, 1), (2, 3), (0, 1), (2, 3)],
+    color=['pathology'],
+    dimensions=[(0, 1), (2, 3)],
     ncols=2,
     size=2)
 
-### Neighbors
+## Neighbors/UMAP
 sc.pp.neighbors(adata)
 sc.tl.umap(adata)
 sc.pl.umap(
     adata,
-    color=["total_counts", "pathology"],
+    color=["leiden", "pathology"],
+    wspace=0.5,
     # Setting a smaller point size to get prevent overlap
     size=2)
 
-## Clustering
-sc.tl.leiden(adata, flavor="igraph", n_iterations=2)
-sc.pl.umap(adata, color=["leiden"])
+## t-SNE
+sc.tl.tsne(adata, n_pcs=20)  # usa os PCs como input
+sc.pl.tsne(adata, color="pathology")
 
-## Re-assess QC
-sc.pl.umap(
-    adata,
-    color=["leiden", "predicted_doublet", "doublet_score"],
-    # increase horizontal space between panels
-    wspace=0.5,
-    size=3)
-
-sc.pl.umap(
-    adata,
-    color=["leiden", "log1p_total_counts", "pct_counts_mt", "log1p_n_genes_by_counts"],
-    wspace=0.5,
-    ncols=2,
-    size=2)
-
-## Cell-type annotation
-### Colors
-for res in [0.02, 0.5, 2.0]:
-    sc.tl.leiden(
-        sample_data, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
-    )
-sc.pl.umap(
-    adata,
-    color=["leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"],
-    legend_loc="on data", size=2)
+# Cell-type annotation
+## Manual Annotation
 marker_genes = {
     "Neuron": ["Snap25", "Rbfox3", "Syt1"],
     "Astrocyte": ["Gfap", "Aldh1l1", "Slc1a3"],
     "Microglia": ["Cx3cr1", "P2ry12", "Tmem119"],
     "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
-    "Endothelial": ["Pecam1", "Cldn5", "Flt1"]
-}
-### Manual Annotation
-sc.pl.dotplot(sample_data, marker_genes, groupby="leiden_res_0.02", standard_scale="var")
+    "Endothelial": ["Pecam1", "Cldn5", "Flt1"]}
+
+sc.pl.dotplot(adata, marker_genes, groupby="pathology", standard_scale="var")
 
 ### Celltypist Annotation
-models.download_models(force_update = True)
+models.download_models()
 models.models_description()
 model = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')  # Mouse
 model
