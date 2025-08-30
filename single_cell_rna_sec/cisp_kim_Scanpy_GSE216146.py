@@ -99,6 +99,8 @@ adata = adata[adata.obs.pct_counts_ribo < 20]
 sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
              jitter=0.4, multi_panel=True)
 sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")# Save changes to a new file
+
+# Save progress
 #adata.X = csr_matrix(adata.X)
 adata.obs.groupby('biosample')
 adata.write_h5ad('combined.h5ad')
