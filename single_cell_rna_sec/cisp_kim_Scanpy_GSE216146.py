@@ -103,33 +103,46 @@ marker_genes = {
     "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
     "Endothelial": ["Pecam1", "Cldn5", "Flt1"]}
 
-sc.pl.dotplot(adata, marker_genes, groupby="leiden", standard_scale="var")
+sc.pl.dotplot(adata,
+              marker_genes,
+              groupby=['biosample'],
+              standard_scale="var",
+              dendrogram=True)
 
 ## Celltypist Annotation
 ### Prepare model
 models.download_models()
 models.models_description()
-model = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')
-model
+model_isocortex = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')
+model_dentate_gyrus = models.Model.load('Mouse_Postnatal_DentateGyrus.pkl')
 
 ### Label
-predictions = annotate(adata, model=model, majority_voting=True)
-pred_labels_df = predictions.predicted_labels
-adata.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
-print(adata.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
+predictions_isocortex = annotate(
+    adata,
+    model=model_isocortex,
+    majority_voting=True)
+
+predictions_dentate_gyrus = annotate(
+    adata,
+    model=model_dentate_gyrus,
+    majority_voting=True)
+
+labels_isocortex = predictions_isocortex.predicted_labels
+labels_dentate_gyrus = predictions_dentate_gyrus.predicted_labels
+
+adata.obs['isocortex'] = labels_isocortex.iloc[:, 2].values
+adata.obs['dentate_gyrus'] = labels_dentate_gyrus.iloc[:, 2].values
+
+print(adata.obs['isocortex'].value_counts())
+print(adata.obs['dentate_gyrus'].value_counts())
 
 # Dimensionality Reduction
 ## Clustering
 sc.pp.neighbors(adata)
-for res in [0.02, 0.5, 2.0]:
+for res in [0.15, 0.5, 2.0]:
     sc.tl.leiden(
         adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
-    ) # "leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"
-
-sc.tl.rank_genes_groups(adata, 'leiden')
-sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
-markers = sc.get.rank_genes_groups_df(adata, None)
-markers = markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)]
+    ) # "leiden_res_0.10", "leiden_res_0.50", "leiden_res_2.00"
 
 ## PCA
 sc.tl.pca(adata)
@@ -145,7 +158,7 @@ sc.pl.pca(
 sc.tl.umap(adata)
 sc.pl.umap(
     adata,
-    color=["leiden", "pathology", "cell_type_celltypist"],
+    color=["leiden_res_0.15", "pathology", "cell_type_celltypist"],
     wspace=0.5,
     # Setting a smaller point size to get prevent overlap
     size=2,
@@ -156,12 +169,13 @@ sc.pl.umap(
 sc.tl.tsne(adata, n_pcs=20)  # usa os PCs como input
 sc.pl.tsne(adata, color="pathology")
 
-
-
-
-
-markers
-
+# Analysis
+## Rank genes
+sc.tl.rank_genes_groups(adata, 'leiden')
+sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
+markers = sc.get.rank_genes_groups_df(adata, None)
+markers = markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)]
+markers_df = pd.DataFrame(markers) # Clusters' differential expression
 markers_scvi = model.differential_expression(groupby = 'leiden')
 markers_scvi
 
