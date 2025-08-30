@@ -6,6 +6,7 @@ import numpy as np
 import gseapy as gp
 import pandas as pd
 from anndata import AnnData
+import scvi
 
 from gc import collect as clear
 from scipy import stats
@@ -181,11 +182,12 @@ with rc_context({"figure.figsize": (4, 4)}):
 
 # Analysis
 ## Rank genes
-sc.tl.rank_genes_groups(adata, 'leiden')
+sc.tl.rank_genes_groups(adata, 'leiden_res_0.15')
 sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
 markers = sc.get.rank_genes_groups_df(adata, None)
 markers = markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)]
 markers_df = pd.DataFrame(markers) # Clusters' differential expression
+scvi.model.SCVI.setup_anndata(adata, batch_key="batch", labels_key="leiden")
 markers_scvi = model.differential_expression(groupby = 'leiden')
 markers_scvi
 
@@ -194,12 +196,7 @@ markers_scvi
 markers_scvi = markers_scvi[(markers_scvi['is_de_fdr_0.05']) & (markers_scvi.lfc_mean > .5)]
 markers_scvi
 
-sc.pl.umap(adata, color = ['leiden'], frameon = False, legend_loc = "on data")
 
-
-
-sc.pl.umap(adata, color = ['EPCAM', 'MUC1'], frameon = False, layer = 'scvi_normalized', vmax = 5)
-#, layer = 'scvi_normalized'
 
 
 
