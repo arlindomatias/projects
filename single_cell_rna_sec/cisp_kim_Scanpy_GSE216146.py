@@ -94,6 +94,23 @@ adata = adata.to_memory()
 sc.pp.highly_variable_genes(adata, n_top_genes = 2000, batch_key="batch") # Filtrar apenas os n genes mais representativos
 sc.pl.highly_variable_genes(adata)
 
+# Dimensionality reduction
+## Clustering
+sc.pp.neighbors(adata)
+for res in [0.15, 0.5, 2.0]:
+    sc.tl.leiden(
+        adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
+    ) # "leiden_res_0.15", "leiden_res_0.50", "leiden_res_2.00"
+
+## PCA
+sc.tl.pca(adata)
+
+## UMAP
+sc.tl.umap(adata)
+
+## t-SNE
+sc.tl.tsne(adata, n_pcs=20)
+
 # Cell-type annotation
 ## Manual Annotation
 marker_genes = {
@@ -103,71 +120,55 @@ marker_genes = {
     "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
     "Endothelial": ["Pecam1", "Cldn5", "Flt1"]}
 
-sc.pl.dotplot(adata,
-              marker_genes,
-              groupby=['biosample'],
-              standard_scale="var",
-              dendrogram=True)
-
 ## Celltypist Annotation
 ### Prepare model
 models.download_models()
 models.models_description()
-model_isocortex = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')
-model_dentate_gyrus = models.Model.load('Mouse_Postnatal_DentateGyrus.pkl')
+model = 'Mouse_Postnatal_DentateGyrus.pkl'
 
-### Label
-predictions_isocortex = annotate(
-    adata,
-    model=model_isocortex,
-    majority_voting=True)
+# Annotate
+def cell_type(set = model, data = adata):
+    model = models.Model.load(set)
+    predictions = annotate(data, model=model, majority_voting=True)
+    labels = predictions.predicted_labels
+    data.obs['cell_type'] = labels['majority_voting'].values
+    return data
 
-predictions_dentate_gyrus = annotate(
-    adata,
-    model=model_dentate_gyrus,
-    majority_voting=True)
+adata = cell_type()
+adata.obs['cell_type']
+print(adata.obs['cell_type'].value_counts())
 
-labels_isocortex = predictions_isocortex.predicted_labels
-labels_dentate_gyrus = predictions_dentate_gyrus.predicted_labels
 
-adata.obs['isocortex'] = labels_isocortex.iloc[:, 2].values
-adata.obs['dentate_gyrus'] = labels_dentate_gyrus.iloc[:, 2].values
-
-print(adata.obs['isocortex'].value_counts())
-print(adata.obs['dentate_gyrus'].value_counts())
-
-# Dimensionality Reduction
-## Clustering
-sc.pp.neighbors(adata)
-for res in [0.15, 0.5, 2.0]:
-    sc.tl.leiden(
-        adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
-    ) # "leiden_res_0.10", "leiden_res_0.50", "leiden_res_2.00"
+# Data visualization
 
 ## PCA
-sc.tl.pca(adata)
 sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
 sc.pl.pca(
     adata,
-    color=['pathology'],
-    dimensions=[(0, 1), (2, 3)],
+    color=['pathology', 'batch'],
+    dimensions=[(0, 1), (0, 1)],
     ncols=2,
     size=2)
 
-## UMAP
-sc.tl.umap(adata)
+
 sc.pl.umap(
     adata,
-    color=["leiden_res_0.15", "pathology", "cell_type_celltypist"],
+    color=['leiden_res_0.15', 'batch', 'pathology','dentate_gyrus'],
     wspace=0.5,
     # Setting a smaller point size to get prevent overlap
     size=2,
+    ncols=2,
     #legend_loc="on data"
     )
 
-## t-SNE
-sc.tl.tsne(adata, n_pcs=20)  # usa os PCs como input
+
 sc.pl.tsne(adata, color="pathology")
+
+sc.pl.dotplot(adata,
+              marker_genes,
+              groupby=['pathology'],
+              standard_scale="var",
+              dendrogram=True)
 
 # Analysis
 ## Rank genes
