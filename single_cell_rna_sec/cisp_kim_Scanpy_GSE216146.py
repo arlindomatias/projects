@@ -98,7 +98,7 @@ sc.pp.highly_variable_genes(
 
 # Clustering and dimensionality reduction
 ## PCA
-sc.pp.pca(adata, svd_solver="arpack", use_highly_variable=True)
+sc.pp.pca(adata, use_highly_variable=True)
 sc.tl.pca(adata)
 
 sc.pp.neighbors(adata) ## Neighbors
@@ -112,6 +112,7 @@ for res in [0.15, 0.5, 2.0]:
 sc.tl.umap(adata) ## UMAP
 
 sc.tl.tsne(adata, n_pcs=20)## t-SNE
+clear()
 
 # Cell-type annotation
 ## Manual Annotation
@@ -179,92 +180,23 @@ sc.pl.dotplot(adata,
 with rc_context({"figure.figsize": (4, 4)}):
     sc.pl.umap(adata, color="Cdkn2a")
 
-
 # Analysis
-## Rank genes
+## Rank genes in clusters
 sc.tl.rank_genes_groups(adata, 'leiden_res_0.15')
 sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
 markers = sc.get.rank_genes_groups_df(adata, None)
-markers = markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)]
-scvi_model = scvi.model.SCVI(adata)
+markers = pd.DataFrame(
+    markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)])
 
-
-markers_scivi = model.differential_expression(groupby = 'leiden')
-
-
-
-
-markers_scvi = markers_scvi[(markers_scvi['is_de_fdr_0.05']) & (markers_scvi.lfc_mean > .5)]
-markers_scvi
-
-
-
-
-
-cell_type = {"0":"Macrophage",
-"1":"Fibroblast",
-"2":"CD4+ T-cell",
-"3":"AT2",
-"4":"AT1",
-"5":"CD8+ T-cell",
-"6":"Endothelial cell",
-"7":"Plasma cell",
-"8":"Macrophage",
-"9":"AT2",
-"10":"Fibroblast",
-"11":"Fibroblast",
-"12":"Macrophage",
-"13":"Macrophage",
-"14":"Airway epithelial",
-"15":"Airway epithelial",
-"16":"Monocyte",
-"17":"Airway epithelial",
-"18":"B-cell",
-"19":"Aerocyte",
-"20":"Airway epithelial",
-"21":"Smooth muscle cell",
-"22":"Cycling T/NK",
-"23":"Neuronal cell",
-"24":"Denditic cell",
-"25":"Pericyte",
-"26":"Fibroblast",
-"27":"Erythroid-like",
-"28":"Macrophage"
-}
-
-
-
-adata.obs['cell type'] = adata.obs.leiden.map(cell_type)
-
-sc.pl.umap(adata, color = ['cell type'], frameon = False)
-
-adata.uns['scvi_markers'] = markers_scvi
-adata.uns['markers'] = markers
-
-adata.write_h5ad('integrated.h5ad')
-
-model.save('model.model')
-
-
-# Analysis
-adata = sc.read_h5ad('integrated.h5ad')
-
-adata.obs.Sample.unique().tolist()
-
-
-
-def map_condition(x):
-    if 'cov' in x:
-        return 'COVID19'
+## Counting cells
+def map_condition(condition):
+    if 'PN' in condition:
+        return 'Control'
     else:
-        return 'control'
+        return 'Chemotherapy'
 
-adata.obs['condition'] = adata.obs.Sample.map(map_condition)
-adata.obs
-
-
-
-num_tot_cells = adata.obs.groupby(['Sample']).count()
+adata.obs['pathology'] = adata.obs.pathology.map(map_condition)
+num_tot_cells = adata.obs.groupby(['pathology']).count()
 num_tot_cells = dict(zip(num_tot_cells.index, num_tot_cells.doublet))
 num_tot_cells
 
