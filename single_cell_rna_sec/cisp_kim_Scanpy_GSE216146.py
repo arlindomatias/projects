@@ -172,46 +172,45 @@ def pp(biosample):
     adata.write_h5ad(f"{biosample}_data.h5ad")
     return adata
 
+# Merge individual samples
 out = []
 for sample in raw.obs['biosample'].unique():
     out.append(pp(sample))
-
 adata = sc.concat(out)
 
 # Preprocessing
 ## Quality Control
 ### Mitochondrial genes
-sample_data.var['mt'] = sample_data.var.index.str.startswith('Mt-')
+adata.var['mt'] = adata.var.index.str.startswith('Mt-')
 ### Ribosomal genes
-sample_data.var['ribo'] = sample_data.var.index.str.startswith(('Rps', 'Rpl'))
+adata.var['ribo'] = adata.var.index.str.startswith(('Rps', 'Rpl'))
 ### Hemoglobin genes
-sample_data.var['hb'] = sample_data.var.index.str.contains("^Hb[ab]-")
+adata.var['hb'] = adata.var.index.str.contains("^Hb[ab]-")
 
 ### Calculate metrics and filter data
-sc.pp.calculate_qc_metrics(sample_data, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
-sc.pp.filter_genes(sample_data, min_cells=3)
-sample_data.obs.sort_values('total_counts')
-sc.pp.filter_cells(sample_data, min_genes=100)
-
-upper_lim = np.quantile(sample_data.obs.n_genes_by_counts.values, .98)
+sc.pp.calculate_qc_metrics(adata, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
+sc.pp.filter_genes(adata, min_cells=3)
+adata.obs.sort_values('total_counts')
+sc.pp.filter_cells(adata, min_genes=100)
+upper_lim = np.quantile(adata.obs.n_genes_by_counts.values, .98)
 upper_lim = 4500
-sample_data = sample_data[sample_data.obs.n_genes_by_counts < upper_lim]
-sample_data = sample_data[sample_data.obs.pct_counts_mt < 20]
-sample_data = sample_data[sample_data.obs.pct_counts_ribo < 20]
+adata = adata[adata.obs.n_genes_by_counts < upper_lim]
+adata = adata[adata.obs.pct_counts_mt < 20]
+adata = adata[adata.obs.pct_counts_ribo < 20]
 
-sc.pl.violin(sample_data, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
+### Visualize cleaned data
+sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
              jitter=0.4, multi_panel=True)
+sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")
 
-sc.pl.scatter(sample_data, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")
 
-sc.pp.filter_genes(adata, min_cells = 10)
-
-adata.X = csr_matrix(adata.X)
-
+# Save changes to a new file
+#adata.X = csr_matrix(adata.X)
+adata.obs.groupby('biosample')
 adata.write_h5ad('combined.h5ad')
 adata = sc.read_h5ad('combined.h5ad')
 
-adata.obs.groupby('Sample').count()
+
 
 
 
