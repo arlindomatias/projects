@@ -186,10 +186,11 @@ sc.tl.rank_genes_groups(adata, 'leiden_res_0.15')
 sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
 markers = sc.get.rank_genes_groups_df(adata, None)
 markers = markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)]
-markers_df = pd.DataFrame(markers) # Clusters' differential expression
-scvi.model.SCVI.setup_anndata(adata, batch_key="batch", labels_key="leiden")
-markers_scvi = model.differential_expression(groupby = 'leiden')
-markers_scvi
+scvi_model = scvi.model.SCVI(adata)
+
+
+markers_scivi = model.differential_expression(groupby = 'leiden')
+
 
 
 
