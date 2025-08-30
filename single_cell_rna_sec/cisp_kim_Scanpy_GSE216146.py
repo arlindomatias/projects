@@ -39,13 +39,18 @@ counts_df = pd.DataFrame(counts_dense, index=sample_data.obs_names, columns=samp
 
 clear()
 
-################# Integration #################
+##################################
+# Integration
+## Identify interest samples
 samples = raw.obs['biosample'].unique()
 print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Grupo controle
 print(raw[raw.obs['pathology'] == 'CN'].obs['biosample']) # Grupo chem
-biosample = 'D20-6407' # Definir amostra
 
-def pp(biosample):
+## Select
+biosamples = ['D20-6407','D21-2746','D21-2747','D20-6409','D212750','D21-2751'] # Definir amostra
+
+## Create importing function
+def pp(biosample = biosample):
     # Identificar células e importar dados
     data_id = raw.obs['biosample'].isin([biosample])
     adata = sc.AnnData(X=raw[data_id, :].raw.X.copy(),
@@ -64,7 +69,7 @@ def pp(biosample):
     adata.write_h5ad(f"{biosample}_data.h5ad")
     return adata
 
-# Merge individual samples
+## Merge individual data
 out = []
 for sample in raw.obs['biosample'].unique():
     out.append(pp(sample))
@@ -104,6 +109,7 @@ sc.pp.highly_variable_genes(adata, n_top_genes = 2000, batch_key="batch") # Filt
 sc.pl.highly_variable_genes(adata)
 
 ## Dimensionality Reduction
+### PCA
 sc.tl.pca(adata)
 sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
 sc.pl.pca(
@@ -111,13 +117,14 @@ sc.pl.pca(
     color=['n_genes_by_counts', 'n_genes_by_counts', 'total_counts','total_counts'],
     dimensions=[(0, 1), (2, 3), (0, 1), (2, 3)],
     ncols=2,
-    size=2) # PCA
+    size=2)
 
+### Neighbors
 sc.pp.neighbors(adata)
 sc.tl.umap(adata)
 sc.pl.umap(
     adata,
-    color="total_counts",
+    color=["total_counts", "pathology"],
     # Setting a smaller point size to get prevent overlap
     size=2)
 
