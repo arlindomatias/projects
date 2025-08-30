@@ -7,6 +7,7 @@ import gseapy as gp
 import pandas as pd
 from anndata import AnnData
 import scvi
+import matplotlib.pyplot as plt
 
 from gc import collect as clear
 from scipy import stats
@@ -196,186 +197,30 @@ def map_condition(condition):
         return 'Chemotherapy'
 
 adata.obs['pathology'] = adata.obs.pathology.map(map_condition)
-num_tot_cells = adata.obs.groupby(['pathology']).count()
+num_tot_cells = adata.obs.groupby(['biosample']).count()
 num_tot_cells = dict(zip(num_tot_cells.index, num_tot_cells.doublet))
 num_tot_cells
 
-cell_type_counts = adata.obs.groupby(['Sample', 'condition', 'cell type']).count()
+cell_type_counts = adata.obs.groupby(
+    ['biosample', 'pathology', 'cell_type']).count()
+cell_type_counts = pd.DataFrame(cell_type_counts)
 cell_type_counts = cell_type_counts[cell_type_counts.sum(axis = 1) > 0].reset_index()
 cell_type_counts = cell_type_counts[cell_type_counts.columns[0:4]]
-cell_type_counts
+cell_type_counts = cell_type_counts.rename(
+    columns = {'initial_size_spliced': 'cell_type_counts'})
 
-cell_type_counts['total_cells'] = cell_type_counts.Sample.map(num_tot_cells).astype(int)
+cell_type_counts['total_cells'] = cell_type_counts.biosample.map(num_tot_cells).astype(int)
+cell_type_counts['frequency'] = cell_type_counts.cell_type_counts / cell_type_counts.total_cells
 
-cell_type_counts['frequency'] = cell_type_counts.doublet / cell_type_counts.total_cells
-
-cell_type_counts
-
-
-
-import matplotlib.pyplot as plt
-
-plt.figure(figsize = (10,4))
-
-ax = sns.boxplot(data = cell_type_counts, x = 'cell type', y = 'frequency', hue = 'condition')
-
-plt.xticks(rotation = 35, rotation_mode = 'anchor', ha = 'right')
-
+plt.ioff()
+fig, ax = plt.subplots()
+ax.plot = sns.boxplot(
+    data = cell_type_counts,
+    x = 'cell_type',
+    y = 'frequency',
+    hue = 'pathology')
+plt.xticks(rotation = 45,
+           rotation_mode = 'anchor',
+           ha = 'right')
 plt.show()
-
-# Differential Expression
-subset = adata[adata.obs['cell type'].isin(['AT1', 'AT2'])].copy()
-
-#two options: SCVI or diffxpy
-
-import diffxpy.api as de
-
-subset.X = subset.X.toarray()
-
-len(subset.var)
-
-
-subset
-
-sc.pp.filter_genes(subset, min_cells=100)
-
-len(subset.var)
-
-subset.obs = subset.obs.rename(columns = {'cell type':'cell_type'})
-
-#subset = subset.raw.to_adata() #need to run this if you scaled/regress your data and have negative numbers
-
-subset.obs
-
-#if want to test between covid/non covid
-# res = de.test.wald(data=subset,
-#              formula_loc= '~ 1 + condition',
-#              factor_loc_totest='condition'
-#                   )
-
-
-res = de.test.wald(data=subset,
-             formula_loc= '~ 1 + cell_type',
-             factor_loc_totest='cell_type'
-                  )
-
-dedf = res.summary().sort_values('log2fc', ascending = False).reset_index(drop = True)
-dedf
-
-
-
-subset.obs.cell_type.unique()
-
-dedf['log2fc'] = dedf['log2fc']*-1
-dedf = dedf.sort_values('log2fc', ascending = False).reset_index(drop = True)
-dedf
-
-dedf = dedf[(dedf.qval < 0.05) & (abs(dedf.log2fc) > .5)]
-dedf
-
-dedf = dedf[dedf['mean'] > 0.15]
-dedf
-
-genes_to_show = dedf[-25:].gene.tolist() + dedf[:25].gene.tolist() #top 25 and bottom 25 from sorted df
-
-sc.pl.heatmap(subset, genes_to_show, groupby='cell_type', swap_axes=True)
-
-#DE with scvi
-
-model  = scvi.model.SCVI.load('model.model', adata)
-
-
-
-model
-
-scvi_de = model.differential_expression(
-    idx1 = [adata.obs['cell type'] == 'AT1'],
-    idx2 = [adata.obs['cell type'] == 'AT2']
-    )
-
-#any set of cells vs any set of cells
-# scvi_de = model.differential_expression(
-#     idx1 = [(adata.obs['cell type'].isin(['AT1', 'AT2'])) & (adata.obs.condition == 'COVID19')],
-#     idx2 = [(adata.obs['cell type'].isin(['AT1', 'AT2'])) & (adata.obs.condition == 'control')]
-#     )
-
-scvi_de
-
-scvi_de = scvi_de[(scvi_de['is_de_fdr_0.05']) & (abs(scvi_de.lfc_mean) > .5)]
-scvi_de = scvi_de.sort_values('lfc_mean')
-scvi_de
-
-
-
-scvi_de = scvi_de[(scvi_de.raw_normalized_mean1 > .5) | (scvi_de.raw_normalized_mean2 > .5)]
-scvi_de
-
-
-
-genes_to_show = scvi_de[-25:].index.tolist() + scvi_de[:25].index.tolist() #top 25 and bottom 25 from sorted df
-
-sc.pl.heatmap(subset, genes_to_show, groupby='cell_type', swap_axes=True, layer = 'scvi_normalized',
-              log = True)
-
-# GO Enrichment
-gp.get_library_name()
-# 'GO_Biological_Process_2021',
-#'KEGG_2021_Human',
-
-subset
-
-enr = gp.enrichr(gene_list= dedf[dedf.log2fc > 0].gene.tolist(),
-                 gene_sets=['KEGG_2021_Human','GO_Biological_Process_2021'],
-                 organism='human', # don't forget to set organism to the one you desired!
-                 outdir=None, # don't write to disk,
-                 background = subset.var_names.tolist()
-                )
-
-
-
-enr.results
-
-# Comparisons
-sc.pl.violin(subset[subset.obs.cell_type == 'AT2'], 'ETV5', groupby='condition')
-
-temp = subset[subset.obs.cell_type == 'AT2']
-
-i = np.where(temp.var_names == 'ETV5')[0][0]
-
-a = temp[temp.obs.condition == 'COVID19'].X[:,i]
-b = temp[temp.obs.condition == 'control'].X[:,i]
-
-stats.mannwhitneyu(a, b)
-
-# Score gene signature
-
-
-
-#gene signature, ie, input list of genes from user
-with open('datp_sig.txt') as f:
-    datp_sig = [x.strip() for x in list(f)]
-
-sc.tl.score_genes(subset, datp_sig, score_name = 'datp')
-subset.obs
-sc.pl.violin(subset, 'datp', groupby='condition')
-
-
-
-a = subset[subset.obs.condition == 'COVID19'].obs.datp.values
-b = subset[subset.obs.condition == 'control'].obs.datp.values
-stats.mannwhitneyu(a, b)
-
-sc.pl.umap(subset, color = 'datp', vmax = 1)
-
-#for thumbnail
-
-adata
-with rc_context({'figure.figsize': (8,8)}):
-    sc.pl.umap(adata, color = ['cell type'], frameon = False, s = 5, legend_loc = 'on data',
-              legend_fontsize=12, legend_fontoutline=2)
-
-
-
-with rc_context({'figure.figsize': (8,8)}):
-    sc.pl.umap(adata, color = ['MUC1'], frameon = False, layer = 'scvi_normalized', vmax = 5, s = 5)
 
