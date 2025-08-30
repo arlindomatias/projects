@@ -39,32 +39,6 @@ counts_df = pd.DataFrame(counts_dense, index=sample_data.obs_names, columns=samp
 
 clear()
 
-# Preprocessing
-## Quality Control
-### Mitochondrial genes
-sample_data.var['mt'] = sample_data.var.index.str.startswith('Mt-')
-### Ribosomal genes
-sample_data.var['ribo'] = sample_data.var.index.str.startswith(('Rps', 'Rpl'))
-### Hemoglobin genes
-sample_data.var['hb'] = sample_data.var.index.str.contains("^Hb[ab]-")
-
-### Calculate metrics and filter data
-sc.pp.calculate_qc_metrics(sample_data, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
-sc.pp.filter_genes(sample_data, min_cells=3)
-sample_data.obs.sort_values('total_counts')
-sc.pp.filter_cells(sample_data, min_genes=100)
-
-upper_lim = np.quantile(sample_data.obs.n_genes_by_counts.values, .98)
-upper_lim = 4500
-sample_data = sample_data[sample_data.obs.n_genes_by_counts < upper_lim]
-sample_data = sample_data[sample_data.obs.pct_counts_mt < 20]
-sample_data = sample_data[sample_data.obs.pct_counts_ribo < 20]
-
-sc.pl.violin(sample_data, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
-             jitter=0.4, multi_panel=True)
-
-sc.pl.scatter(sample_data, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")
-
 ## Doublet removal
 ### With ML
 scvi.settings.dl_num_workers = 5
@@ -178,25 +152,15 @@ print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Grupo controle
 print(raw[raw.obs['pathology'] == 'CN'].obs['biosample']) # Grupo chem
 biosample = 'D20-6407' # Definir amostra
 
-def pp(biosample = biosample):
+def pp(biosample):
     # Identificar células e importar dados
     data_id = raw.obs['biosample'].isin([biosample])
     adata = sc.AnnData(X=raw[data_id, :].raw.X.copy(),
                          obs=raw[data_id, :].obs.copy(),
                          var=raw[data_id, :].raw.var.copy())
-    # QC
-    adata.var['mt'] = adata.var.index.str.startswith('Mt-')
-    adata.var['ribo'] = adata.var.index.str.startswith(('Rps', 'Rpl'))
-    adata.var['hb'] = adata.var.index.str.contains("^Hb[ab]-")
-    sc.pp.calculate_qc_metrics(adata, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
-    sc.pp.filter_genes(adata, min_cells=3)
-    adata.obs.sort_values('total_counts')
+
     # Doublet detection
-    sc.pp.filter_cells(adata, min_genes=100)
-    adata = adata[adata.obs.n_genes_by_counts < upper_lim]
-    adata = adata[adata.obs.pct_counts_mt < 20]
-    adata = adata[adata.obs.pct_counts_ribo < 20]
-    sc.pp.scrublet(adata, batch_key="batch")
+
     doublets = adata.obs[adata.obs['predicted_doublet'] == True]
     adata.obs['doublet'] = adata.obs.index.isin(doublets.index)
     adata = adata[~adata.obs.doublet]
@@ -204,8 +168,6 @@ def pp(biosample = biosample):
     adata.layers["counts"] = adata.X.copy()
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
-    # Feature Selection
-    sc.pp.highly_variable_genes(adata, n_top_genes=2000, batch_key="batch")
     # Save
     adata.write_h5ad(f"{biosample}_data.h5ad")
     return adata
@@ -215,6 +177,32 @@ for sample in raw.obs['biosample'].unique():
     out.append(pp(sample))
 
 adata = sc.concat(out)
+
+# Preprocessing
+## Quality Control
+### Mitochondrial genes
+sample_data.var['mt'] = sample_data.var.index.str.startswith('Mt-')
+### Ribosomal genes
+sample_data.var['ribo'] = sample_data.var.index.str.startswith(('Rps', 'Rpl'))
+### Hemoglobin genes
+sample_data.var['hb'] = sample_data.var.index.str.contains("^Hb[ab]-")
+
+### Calculate metrics and filter data
+sc.pp.calculate_qc_metrics(sample_data, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
+sc.pp.filter_genes(sample_data, min_cells=3)
+sample_data.obs.sort_values('total_counts')
+sc.pp.filter_cells(sample_data, min_genes=100)
+
+upper_lim = np.quantile(sample_data.obs.n_genes_by_counts.values, .98)
+upper_lim = 4500
+sample_data = sample_data[sample_data.obs.n_genes_by_counts < upper_lim]
+sample_data = sample_data[sample_data.obs.pct_counts_mt < 20]
+sample_data = sample_data[sample_data.obs.pct_counts_ribo < 20]
+
+sc.pl.violin(sample_data, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
+             jitter=0.4, multi_panel=True)
+
+sc.pl.scatter(sample_data, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")
 
 sc.pp.filter_genes(adata, min_cells = 10)
 
