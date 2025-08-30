@@ -94,40 +94,6 @@ adata = adata.to_memory()
 sc.pp.highly_variable_genes(adata, n_top_genes = 2000, batch_key="batch") # Filtrar apenas os n genes mais representativos
 sc.pl.highly_variable_genes(adata)
 
-# Dimensionality Reduction
-## Clustering
-sc.pp.neighbors(adata)
-for res in [0.02, 0.5, 2.0]:
-    sc.tl.leiden(
-        adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
-    ) # "leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"
-sc.tl.leiden(adata, flavor="igraph", n_iterations=2, resolution=0.1)
-
-## PCA
-sc.tl.pca(adata)
-sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
-sc.pl.pca(
-    adata,
-    color=['pathology'],
-    dimensions=[(0, 1), (2, 3)],
-    ncols=2,
-    size=2)
-
-## NUMAP
-sc.tl.umap(adata)
-sc.pl.umap(
-    adata,
-    color=["leiden", "pathology"],
-    wspace=0.5,
-    # Setting a smaller point size to get prevent overlap
-    size=2,
-    #legend_loc="on data"
-    )
-
-## t-SNE
-sc.tl.tsne(adata, n_pcs=20)  # usa os PCs como input
-sc.pl.tsne(adata, color="pathology")
-
 # Cell-type annotation
 ## Manual Annotation
 marker_genes = {
@@ -148,22 +114,52 @@ model
 
 ### Label
 predictions = annotate(adata, model=model, majority_voting=True)
+pred_labels_df = predictions.predicted_labels
 adata.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
-sc.pl.umap(adata, color='cell_type_celltypist', size=20, palette='tab20')
 print(adata.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
 
+# Dimensionality Reduction
+## Clustering
+sc.pp.neighbors(adata)
+for res in [0.02, 0.5, 2.0]:
+    sc.tl.leiden(
+        adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
+    ) # "leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"
 
-
-# Label Cells Types
-sc.tl.leiden(adata, resolution = 1)
 sc.tl.rank_genes_groups(adata, 'leiden')
-
-
-
-#sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
-
+sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
 markers = sc.get.rank_genes_groups_df(adata, None)
 markers = markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)]
+
+## PCA
+sc.tl.pca(adata)
+sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
+sc.pl.pca(
+    adata,
+    color=['pathology'],
+    dimensions=[(0, 1), (2, 3)],
+    ncols=2,
+    size=2)
+
+## UMAP
+sc.tl.umap(adata)
+sc.pl.umap(
+    adata,
+    color=["leiden", "pathology", "cell_type_celltypist"],
+    wspace=0.5,
+    # Setting a smaller point size to get prevent overlap
+    size=2,
+    #legend_loc="on data"
+    )
+
+## t-SNE
+sc.tl.tsne(adata, n_pcs=20)  # usa os PCs como input
+sc.pl.tsne(adata, color="pathology")
+
+
+
+
+
 markers
 
 markers_scvi = model.differential_expression(groupby = 'leiden')
