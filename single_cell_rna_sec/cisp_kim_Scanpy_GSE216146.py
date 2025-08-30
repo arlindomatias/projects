@@ -97,6 +97,10 @@ sc.pl.highly_variable_genes(adata)
 # Dimensionality Reduction
 ## Clustering
 sc.pp.neighbors(adata)
+for res in [0.02, 0.5, 2.0]:
+    sc.tl.leiden(
+        adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
+    ) # "leiden_res_0.02", "leiden_res_0.50", "leiden_res_2.00"
 sc.tl.leiden(adata, flavor="igraph", n_iterations=2, resolution=0.1)
 
 ## PCA
@@ -133,7 +137,7 @@ marker_genes = {
     "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
     "Endothelial": ["Pecam1", "Cldn5", "Flt1"]}
 
-sc.pl.dotplot(adata, marker_genes, groupby=["pathology"], standard_scale="var")
+sc.pl.dotplot(adata, marker_genes, groupby="leiden", standard_scale="var")
 
 ## Celltypist Annotation
 ### Prepare model
@@ -144,11 +148,6 @@ model
 
 ### Label
 predictions = annotate(adata, model=model, majority_voting=True)
-
-adata.obs[['majority_voting']] = predictions[['majority_voting']]
-
-
-
 adata.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
 sc.pl.umap(adata, color='cell_type_celltypist', size=20, palette='tab20')
 print(adata.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
