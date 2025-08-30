@@ -1,50 +1,37 @@
-# Importar pacotes e funções
+# Import packages
 import os
 import scanpy as sc
-import pandas as pd
 import seaborn as sns
-import scvi
 import numpy as np
-import matplotlib.pyplot as plt
 import gseapy as gp
+import pandas as pd
+from anndata import AnnData
 
-from dtale import show as dt
-from scipy.sparse import csr_matrix, issparse
-from pandas import DataFrame as pdf
 from gc import collect as clear
 from scipy import stats
 from matplotlib.pyplot import rc_context
 from celltypist import models, annotate
 
-# Ajustes
-sc.settings.set_figure_params(dpi_save = 300, facecolor = "white", format = "png") # Resolução
-os.chdir("/home/arlindo/R/wd/SC") # Diretório de trabalho
-clear()
+# Global adjusts
+sc.settings.set_figure_params(
+    dpi_save = 300,
+    facecolor = "white",
+    format = "png") # Resolução
+os.chdir("/home/arlindo/R/wd/SC") # Set working directory
 
-# Importar dados e isolar amostra
-raw = sc.read_h5ad("GSE216146_chemo_brain.h5ad", backed='r', as_sparse=()) # Importa arquivo bruto em modo de leitura
-print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Verificar IDs controle
-biosample = 'D21-2746' # Definir a amostra
-sample_id = raw.obs['biosample'].isin([biosample]) # ID selecionado
-sample_data =  sc.AnnData(X=raw[sample_id, :].raw.X.copy(),
-                         obs=raw[sample_id, :].obs.copy(),
-                         var=raw[sample_id, :].raw.var.copy())
-
-sample_data.write_h5ad(f"{biosample}_data.h5ad") # Salvar arquivo
-
-df_var = pdf(sample_data.var)  # info dos genes
-df_obs = pdf(sample_data.obs)  # info das células
-counts_dense = sample_data.raw.X.toarray() if hasattr(sample_data.raw.X, "toarray") else sample_data.raw.X
-counts_df = pd.DataFrame(counts_dense, index=sample_data.obs_names, columns=sample_data.var_names)
-
+# Import raw data
+raw = sc.read_h5ad(
+    "GSE216146_chemo_brain.h5ad",
+    backed='r',
+    as_sparse=()) # Importa arquivo bruto em modo de leitura
 clear()
 
 ##################################
 # Integration
 ## Identify interest samples
-samples = raw.obs['biosample'].unique()
-print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Grupo controle
-print(raw[raw.obs['pathology'] == 'CN'].obs['biosample']) # Grupo chem
+samples = raw.obs['biosample'].unique() # See all samples
+print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Control samples
+print(raw[raw.obs['pathology'] == 'CN'].obs['biosample']) # Chemo samples
 
 ## Select
 samples = ['D20-6407','D21-2746','D21-2747','D20-6409','D21-2750','D21-2751'] # Definir amostra
@@ -56,6 +43,22 @@ def pp(biosample):
     adata = sc.AnnData(X=raw[data_id, :].raw.X.copy(),
                          obs=raw[data_id, :].obs.copy(),
                          var=raw[data_id, :].raw.var.copy())
+    # Quality control
+    adata.var['mt'] = adata.var.index.str.startswith('Mt-')
+    adata.var['ribo'] = adata.var.index.str.startswith(('Rps', 'Rpl'))
+    adata.var['hb'] = adata.var.index.str.contains("^Hb[ab]-")
+    sc.pp.calculate_qc_metrics(adata,
+                               qc_vars=['mt', 'ribo', 'hb'],
+                               percent_top=None,
+                               log1p=False,
+                               inplace=True)
+    sc.pp.filter_genes(adata, min_cells=3)
+    adata.obs.sort_values('total_counts')
+    sc.pp.filter_cells(adata, min_genes=100)
+    upper_lim = np.quantile(adata.obs.n_genes_by_counts.values, .98)
+    adata = adata[adata.obs.n_genes_by_counts < upper_lim]
+    adata = adata[adata.obs.pct_counts_mt < 20]
+    adata = adata[adata.obs.pct_counts_ribo < 20]
     # Doublet detection
     doublets = adata.obs[adata.obs['predicted_doublet'] == True]
     adata.obs['doublet'] = adata.obs.index.isin(doublets.index)
@@ -74,27 +77,7 @@ for sample in samples:
     out.append(pp(sample))
 adata = sc.concat(out)
 
-# Preprocessing
-## Quality Control
-### Mitochondrial genes
-adata.var['mt'] = adata.var.index.str.startswith('Mt-')
-### Ribosomal genes
-adata.var['ribo'] = adata.var.index.str.startswith(('Rps', 'Rpl'))
-### Hemoglobin genes
-adata.var['hb'] = adata.var.index.str.contains("^Hb[ab]-")
-
-### Calculate metrics and filter data
-sc.pp.calculate_qc_metrics(adata, qc_vars=['mt', 'ribo', 'hb'], percent_top=None, log1p=False, inplace=True)
-sc.pp.filter_genes(adata, min_cells=3)
-adata.obs.sort_values('total_counts')
-sc.pp.filter_cells(adata, min_genes=100)
-upper_lim = np.quantile(adata.obs.n_genes_by_counts.values, .98)
-upper_lim = 4500
-adata = adata[adata.obs.n_genes_by_counts < upper_lim]
-adata = adata[adata.obs.pct_counts_mt < 20]
-adata = adata[adata.obs.pct_counts_ribo < 20]
-
-### Visualize cleaned data
+## Visualize data
 sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
              jitter=0.4, multi_panel=True)
 sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")# Save changes to a new file
@@ -104,6 +87,7 @@ sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo
 adata.obs.groupby('biosample')
 adata.write_h5ad('combined.h5ad')
 adata = sc.read_h5ad('combined.h5ad')
+del raw
 adata = adata.to_memory()
 
 # Feature Selection
@@ -112,7 +96,8 @@ sc.pl.highly_variable_genes(adata)
 
 # Dimensionality Reduction
 ## Clustering
-sc.tl.leiden(adata, flavor="igraph", n_iterations=2, resolution=0.05)
+sc.pp.neighbors(adata)
+sc.tl.leiden(adata, flavor="igraph", n_iterations=2, resolution=0.1)
 
 ## PCA
 sc.tl.pca(adata)
@@ -124,15 +109,16 @@ sc.pl.pca(
     ncols=2,
     size=2)
 
-## Neighbors/UMAP
-sc.pp.neighbors(adata)
+## NUMAP
 sc.tl.umap(adata)
 sc.pl.umap(
     adata,
     color=["leiden", "pathology"],
     wspace=0.5,
     # Setting a smaller point size to get prevent overlap
-    size=2)
+    size=2,
+    #legend_loc="on data"
+    )
 
 ## t-SNE
 sc.tl.tsne(adata, n_pcs=20)  # usa os PCs como input
@@ -147,19 +133,25 @@ marker_genes = {
     "Oligodendrocyte": ["Mog", "Plp1", "Mag"],
     "Endothelial": ["Pecam1", "Cldn5", "Flt1"]}
 
-sc.pl.dotplot(adata, marker_genes, groupby="pathology", standard_scale="var")
+sc.pl.dotplot(adata, marker_genes, groupby=["pathology"], standard_scale="var")
 
-### Celltypist Annotation
+## Celltypist Annotation
+### Prepare model
 models.download_models()
 models.models_description()
-model = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')  # Mouse
+model = models.Model.load('Mouse_Isocortex_Hippocampus.pkl')
 model
 
-predictions = annotate(sample_data, model=model, majority_voting=True)
-pred_labels_df = predictions.predicted_labels.copy()
-sample_data.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
-sc.pl.umap(sample_data, color='cell_type_celltypist', size=20, palette='tab20')
-print(sample_data.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
+### Label
+predictions = annotate(adata, model=model, majority_voting=True)
+
+adata.obs[['majority_voting']] = predictions[['majority_voting']]
+
+
+
+adata.obs['cell_type_celltypist'] = pred_labels_df.iloc[:, 2].values
+sc.pl.umap(adata, color='cell_type_celltypist', size=20, palette='tab20')
+print(adata.obs['cell_type_celltypist'].value_counts()) # Conferir contagem por tipo
 
 
 
