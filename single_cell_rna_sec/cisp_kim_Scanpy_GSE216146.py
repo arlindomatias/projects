@@ -161,13 +161,23 @@ sc.pl.umap(
     )
 
 sc.pl.tsne(adata,
-           color="pathology")
+           color=['leiden_res_0.15', 'batch', 'pathology', 'cell_type'],
+           wspace=0.5,
+           # Setting a smaller point size to get prevent overlap
+           size=2,
+           ncols=2,
+           # legend_loc="on data"
+           )
 
 sc.pl.dotplot(adata,
               marker_genes,
               groupby=['pathology'],
               standard_scale="var",
               dendrogram=True)
+
+with rc_context({"figure.figsize": (4, 4)}):
+    sc.pl.umap(adata, color="Cdkn2a")
+
 
 # Analysis
 ## Rank genes
