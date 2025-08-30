@@ -90,27 +90,27 @@ del raw
 adata = adata.to_memory()
 
 # Feature Selection
-sc.pp.highly_variable_genes(adata, n_top_genes = 2000, batch_key="batch") # Filtrar apenas os n genes mais representativos
-sc.pl.highly_variable_genes(adata)
+sc.pp.highly_variable_genes(
+    adata,
+    n_top_genes = 2000,
+    batch_key="batch") # Filtrar apenas os n genes mais representativos
 
-# Dimensionality reduction
+# Clustering and dimensionality reduction
 ## PCA
+sc.pp.pca(adata, svd_solver="arpack", use_highly_variable=True)
 sc.tl.pca(adata)
 
-## Clustering
-sc.pp.neighbors(adata)
+sc.pp.neighbors(adata) ## Neighbors
+
+## Leiden (3 resolutions)
 for res in [0.15, 0.5, 2.0]:
     sc.tl.leiden(
         adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
     ) # "leiden_res_0.15", "leiden_res_0.50", "leiden_res_2.00"
 
+sc.tl.umap(adata) ## UMAP
 
-
-## UMAP
-sc.tl.umap(adata)
-
-## t-SNE
-sc.tl.tsne(adata, n_pcs=20)
+sc.tl.tsne(adata, n_pcs=20)## t-SNE
 
 # Cell-type annotation
 ## Manual Annotation
@@ -140,6 +140,7 @@ adata.obs['cell_type']
 print(adata.obs['cell_type'].value_counts())
 
 # Data visualization
+sc.pl.highly_variable_genes(adata)
 sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
 sc.pl.pca(
     adata,
