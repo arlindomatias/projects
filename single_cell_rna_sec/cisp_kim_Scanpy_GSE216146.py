@@ -47,10 +47,10 @@ print(raw[raw.obs['pathology'] == 'PN'].obs['biosample']) # Grupo controle
 print(raw[raw.obs['pathology'] == 'CN'].obs['biosample']) # Grupo chem
 
 ## Select
-biosamples = ['D20-6407','D21-2746','D21-2747','D20-6409','D212750','D21-2751'] # Definir amostra
+samples = ['D20-6407','D21-2746','D21-2747','D20-6409','D21-2750','D21-2751'] # Definir amostra
 
 ## Create importing function
-def pp(biosample = biosample):
+def pp(biosample):
     # Identificar células e importar dados
     data_id = raw.obs['biosample'].isin([biosample])
     adata = sc.AnnData(X=raw[data_id, :].raw.X.copy(),
@@ -71,7 +71,7 @@ def pp(biosample = biosample):
 
 ## Merge individual data
 out = []
-for sample in raw.obs['biosample'].unique():
+for sample in samples:
     out.append(pp(sample))
 adata = sc.concat(out)
 
