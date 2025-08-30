@@ -1,6 +1,6 @@
 # Import packages
 import os
-import scanpy as sc
+import scanpy as sc # pp: preprocessing; tl: tools; pl: plotting
 import seaborn as sns
 import numpy as np
 import gseapy as gp
@@ -77,13 +77,12 @@ for sample in samples:
     out.append(pp(sample))
 adata = sc.concat(out)
 
-## Visualize data
+## Data evaluation
 sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'],
              jitter=0.4, multi_panel=True)
 sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_ribo")# Save changes to a new file
 
-# Save progress
-#adata.X = csr_matrix(adata.X)
+## Save progress
 adata.obs.groupby('biosample')
 adata.write_h5ad('combined.h5ad')
 adata = sc.read_h5ad('combined.h5ad')
@@ -95,6 +94,9 @@ sc.pp.highly_variable_genes(adata, n_top_genes = 2000, batch_key="batch") # Filt
 sc.pl.highly_variable_genes(adata)
 
 # Dimensionality reduction
+## PCA
+sc.tl.pca(adata)
+
 ## Clustering
 sc.pp.neighbors(adata)
 for res in [0.15, 0.5, 2.0]:
@@ -102,8 +104,7 @@ for res in [0.15, 0.5, 2.0]:
         adata, key_added=f"leiden_res_{res:4.2f}", resolution=res, flavor="igraph"
     ) # "leiden_res_0.15", "leiden_res_0.50", "leiden_res_2.00"
 
-## PCA
-sc.tl.pca(adata)
+
 
 ## UMAP
 sc.tl.umap(adata)
@@ -138,22 +139,19 @@ adata = cell_type()
 adata.obs['cell_type']
 print(adata.obs['cell_type'].value_counts())
 
-
 # Data visualization
-
-## PCA
 sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)
 sc.pl.pca(
     adata,
     color=['pathology', 'batch'],
     dimensions=[(0, 1), (0, 1)],
     ncols=2,
-    size=2)
-
+    size=2,
+)
 
 sc.pl.umap(
     adata,
-    color=['leiden_res_0.15', 'batch', 'pathology','dentate_gyrus'],
+    color=['leiden_res_0.15', 'batch', 'pathology','cell_type'],
     wspace=0.5,
     # Setting a smaller point size to get prevent overlap
     size=2,
@@ -161,8 +159,8 @@ sc.pl.umap(
     #legend_loc="on data"
     )
 
-
-sc.pl.tsne(adata, color="pathology")
+sc.pl.tsne(adata,
+           color="pathology")
 
 sc.pl.dotplot(adata,
               marker_genes,
