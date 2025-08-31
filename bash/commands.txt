@@ -1,6 +1,0 @@
-ss: socket statistics
--t > TCP
--u > UDP
--l > Listening
-
-
