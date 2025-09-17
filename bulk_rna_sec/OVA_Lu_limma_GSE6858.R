@@ -82,16 +82,7 @@ metadados_sub$grupo <- ifelse(grepl("BALB/c_OVA", metadados_sub$title),
 
 metadados_sub$grupo <- factor(metadados_sub$grupo, levels = c("Control", "OVA"))
 
-######################## Pré-Processamento ########################
-# Filtrar colunas com base nas amostras filtradas
-sample_ids <- rownames(metadados_sub)
-counts <- counts_agg[, sample_ids]
-
-# Transformar em log2(counts + 1)
-counts <- log2(counts + 1)
-
 ################### Cálculo de expressão diferencial ###################
-# Função para análise diferencial
 analise <- function(data, sample_metadata, group_column = "grupo") {
   # Cria um fator com os grupos "Control" e "OVA"
   group <- factor(sample_metadata[[group_column]], levels = c("Control", "OVA"))
@@ -110,6 +101,7 @@ analise <- function(data, sample_metadata, group_column = "grupo") {
   # Top genes
   top_genes <- topTable(fit2, coef = "OVA_vs_Control", number = Inf)
   
+  # Os rownames de top_genes já vêm do objeto 'data'
   list(
     top_genes = top_genes,
     design = design,
@@ -120,10 +112,10 @@ analise <- function(data, sample_metadata, group_column = "grupo") {
 
 # Chamada
 results <- analise(counts, metadados_sub, group_column = "grupo")
-tt <- results$top_genes # Top Table
+tt <- results$top_genes
 
 # Filter
-tt_filtered <- subset(tt, P.Value < 0.01 & abs(logFC) > 0.5)
+tt_filtered <- subset(tt, adj.P.Val < 0.05 & abs(logFC) > 0.5)
 
 # Save result table
 save_table <- function(table, file_name){
@@ -145,13 +137,13 @@ EnhancedVolcano(
   tt, 
   lab = rownames(tt),         # Labels dos pontos (nomes dos genes)
   x = 'logFC',                 # Coluna com os dados de log2 fold change
-  y = 'P.Value',             # Coluna com os dados de p-valor ajustado (FDR)
-  title = "DOX-induced gene expression change", # Título do gráfico
+  y = 'adj.P.Val',             # Coluna com os dados de p-valor ajustado (FDR)
+  title = "OVA-induced gene expression change", # Título do gráfico
   caption = paste("Total genes:", nrow(tt)),  # Legenda com número de genes
-  pCutoff = 0.001,              # Limite de p-valor (ou FDR) para destacar genes
-  FCcutoff = 1,                # Limite mínimo de log2FC para considerar relevante
+  pCutoff = 0.05,              # Limite de p-valor (ou FDR) para destacar genes
+  FCcutoff = 2,                # Limite mínimo de log2FC para considerar relevante
   pointSize = 3.0,             # Tamanho dos pontos (bolinhas) no gráfico
-  xlim = c(-2.5,2.5),             # Limites do eixo X
+  xlim = c(-3,3),             # Limites do eixo X
   ylim = c(0, 6),              # Limites do eixo Y
   col = c("gray", "#3399FF", "#009933", "#CC0000"),  # Cores: NS, Down, Up, ambos
   colAlpha = 0.5,              # Transparência dos pontos
@@ -160,7 +152,7 @@ EnhancedVolcano(
   legendIconSize = 3.5,        # Tamanho dos ícones da legenda
   drawConnectors = TRUE,       # Desenhar linhas ligando labels aos pontos
   widthConnectors = 0.5,        # Espessura das linhas que ligam os labels
-  max.overlaps = 20
+  max.overlaps = 30
 )
 
 
@@ -172,9 +164,14 @@ dev.off()
 deg_counts <- counts[rownames(counts) %in% rownames(tt_filtered), ]
 CairoPNG("heatmap.png", width = 2000, height = 2000, res = 300)
 
+ann <- data.frame(
+  Group = factor(metadados_sub$grupo)
+)
+rownames(ann) <- colnames(deg_counts)
+
 pheatmap(
   deg_counts,
-  annotation_col = gse_data$colData_filtered,
+  annotation_col = ann,
   show_rownames = FALSE,
   cluster_cols = TRUE,
   scale = "row"
