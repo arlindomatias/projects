@@ -12,3 +12,22 @@ for ID in $IDS; do
 done
 
 echo "Abstracts salvos."
+
+# Resumo estruturado
+esearch -db pubmed -query "chemobrain" -retmax 5 | esummary
+
+# Filtros de data ou autores
+esearch -db pubmed -query "chemobrain[Title] AND 2023[PDAT]" | efetch -format abstract
+
+# Gerar IDs e baixar com xargs em um único arquivo
+esearch -db pubmed -query "chemobrain" -retmax 5 | efetch -format uid | \
+xargs -I {} efetch -db pubmed -id {} -format abstract > abstracts.txt
+
+# Baixar em arquivos separados
+esearch -db pubmed -query "chemobrain" -retmax 5 | efetch -format uid | \
+xargs -I {} sh -c 'efetch -db pubmed -id {} -format abstract > abstract_{}.txt'
+
+
+
+
+
