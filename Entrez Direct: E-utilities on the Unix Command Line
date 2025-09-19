@@ -1,0 +1,14 @@
+#!/bin/bash
+
+TERM="chemobrain"
+MAX=5
+
+# Busca IDs
+IDS=$(esearch -db pubmed -query "$TERM" -retmax $MAX | efetch -format uid)
+
+# Loop para salvar cada abstract
+for ID in $IDS; do
+    efetch -db pubmed -id $ID -format abstract > "abstract_$ID.txt"
+done
+
+echo "Abstracts salvos."
