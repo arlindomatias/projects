@@ -27,6 +27,49 @@ xargs -I {} efetch -db pubmed -id {} -format abstract > abstracts.txt
 esearch -db pubmed -query "chemobrain" -retmax 5 | efetch -format uid | \
 xargs -I {} sh -c 'efetch -db pubmed -id {} -format abstract > abstract_{}.txt'
 
+#!/bin/bash
+
+# Termo de busca
+TERM="chemobrain"
+# Número máximo de artigos
+MAX=20
+# Diretório para salvar arquivos
+OUTDIR="./pubmed_abstracts"
+mkdir -p "$OUTDIR"
+
+echo "Buscando IDs para o termo: $TERM"
+
+# 1️⃣ Buscar IDs
+IDS=$(esearch -db pubmed -query "$TERM" -retmax $MAX | efetch -format uid)
+
+# Salvar IDs em arquivo temporário
+echo "$IDS" > "$OUTDIR/ids.txt"
+
+# 2️⃣ Função para baixar abstract e criar CSV
+baixar_abstract() {
+    ID=$1
+    # Salvar abstract em arquivo
+    efetch -db pubmed -id $ID -format abstract > "$OUTDIR/abstract_$ID.txt"
+
+    # Obter título, autores e data
+    SUMMARY=$(esummary -db pubmed -id $ID)
+    TITLE=$(echo "$SUMMARY" | grep -oPm1 "(?<=<Title>)[^<]+")
+    AUTHORS=$(echo "$SUMMARY" | grep -oPm1 "(?<=<AuthorList>)[^<]+")
+    DATE=$(echo "$SUMMARY" | grep -oPm1 "(?<=<PubDate>)[^<]+")
+
+    # Adicionar linha no CSV
+    echo "\"$ID\",\"$TITLE\",\"$AUTHORS\",\"$DATE\",\"$OUTDIR/abstract_$ID.txt\"" >> "$OUTDIR/pubmed_data.csv"
+}
+
+export -f baixar_abstract
+export OUTDIR
+
+echo "Baixando abstracts em paralelo..."
+# 3️⃣ Usar xargs para paralelizar
+cat "$OUTDIR/ids.txt" | xargs -n 1 -P 4 -I {} bash -c 'baixar_abstract "$@"' _ {}
+
+echo "Download concluído. CSV gerado em $OUTDIR/pubmed_data.csv"
+
 
 
 
