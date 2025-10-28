@@ -17,8 +17,7 @@ library(Cairo)
 library(DESeq2)
 library(apeglm)
 library(pathview)
-
-
+library(janitor)
 
 
 # Função para salvar tabela com verificação de extensão
@@ -37,6 +36,7 @@ options(scipen=0)
 # Baixa metadados e arquivos associados
 gse <- getGEO("GSE223269", GSEMatrix = TRUE)[[1]]
 fvarLabels(gse) <- make.names(fvarLabels(gse))
+final <- pData(gse)
 
 counts <- read_delim("GSE223269_Raw_gene_counts_matrix.txt", 
                     delim = "\t", escape_double = FALSE, 
@@ -48,5 +48,21 @@ meta <- read_csv("SraRunTable.csv")
 
 # cria uma versão simplificada só com o que interessa
 info <- meta %>%
-  select(Run, `Sample Name`, phenotype, tissue) %>%
+  select(Run, `Sample Name`, phenotype, tissue, sex) %>%
   mutate(Sample_ID = paste0("sample_", row_number()))
+
+info <- info %>%
+  janitor::clean_names()  # transforma Sample Name → sample_name
+
+genes <- counts[[1]]
+counts_matrix <- counts[ , -1]
+colnames(counts_matrix) <- info$sample_name
+counts_matrix <- cbind(SYMBOL = genes, counts_matrix)
+
+info_final <- info %>%
+  filter(tissue == "BLA")
+
+gsm_to_keep <- rownames(final)
+
+info_filtrado <- info %>%
+  filter(sample_name %in% gsm_to_keep)
