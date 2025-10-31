@@ -40,7 +40,7 @@ options(scipen=0)
 gset <- getGEO("GSE60302", GSEMatrix =TRUE, AnnotGPL=TRUE)
 if (length(gset) > 1) idx <- grep("GPL6101", attr(gset, "names")) else idx <- 1
 gset <- gset[[idx]]
-metadados <- pData(gset) # Metadados das amostras
+
 
 # make proper column names to match toptable 
 fvarLabels(gset) <- make.names(fvarLabels(gset))
@@ -49,7 +49,7 @@ fvarLabels(gset) <- make.names(fvarLabels(gset))
 fxm_stress <- "XXXXXXXXXX00000XXXXXXXXXX11111"
 ctrlxstress_f <- "00000XXXXX11111XXXXXXXXXXXXXXX"
 ctrlxstress_m <- "XXXXXXXXXXXXXXX00000XXXXX11111"
-compare <- ctrlxstress_m
+compare <- fxm_stress
 sml <- strsplit(compare, split="")[[1]]
 
 
@@ -68,7 +68,7 @@ exprs(gset) <- log2(ex) }
 
 # assign samples to groups and set up design matrix
 gs <- factor(sml)
-groups <- make.names(c("ControlMale","StressedMale"))
+groups <- make.names(c("Female","Male"))
 levels(gs) <- groups
 gset$group <- gs
 design <- model.matrix(~group + 0, gset)
@@ -77,7 +77,7 @@ colnames(design) <- levels(gs)
 gset <- gset[complete.cases(exprs(gset)), ] # skip missing values
 
 # calculate precision weights and show plot of mean-variance trend
-v <- vooma(gset, design, plot=T)
+v <- vooma(gset, design, plot=F)
 # OR weights by group
 #v <- voomaByGroup(gset, group=groups, design, plot=T, cex=0.1, pch=".", col=1:nlevels(gs))
 v$genes <- fData(gset) # attach gene annotations
@@ -162,13 +162,13 @@ v <- EnhancedVolcano(
   lab = tt$Gene.symbol,         # Labels dos pontos (nomes dos genes)
   x = 'logFC',                 # Coluna com os dados de log2 fold change
   y = 'adj.P.Val',             # Coluna com os dados de p-valor ajustado (FDR)
-  title = groups, # Título do gráfico
+  title = "Female vs Male", # Título do gráfico
   caption = paste("Total genes:", nrow(tt)),  # Legenda com número de genes
   pCutoff = 0.05,              # Limite de p-valor (ou FDR) para destacar genes
   FCcutoff = 1,                # Limite mínimo de log2FC para considerar relevante
   pointSize = 1.5,             # Tamanho dos pontos (bolinhas) no gráfico
   xlim = c(-3,3),             # Limites do eixo X
-  ylim = c(0, 3),              # Limites do eixo Y
+  ylim = c(0, 4),              # Limites do eixo Y
   col = c("gray", "#3399FF", "#009933", "#CC0000"),  # Cores: NS, Down, Up, ambos
   colAlpha = 0.5,              # Transparência dos pontos
   legendLabels = c("NS", "Log2FC", "FDR", "FDR & Log2FC"), # Legenda das cores
@@ -177,7 +177,7 @@ v <- EnhancedVolcano(
   labSize = 4,
   drawConnectors = TRUE,       # Desenhar linhas ligando labels aos pontos
   widthConnectors = 0.5,        # Espessura das linhas que ligam os labels
-  max.overlaps = 50
+  max.overlaps = 20
 )
 
 grid::grid.newpage()
@@ -211,7 +211,8 @@ deg_counts <- deg_counts %>%
 
 rownames(deg_counts) <- deg_counts$Gene.symbol
 deg_counts <- deg_counts[,2:11]
-colData <- subset(metadados, select=c("characteristics_ch1.4"))
+metadados <- pData(gset) # Metadados das amostras
+colData <- subset(metadados, select=c("group"))
 
 
 png("heatmap.png", width = 2000, height = 2000, res = 300)
@@ -244,6 +245,8 @@ dotplot(ego_total,
           showCategory = 20) +
     scale_color_gradientn(colors = c("#0099ff", "#6600ff", "#ff0000"))
 dev.off()
+
+
 
 # Preparar matriz de contagem com ENTREZ
 genes <- topTable(fit2, adjust="fdr", sort.by="B", number = Inf)
@@ -284,7 +287,7 @@ gse_GO_all <- gseGO(geneList= gene_list,
                     pvalueCutoff = 0.05, 
                     verbose = TRUE, 
                     OrgDb = "org.Rn.eg.db",
-                    pAdjustMethod = "none")
+                    pAdjustMethod = "BH")
 gse_GO_all <- pairwise_termsim(gse_GO_all) # Adicionar matriz de similaridade
 
 # Filtrar resultados da ontologia BP (Biological Process)
@@ -303,21 +306,21 @@ gse_MF@result <- gse_MF@result[gse_MF@result$ONTOLOGY == "MF", ]
 png("gsecc.png", width = 2000, height = 2000, res = 300)
 dotplot(gse_CC,
         font.size = 12,
-        showCategory=5, 
+        showCategory=10, 
         split=".sign") + facet_grid(.~.sign)
 dev.off()
 
 png("gsebp.png", width = 2000, height = 2000, res = 300)
 dotplot(gse_BP,
         font.size = 12,
-        showCategory=5, 
+        showCategory=10, 
         split=".sign") + facet_grid(.~.sign)
 dev.off()
 
 png("gsemf.png", width = 2000, height = 2000, res = 300)
 dotplot(gse_MF,
         font.size = 12,
-        showCategory=5, 
+        showCategory=10, 
         split=".sign") + facet_grid(.~.sign)
 dev.off()
 
@@ -361,17 +364,20 @@ dev.off()
 
 go_sets <- data.frame(gse_GO_all@result[["Description"]])
 
-id_go = 704
+
+id_go = 52
+png("gsea.png", width = 2500, height = 1000, res = 300)
 gseaplot2(gse_GO_all, 
           geneSetID = id_go,
           pvalue_table = TRUE,
           title = gse_GO_all$Description[id_go],
           color = c("#E495A5", "#86B875", "#7DB0DD"), 
           ES_geom = "line")
+dev.off()
 
-
-gsearank(gse_GO_all, 711, title = gse_GO_all[711, "Description"])
-
+png("gsearank52.png", width = 2500, height = 1000, res = 300)
+gsearank(gse_GO_all, id_go, title = gse_GO_all[id_go, "Description"])
+dev.off()
 
 ## GSEA KEGG (Precisa ser ENTREZ ID) INCOMPLETO
 gse_kegg <- gseKEGG(geneList = gene_list,
@@ -381,14 +387,14 @@ gse_kegg <- gseKEGG(geneList = gene_list,
                     minGSSize = 3,
                     maxGSSize = 800,
                     pvalueCutoff = 0.05,
-                    pAdjustMethod = "none",
+                    pAdjustMethod = "BH",
 )
 
 kegg_sets <- data.frame(gse_kegg@result[["Description"]])
 
 png("gsekegg.png", width = 2000, height = 2000, res = 300)
 dotplot(gse_kegg, 
-        showCategory = 10, 
+        showCategory = 20, 
         title = "Enriched Pathways" , 
         split=".sign") + facet_grid(.~.sign)
 dev.off()
@@ -424,17 +430,20 @@ ridgeplot(gse_kegg,
 ) + labs(x = "enrichment distribution")
 dev.off()
 
+png("pathview.png", width = 2000, height = 2000, res = 300)
 path <- pathview(gene.data = gene_list,
-                 pathway.id="mmu00071", 
-                 species = "mmu")
+                 pathway.id="rno01212 ", 
+                 species = "rno")
+dev.off()
 
-id = 67
+id = 37
+png("gseakegg37.png", width = 2500, height = 1000, res = 300)
 gseaplot2(gse_kegg, 
           geneSetID = id,
           pvalue_table = TRUE,
           title = gse_kegg$Description[id],
           color = c("#E495A5", "#86B875", "#7DB0DD"), 
           ES_geom = "line")
+dev.off()
 
-
-save_table(tt, 'male')
+save_table(tt, 'tt')
