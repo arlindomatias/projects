@@ -47,9 +47,13 @@ fvarLabels(gset) <- make.names(fvarLabels(gset))
 
 # group membership for all samples
 fxm_stress <- "XXXXXXXXXX00000XXXXXXXXXX11111"
+fxm_ctrl <- "11111XXXXXXXXXX00000XXXXXXXXXX"
+resxvuln_f <-"XXXXX0000011111XXXXXXXXXXXXXXX"
+resxvuln_m <- "XXXXXXXXXXXXXXXXXXXX1111100000"
 ctrlxstress_f <- "00000XXXXX11111XXXXXXXXXXXXXXX"
 ctrlxstress_m <- "XXXXXXXXXXXXXXX00000XXXXX11111"
-compare <- fxm_stress
+
+compare <- fxm_ctrl
 sml <- strsplit(compare, split="")[[1]]
 
 
@@ -148,6 +152,7 @@ par(mar=c(3,3,2,6), xpd=TRUE)
 plot(ump$layout, main="UMAP plot, nbrs=5", xlab="", ylab="", col=gs, pch=20, cex=1.5)
 legend("topright", inset=c(-0.15,0), legend=levels(gs), pch=20,
        col=1:nlevels(gs), title="Group", pt.cex=1.5)
+dev.off()
 
 ######################## Visualização ########################
 ## Volcano plot
@@ -165,10 +170,10 @@ v <- EnhancedVolcano(
   title = "Female vs Male", # Título do gráfico
   caption = paste("Total genes:", nrow(tt)),  # Legenda com número de genes
   pCutoff = 0.05,              # Limite de p-valor (ou FDR) para destacar genes
-  FCcutoff = 1,                # Limite mínimo de log2FC para considerar relevante
+  FCcutoff = 0.5,                # Limite mínimo de log2FC para considerar relevante
   pointSize = 1.5,             # Tamanho dos pontos (bolinhas) no gráfico
-  xlim = c(-3,3),             # Limites do eixo X
-  ylim = c(0, 4),              # Limites do eixo Y
+  xlim = c(-1.5,1.5),             # Limites do eixo X
+  ylim = c(0, 3),              # Limites do eixo Y
   col = c("gray", "#3399FF", "#009933", "#CC0000"),  # Cores: NS, Down, Up, ambos
   colAlpha = 0.5,              # Transparência dos pontos
   legendLabels = c("NS", "Log2FC", "FDR", "FDR & Log2FC"), # Legenda das cores
@@ -208,7 +213,7 @@ deg_counts <- deg_counts %>%
     Gene.symbol = dplyr::first(Gene.symbol),
     across(where(is.numeric), mean)
   ) %>% as.data.frame()
-
+deg_counts <- deg_counts[!is.na(deg_counts$Gene.symbol) & deg_counts$Gene.symbol != "", ]
 rownames(deg_counts) <- deg_counts$Gene.symbol
 deg_counts <- deg_counts[,2:11]
 metadados <- pData(gset) # Metadados das amostras
@@ -227,26 +232,45 @@ dev.off()
 ######################## Enrichment ######################## 
 up_genes <- tt_filtered[tt_filtered$logFC > 0, ]
 down_genes <- tt_filtered[tt_filtered$logFC < 0, ]
+ont <- c("BP", "MF", "CC")
 
-ego_total <- enrichGO(gene = tt_filtered$Gene.symbol,
-                      #universe = counts$SYMBOL,
-                      OrgDb         = org.Rn.eg.db,   
-                      keyType       = "SYMBOL",
-                      ont           = "MF", #BP, MF, CC
-                      pAdjustMethod = "none",
-                      pvalueCutoff  = 0.05)
+# Loop para rodar enrichGO para cada ontologia e guardar os resultados em uma lista nomeada
+ego_list <- lapply(ont, function(o) {
+  enrichGO(
+    gene          = tt_filtered$Gene.symbol,
+    OrgDb         = org.Rn.eg.db,
+    keyType       = "SYMBOL",
+    ont           = o,
+    pAdjustMethod = "none",
+    pvalueCutoff  = 0.05
+  )
+})
 
+# Nomear cada elemento da lista com a ontologia correspondente
+names(ego_list) <- ont
 
-# Gráficos
-png("egomf.png", width = 2000, height = 2000, res = 300)
-dotplot(ego_total,
-          x = "GeneRatio",   # confirme a capitalização correta
-          font.size = 10,
-          showCategory = 20) +
-    scale_color_gradientn(colors = c("#0099ff", "#6600ff", "#ff0000"))
-dev.off()
-
-
+# Loop para gerar os gráficos de cada ontologia
+for (o in names(ego_list)) {
+  
+  # Define o nome do arquivo de saída
+  file_name <- paste0("ego", o, ".png")
+  
+  # Abre o dispositivo gráfico
+  png(file_name, width = 2000, height = 2000, res = 300)
+  
+  # Cria o gráfico
+  print(
+    dotplot(ego_list[[o]],
+            x = "GeneRatio",
+            font.size = 10,
+            showCategory = 20) +
+      scale_color_gradientn(colors = c("#0099ff", "#6600ff", "#ff0000")) +
+      ggtitle(paste("enrichGO -", o))
+  )
+  
+  # Fecha o dispositivo gráfico
+  dev.off()
+}
 
 # Preparar matriz de contagem com ENTREZ
 genes <- topTable(fit2, adjust="fdr", sort.by="B", number = Inf)
@@ -290,39 +314,38 @@ gse_GO_all <- gseGO(geneList= gene_list,
                     pAdjustMethod = "BH")
 gse_GO_all <- pairwise_termsim(gse_GO_all) # Adicionar matriz de similaridade
 
-# Filtrar resultados da ontologia BP (Biological Process)
-gse_BP <- gse_GO_all
-gse_BP@result <- gse_BP@result[gse_BP@result$ONTOLOGY == "BP", ]
+# Criar uma lista para armazenar os objetos filtrados
+gse_list <- list()
 
-# Para CC (Cellular Component)
-gse_CC <- gse_GO_all
-gse_CC@result <- gse_CC@result[gse_CC@result$ONTOLOGY == "CC", ]
+# Loop para filtrar cada ontologia
+for (o in ont) {
+  temp <- gse_GO_all
+  temp@result <- temp@result[temp@result$ONTOLOGY == o, ]
+  gse_list[[o]] <- temp
+}
 
-# Para MF (Molecular Function)
-gse_MF <- gse_GO_all
-gse_MF@result <- gse_MF@result[gse_MF@result$ONTOLOGY == "MF", ]
-
-# Gráficos
-png("gsecc.png", width = 2000, height = 2000, res = 300)
-dotplot(gse_CC,
-        font.size = 12,
-        showCategory=10, 
-        split=".sign") + facet_grid(.~.sign)
-dev.off()
-
-png("gsebp.png", width = 2000, height = 2000, res = 300)
-dotplot(gse_BP,
-        font.size = 12,
-        showCategory=10, 
-        split=".sign") + facet_grid(.~.sign)
-dev.off()
-
-png("gsemf.png", width = 2000, height = 2000, res = 300)
-dotplot(gse_MF,
-        font.size = 12,
-        showCategory=10, 
-        split=".sign") + facet_grid(.~.sign)
-dev.off()
+# Loop para gerar dotplots de cada ontologia (BP, MF, CC)
+for (o in names(gse_list)) {
+  
+  # Define o nome do arquivo de saída
+  file_name <- paste0("gse", tolower(o), ".png")
+  
+  # Abre o dispositivo gráfico
+  png(file_name, width = 2000, height = 2000, res = 300)
+  
+  # Cria e imprime o gráfico
+  print(
+    dotplot(gse_list[[o]],
+            font.size = 12,
+            showCategory = 10,
+            split = ".sign") +
+      facet_grid(. ~ .sign) +
+      ggtitle(paste("GSEA -", o))
+  )
+  
+  # Fecha o dispositivo gráfico
+  dev.off()
+}
 
 png("cnet.png", width = 2000, height = 2000, res = 300)
 cnetplot(gse_GO_all,
@@ -362,10 +385,10 @@ emapplot(gse_GO_all,
 )
 dev.off()
 
-go_sets <- data.frame(gse_GO_all@result[["Description"]])
+go_sets <- data.frame(gse_GO_all@result)
+save_table(go_sets, 'GO')
 
-
-id_go = 52
+id_go = 'GO:0032355'
 png("gsea.png", width = 2500, height = 1000, res = 300)
 gseaplot2(gse_GO_all, 
           geneSetID = id_go,
@@ -390,7 +413,7 @@ gse_kegg <- gseKEGG(geneList = gene_list,
                     pAdjustMethod = "BH",
 )
 
-kegg_sets <- data.frame(gse_kegg@result[["Description"]])
+kegg_sets <- data.frame(gse_kegg@result)
 
 png("gsekegg.png", width = 2000, height = 2000, res = 300)
 dotplot(gse_kegg, 
@@ -430,14 +453,14 @@ ridgeplot(gse_kegg,
 ) + labs(x = "enrichment distribution")
 dev.off()
 
-png("pathview.png", width = 2000, height = 2000, res = 300)
+png("pathviewrrno04933.png", width = 2000, height = 2000, res = 300)
 path <- pathview(gene.data = gene_list,
-                 pathway.id="rno01212 ", 
+                 pathway.id="rno04933", 
                  species = "rno")
 dev.off()
 
-id = 37
-png("gseakegg37.png", width = 2500, height = 1000, res = 300)
+id = 3
+png("gseakegg3.png", width = 2500, height = 1000, res = 300)
 gseaplot2(gse_kegg, 
           geneSetID = id,
           pvalue_table = TRUE,
@@ -446,4 +469,4 @@ gseaplot2(gse_kegg,
           ES_geom = "line")
 dev.off()
 
-save_table(tt, 'tt')
+save_table(kegg_sets, 'kegg')
