@@ -100,6 +100,8 @@ tt <- topTable(fit2, adjust="fdr", sort.by="B", number = Inf)
 tt <- subset(tt, select=c("Gene.symbol","Gene.title","Gene.ID","adj.P.Val","P.Value","t","B","logFC"))
 tt <- tt[!is.na(tt$Gene.symbol) & tt$Gene.symbol != "", ]
 tt_filtered <- subset(tt, adj.P.Val < 0.05 & abs(logFC) > 0.5)
+save_table(tt, "results")
+save_table(tt_filtered, "top_genes")
 
 # Visualize and quality control test results.
 # Build histogram of P-values for all genes. Normal test
@@ -453,14 +455,14 @@ ridgeplot(gse_kegg,
 ) + labs(x = "enrichment distribution")
 dev.off()
 
-png("pathviewrrno04933.png", width = 2000, height = 2000, res = 300)
+png("pathviewrno04720.png", width = 2000, height = 2000, res = 300)
 path <- pathview(gene.data = gene_list,
-                 pathway.id="rno04933", 
+                 pathway.id="rno04720", 
                  species = "rno")
 dev.off()
 
-id = 3
-png("gseakegg3.png", width = 2500, height = 1000, res = 300)
+id = 'rno04218'
+png("gseakeggrno04218.png", width = 2500, height = 1000, res = 300)
 gseaplot2(gse_kegg, 
           geneSetID = id,
           pvalue_table = TRUE,
