@@ -19,6 +19,7 @@ library(apeglm)
 library(pathview)
 library(janitor)
 library(umap)
+library(KEGGREST)
 #### Lembrar que logFC positivo indica maior expressão no primeiro grupo
 
 # Save result table
@@ -40,20 +41,20 @@ options(scipen=0)
 gset <- getGEO("GSE60302", GSEMatrix =TRUE, AnnotGPL=TRUE)
 if (length(gset) > 1) idx <- grep("GPL6101", attr(gset, "names")) else idx <- 1
 gset <- gset[[idx]]
-
+info <- pData(gset)
 
 # make proper column names to match toptable 
 fvarLabels(gset) <- make.names(fvarLabels(gset))
 
 # group membership for all samples
+fxm_ctrl <- "00000XXXXXXXXXX11111XXXXXXXXXX"
 fxm_stress <- "XXXXXXXXXX00000XXXXXXXXXX11111"
-fxm_ctrl <- "11111XXXXXXXXXX00000XXXXXXXXXX"
 resxvuln_f <-"XXXXX0000011111XXXXXXXXXXXXXXX"
-resxvuln_m <- "XXXXXXXXXXXXXXXXXXXX1111100000"
+resxvuln_m <- "XXXXXXXXXXXXXXXXXXXX0000011111"
 ctrlxstress_f <- "00000XXXXX11111XXXXXXXXXXXXXXX"
 ctrlxstress_m <- "XXXXXXXXXXXXXXX00000XXXXX11111"
 
-compare <- fxm_ctrl
+compare <- resxvuln_m
 sml <- strsplit(compare, split="")[[1]]
 
 
@@ -72,7 +73,7 @@ exprs(gset) <- log2(ex) }
 
 # assign samples to groups and set up design matrix
 gs <- factor(sml)
-groups <- make.names(c("Female","Male"))
+groups <- make.names(c("Resistant","Vulnerable"))
 levels(gs) <- groups
 gset$group <- gs
 design <- model.matrix(~group + 0, gset)
@@ -169,7 +170,7 @@ v <- EnhancedVolcano(
   lab = tt$Gene.symbol,         # Labels dos pontos (nomes dos genes)
   x = 'logFC',                 # Coluna com os dados de log2 fold change
   y = 'adj.P.Val',             # Coluna com os dados de p-valor ajustado (FDR)
-  title = "Female vs Male", # Título do gráfico
+  title = paste0(groups[1], " vs ", groups[2]), # Título do gráfico
   caption = paste("Total genes:", nrow(tt)),  # Legenda com número de genes
   pCutoff = 0.05,              # Limite de p-valor (ou FDR) para destacar genes
   FCcutoff = 0.5,                # Limite mínimo de log2FC para considerar relevante
@@ -192,7 +193,7 @@ grid::grid.draw(v)  # desenha o gráfico do objeto
 dev.off()
 
 ## Heatmap
-top <- tt_filtered[order(tt_filtered$B, decreasing = TRUE)[1:50], ]
+top <- tt[order(tt$B, decreasing = TRUE)[1:50], ]
 rowData <- subset(top, select=c("Gene.symbol"))
 rowData[] <- lapply(rowData, function(x) {
   if(is.numeric(x)) factor(x) else x
@@ -226,15 +227,14 @@ png("heatmap.png", width = 2000, height = 2000, res = 300)
 heatmap <- pheatmap(deg_counts, 
                     annotation_col = colData, 
                     show_rownames = T, 
+                    show_colnames = F,
                     cluster_cols = F, 
                     scale = "row")
 dev.off()
 
 
 ######################## Enrichment ######################## 
-up_genes <- tt_filtered[tt_filtered$logFC > 0, ]
-down_genes <- tt_filtered[tt_filtered$logFC < 0, ]
-ont <- c("BP", "MF", "CC")
+ont <- c("BP", "MF", "CC", "ALL")
 
 # Loop para rodar enrichGO para cada ontologia e guardar os resultados em uma lista nomeada
 ego_list <- lapply(ont, function(o) {
@@ -243,7 +243,7 @@ ego_list <- lapply(ont, function(o) {
     OrgDb         = org.Rn.eg.db,
     keyType       = "SYMBOL",
     ont           = o,
-    pAdjustMethod = "none",
+    pAdjustMethod = "BH",
     pvalueCutoff  = 0.05
   )
 })
@@ -301,8 +301,9 @@ entrez_single <- as.data.frame(entrez_single)
 rownames(entrez_single) <- entrez_single$Gene.ID
 
 # Criar lista
-gene_list <- sort(entrez_single$logFC, decreasing = TRUE)
-names(gene_list) <- entrez_single$Gene.ID
+sort_entrez <- entrez_single[order(entrez_single$logFC, decreasing = TRUE), ]
+gene_list <- sort_entrez$logFC
+names(gene_list) <- sort_entrez$Gene.ID
 
 ## GSEA usando GO
 gse_GO_all <- gseGO(geneList= gene_list, 
@@ -313,7 +314,7 @@ gse_GO_all <- gseGO(geneList= gene_list,
                     pvalueCutoff = 0.05, 
                     verbose = TRUE, 
                     OrgDb = "org.Rn.eg.db",
-                    pAdjustMethod = "BH")
+                    pAdjustMethod = "none")
 gse_GO_all <- pairwise_termsim(gse_GO_all) # Adicionar matriz de similaridade
 
 # Criar uma lista para armazenar os objetos filtrados
@@ -333,7 +334,7 @@ for (o in names(gse_list)) {
   file_name <- paste0("gse", tolower(o), ".png")
   
   # Abre o dispositivo gráfico
-  png(file_name, width = 2000, height = 2000, res = 300)
+  png(file_name, width = 2000, height = 3000, res = 300)
   
   # Cria e imprime o gráfico
   print(
@@ -390,8 +391,10 @@ dev.off()
 go_sets <- data.frame(gse_GO_all@result)
 save_table(go_sets, 'GO')
 
-id_go = 'GO:0032355'
-png("gsea.png", width = 2500, height = 1000, res = 300)
+id_go = 'GO:0071394'
+go_name <- paste0(id_go, ".png")
+
+png(paste0('pathview', go_name), width = 2500, height = 1000, res = 300)
 gseaplot2(gse_GO_all, 
           geneSetID = id_go,
           pvalue_table = TRUE,
@@ -400,27 +403,23 @@ gseaplot2(gse_GO_all,
           ES_geom = "line")
 dev.off()
 
-png("gsearank52.png", width = 2500, height = 1000, res = 300)
-gsearank(gse_GO_all, id_go, title = gse_GO_all[id_go, "Description"])
-dev.off()
-
-## GSEA KEGG (Precisa ser ENTREZ ID) INCOMPLETO
+## GSEA KEGG (Precisa ser ENTREZ ID)
 gse_kegg <- gseKEGG(geneList = gene_list,
                     keyType = "kegg",
-                    nPerm = 10000,
+                    #nPerm = 10000,
                     organism = "rno",
                     minGSSize = 3,
                     maxGSSize = 800,
                     pvalueCutoff = 0.05,
-                    pAdjustMethod = "BH",
+                    pAdjustMethod = "none",
 )
 
 kegg_sets <- data.frame(gse_kegg@result)
 
-png("gsekegg.png", width = 2000, height = 2000, res = 300)
+png("gsekegg.png", width = 2000, height = 3000, res = 300)
 dotplot(gse_kegg, 
         showCategory = 20, 
-        title = "Enriched Pathways" , 
+        title = "GSEA - KEGG" , 
         split=".sign") + facet_grid(.~.sign)
 dev.off()
 
@@ -455,20 +454,23 @@ ridgeplot(gse_kegg,
 ) + labs(x = "enrichment distribution")
 dev.off()
 
-png("pathviewrno04720.png", width = 2000, height = 2000, res = 300)
+path_id <- 'rno01522'
+path_name <- paste0(path_id, ".png")
+png(paste0('pathview', path_name), width = 2000, height = 2000, res = 300)
 path <- pathview(gene.data = gene_list,
-                 pathway.id="rno04720", 
+                 pathway.id=path_id, 
                  species = "rno")
 dev.off()
 
-id = 'rno04218'
-png("gseakeggrno04218.png", width = 2500, height = 1000, res = 300)
+png(paste0('gsea', path_name), width = 2500, height = 1000, res = 300)
 gseaplot2(gse_kegg, 
-          geneSetID = id,
+          geneSetID = path_id,
           pvalue_table = TRUE,
-          title = gse_kegg$Description[id],
+          title = gse_kegg$Description[path_id],
           color = c("#E495A5", "#86B875", "#7DB0DD"), 
           ES_geom = "line")
 dev.off()
 
 save_table(kegg_sets, 'kegg')
+
+
