@@ -1,0 +1,76 @@
+#!/bin/bash
+
+TERM="chemobrain"
+MAX=5
+
+# Busca IDs
+IDS=$(esearch -db pubmed -query "$TERM" -retmax $MAX | efetch -format uid)
+
+# Loop para salvar cada abstract
+for ID in $IDS; do
+    efetch -db pubmed -id $ID -format abstract > "abstract_$ID.txt"
+done
+
+echo "Abstracts salvos."
+
+# Resumo estruturado
+esearch -db pubmed -query "chemobrain" -retmax 5 | esummary
+
+# Filtros de data ou autores
+esearch -db pubmed -query "chemobrain[Title] AND 2023[PDAT]" | efetch -format abstract
+
+# Gerar IDs e baixar com xargs em um único arquivo
+esearch -db pubmed -query "chemobrain" -retmax 5 | efetch -format uid | \
+xargs -I {} efetch -db pubmed -id {} -format abstract > abstracts.txt
+
+# Baixar em arquivos separados
+esearch -db pubmed -query "chemobrain" -retmax 5 | efetch -format uid | \
+xargs -I {} sh -c 'efetch -db pubmed -id {} -format abstract > abstract_{}.txt'
+
+#!/bin/bash
+
+# Termo de busca
+TERM="chemobrain"
+# Número máximo de artigos
+MAX=20
+# Diretório para salvar arquivos
+OUTDIR="./pubmed_abstracts"
+mkdir -p "$OUTDIR"
+
+echo "Buscando IDs para o termo: $TERM"
+
+# 1️⃣ Buscar IDs
+IDS=$(esearch -db pubmed -query "$TERM" -retmax $MAX | efetch -format uid)
+
+# Salvar IDs em arquivo temporário
+echo "$IDS" > "$OUTDIR/ids.txt"
+
+# 2️⃣ Função para baixar abstract e criar CSV
+baixar_abstract() {
+    ID=$1
+    # Salvar abstract em arquivo
+    efetch -db pubmed -id $ID -format abstract > "$OUTDIR/abstract_$ID.txt"
+
+    # Obter título, autores e data
+    SUMMARY=$(esummary -db pubmed -id $ID)
+    TITLE=$(echo "$SUMMARY" | grep -oPm1 "(?<=<Title>)[^<]+")
+    AUTHORS=$(echo "$SUMMARY" | grep -oPm1 "(?<=<AuthorList>)[^<]+")
+    DATE=$(echo "$SUMMARY" | grep -oPm1 "(?<=<PubDate>)[^<]+")
+
+    # Adicionar linha no CSV
+    echo "\"$ID\",\"$TITLE\",\"$AUTHORS\",\"$DATE\",\"$OUTDIR/abstract_$ID.txt\"" >> "$OUTDIR/pubmed_data.csv"
+}
+
+export -f baixar_abstract
+export OUTDIR
+
+echo "Baixando abstracts em paralelo..."
+# 3️⃣ Usar xargs para paralelizar
+cat "$OUTDIR/ids.txt" | xargs -n 1 -P 4 -I {} bash -c 'baixar_abstract "$@"' _ {}
+
+echo "Download concluído. CSV gerado em $OUTDIR/pubmed_data.csv"
+
+
+
+
+
