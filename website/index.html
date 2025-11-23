@@ -1,28 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estatística Descritiva</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <h1>Analisador de Dados</h1>
+<h2>Analisador Estatístico</h2>
 
-        <label for="dados">Insira os valores (separados por vírgula):</label>
-        <textarea id="dados" placeholder="ex: 10, 13, 15, 22, 9"></textarea>
+<div id="groups"></div>
 
-        <button id="calcular">Calcular Estatísticas</button>
+<button onclick="addGroup()">Adicionar grupo</button>
+<button onclick="analyze()">Calcular Estatísticas</button>
+<button onclick="requestPlots()">Gerar gráficos (via R)</button>
 
-        <div id="resultado"></div>
 
-        <div id="grafico-area">
-            <!-- Aqui você colocará os gráficos no futuro -->
-        </div>
-    </div>
+<h3>Resultados</h3>
+<div id="results"></div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
