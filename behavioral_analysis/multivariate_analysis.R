@@ -11,14 +11,14 @@ library("Hmisc")
 library("Rtsne")
 library("plotly")
 library("umap")
-library(Cairo)
-library(pheatmap)
-library(ggstatsplot)
+library("Cairo")
+library("pheatmap")
+library("ggstatsplot")
 
-dev.new(width= 15, height=15, noRStudioGD = TRUE)
+dev.new(width= 15, height=15, noRStudioGD = FALSE)
 
 #Importação dos dados
-PCA <- read.delim2("C:/Users/AsRock/Documents/PCA.txt")
+PCA <- read_csv("PCA.csv")
 
 #Converter dados em df
 PCA <- as.data.frame(PCA)
@@ -38,8 +38,10 @@ PCA_n[] <- lapply(PCA_n, function(x) {
   }
 })
 
-#Normalizar
+#Normalizar e checar
 PCA_normalizado <- scale(PCA_n)
+boxplot(PCA_normalizado)
+
 
 #PCA
 data.pca <- princomp(PCA_normalizado)
@@ -78,12 +80,12 @@ fviz_cos2(data.pca,
 fviz_pca_ind(data.pca,
              geom = "point", 
              habillage = PCA$Group,
-             #col.ind = PCA$Group,
+             col.ind = PCA$Group,
              palette = c("#3399FF", "#CC0000","#00AFBB", "#E7B800", "#FC4E07", "purple"),
              addEllipses = TRUE,
-             ellipse.level=0.95,
-             #alpha.ind = 0.5,
-             ellipse.type = "confidence", #confidence, convex, norm, euclid, t
+             ellipse.level=0.99,
+             alpha.ind = 0.75,
+             ellipse.type = "euclid", #confidence, convex, norm, euclid, t
              legend.title = "Groups"
 )
 
