@@ -1,0 +1,81 @@
+\ProvidesPackage{abnt2023}[2024/09/26 v.01]
+
+% Modificações do estilo abnt do biblatex, conforme disponível em https://github.com/abntex/biblatex-abnt, para coadunar com as normas ABNT NBR 6023/2018 e NBR 10520/2023
+
+\RequirePackage[
+backend=biber, % Define o 'biber' como o backend para gerenciamento de bibliografia
+style=abnt, % Define o estilo ABNT do biblatex, conforme disponível no repositório abntex
+ittitles, % Coloca os títulos das obras em negrito
+justify, % Justifica o texto das referências
+language=brazilian-abnt, % Define o idioma para as normas brasileiras da ABNT (regras de formatação)
+giveninits, % Usa apenas as iniciais dos nomes próprios dos autores
+uniquename=mininit, % Minimiza as diferenças de nomes quando há nomes similares (apenas iniciais diferentes)
+extrayear, % Adiciona uma letra ao ano para evitar ambiguidade em citações com o mesmo autor e ano (ex.: 2023a, 2023b)
+%sccite, % Atualiza as citações conforme a norma NBR 10520/2023
+repeatfields, % Repete alguns campos, como autor ou editor, quando houver múltiplas referências semelhantes
+noslsn, % Desativa a inserção de ponto após abreviações de sobrenomes
+natbib=true, % Ativa a compatibilidade com comandos do natbib
+doi=false, % Desativa a exibição de DOI nas referências
+defernumbers=true, % Numera as referências bibliográficas apenas na lista final, não no momento de citação
+maxbibnames=3 % Limita o número de nomes exibidos na bibliografia; usa "et al." se houver mais que 3 nomes
+]{biblatex}
+
+% Carregando o arquivo de referências
+\addbibresource{bibliografia.bib}
+
+
+% Supressão de warning inócuo
+\RequirePackage{silence}
+\WarningFilter{biblatex}{File 'brazilian-abnt-abnt.lbx' not found!}
+
+
+% Traduzindo strings específicas para ABNT
+\DefineBibliographyStrings{brazil}{  
+  editor = {org\adddot},
+  editors = {orgs\adddot}
+}
+
+% Ajustes de formatação de página, indentação, espaçamento de parágrafos e hifenização
+\makeatletter
+\xpatchcmd{\paragraph}{3.25ex \@plus1ex \@minus.2ex}{6pt plus 1pt minus 1pt}{\typeout{success!}}{\typeout{failure!}}
+\makeatother
+\RequirePackage[top=30mm,bottom=20mm,left=30mm,right=20mm,a4paper]{geometry}
+\interfootnotelinepenalty=10000
+\RequirePackage{setspace}
+\setlength\parindent{1.25cm}
+%\linespread{1.5}
+\RequirePackage[]{babel}
+
+% Define o ambiente para citações recuadas
+\renewenvironment{quote}
+  {\small\singlespacing\list{}{\leftmargin=40mm}%
+   \item\relax}
+  {\endlist}
+
+% Formata links
+\DeclareFieldFormat{url}{\text{Disponível~em}\addcolon\addspace\url{#1}\addperiod\addspace\text{Acesso}\addcolon\addspace\today}
+\urlstyle{same}
+
+
+% Formatação de títulos e títulos de livros em negrito
+\DeclareFieldFormat{title}{\textbf{#1}}
+\DeclareFieldFormat{booktitle}{\textbf{#1}}
+
+% Personalizando a exibição do campo 'titleaddon' (subtítulos sem negrito para @book) e 'booktitleaddon' (subtítulos sem negrito para @incollection)
+\DeclareFieldFormat{titleaddon}{#1}
+\renewbibmacro*{title}{%
+  \printfield{title}%
+  \iffieldundef{titleaddon}
+    {}
+    { \setunit{\addcolon\addspace}%
+      \printfield{titleaddon}}%
+}
+
+\DeclareFieldFormat{booktitleaddon}{#1}
+\renewbibmacro*{booktitle}{%
+  \printfield{booktitle}%
+  \iffieldundef{booktitleaddon}
+    {}
+    { \setunit{\addcolon\addspace}%
+      \printfield{booktitleaddon}}%
+}

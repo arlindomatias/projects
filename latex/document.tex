@@ -1,0 +1,66 @@
+\documentclass[12pt,dvipsnames,a4paper]{article}
+
+\usepackage{pdfpages} \usepackage[export]{adjustbox}
+\usepackage[sfdefault]{}
+
+
+
+\begin{document}
+	\sloppy
+	\frenchspacing 
+	\linespread{1}
+	
+	\thispagestyle{empty}
+	\begin{center}
+		{   
+			\begin{center}
+				\includegraphics[keepaspectratio,height=2cm]{fapesp.png}
+			\end{center}
+		}{Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP)\\Bolsa de Doutorado}
+		
+		\bigskip
+		
+		{Projeto de Pesquisa:}
+		
+		\bigskip
+		
+		{\bf\LARGE TÍTULO DO PROJETO}
+		
+		\bigskip
+		
+		{\noindent Candidata: Nome Sobrenome \\ Orientador: Prof. Dr. Nome Sobrenome
+			\\Instituição Sede: Nome/SIGLA}
+		
+	\end{center}
+	
+	\bigskip
+	
+	\begin{abstract}
+		\begin{linenumbers}
+			Resumo (máximo 20 linhas)
+			\paragraph{Palavras-chave:}
+			Um;
+			Dois;
+			Três;
+			Quatro.
+		\end{linenumbers}
+	\end{abstract}
+	\clearpage
+	
+	\linespread{2}
+	
+	\section{Introdução e justificativa, com síntese da bibliografia fundamental}
+	\citet{test}.
+	
+	\printbibliography[title={Referências~bibliográficas},heading=subbibliography,heading=subbibintoc,heading=subbibnumbered]
+	
+	\section{Objetivos}
+	
+	\section{Plano de trabalho e cronograma de sua execução}
+	
+	\section{Material e métodos}
+	
+	\section{Forma de análise dos resultados}
+	
+\end{document}
+

@@ -1,0 +1,2238 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{Asor2018}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=ee9e4af0098cd3369b8e44da84360eda}{%
+           family={Asor},
+           familyi={A\bibinitperiod},
+           given={Eyal},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7158f91df4d3bb896b6c66272e902ae0}{%
+           family={Ben‐Shachar},
+           familyi={B\bibinithyphendelim S\bibinitperiod},
+           given={Dorit},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{b149bd18e8db1a1c18ef1fcb04ff352d}
+      \strng{fullhash}{b149bd18e8db1a1c18ef1fcb04ff352d}
+      \strng{bibnamehash}{b149bd18e8db1a1c18ef1fcb04ff352d}
+      \strng{authorbibnamehash}{b149bd18e8db1a1c18ef1fcb04ff352d}
+      \strng{authornamehash}{b149bd18e8db1a1c18ef1fcb04ff352d}
+      \strng{authorfullhash}{b149bd18e8db1a1c18ef1fcb04ff352d}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Chemotherapy‐induced cognitive changes is a major burden on a substantial number of cancer survivors. The mechanism of this sequel is unknown. In this study, we followed long‐term effects of early in life mithramycin ( MTR ) treatment on behaviour and on the normal course of alterations of gene expression in brain. Between post‐natal days ( PND ) 7 and 10, male rats were divided into 2 groups, 1 receiving MTR (0.1 mg/kg s.c. per day) and the other receiving saline. At PND 11, frontal cortex tissue samples were dissected from 4 rats from each group. At PND 65 the remaining rats underwent behavioural tests after which all the rats were decapitated and their prefrontal cortex incised. Rats treated transiently with MTR early in life, showed impairments in spatial working memory and anxious‐like behaviour in adulthood. The immediate molecular effect of MTR was expressed in a limited number of altered genes of different unconnected trajectories, which were simultaneously distorted by the drug. In contrast, 3 months later we observed a change in the expression of more than 1000 genes that converged into specific cellular processes. Time‐dependent gene expression dynamics of several genes was significantly different between treated and untreated rats. The differences in the total number of altered genes and in gene expression trends, immediately and long after MTR treatment cessation, suggest the evolution of a new cellular homeostatic set point, which can lead to behavioural abnormalities following chemotherapy treatment.}
+      \field{issn}{0305-1870}
+      \field{journaltitle}{Clin. Exp. Pharmacol. Physiol.}
+      \field{month}{10}
+      \field{number}{10}
+      \field{title}{{Gene expression dynamics following mithramycin treatment: A possible model for post‐chemotherapy cognitive impairment}}
+      \field{volume}{45}
+      \field{year}{2018}
+      \field{pages}{1028\bibrangedash 1037}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1111/1440-1681.12975
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Clinical and Experimental Pharmacology and Physiology/2018 - Asor, Ben‐Shachar - Gene expression dynamics following mithramycin treatment A possible model for post‐chemotherapy cognitive imp.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/10.1111/1440-1681.12975
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/10.1111/1440-1681.12975
+      \endverb
+      \keyw{chemobrain,cognitive impairment,gene expression dynamics,mithramycin,rat}
+    \endentry
+    \entry{Budamagunta2024}{article}{}
+      \name{author}{7}{}{%
+        {{un=0,uniquepart=base,hash=834dc15b2673e7db3267705b4d364a6a}{%
+           family={Budamagunta},
+           familyi={B\bibinitperiod},
+           given={Vivekananda},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=63e17e24dd9b8137c976a8c361bab819}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Ashok},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7d6fa069f543f55e5236691c362b73ea}{%
+           family={Rani},
+           familyi={R\bibinitperiod},
+           given={Asha},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f4f055be30703d48db0c6d81f56fc916}{%
+           family={{Manohar Sindhu}},
+           familyi={M\bibinitperiod},
+           given={Sahana},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d9da4a23ca804cbf6aff5760349ec643}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Yang},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0dc63c1f20a797504e45e4b146f1e15c}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Daohong},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c227c8d841b3b538c9e1662620205cbc}{%
+           family={Foster},
+           familyi={F\bibinitperiod},
+           given={Thomas\bibnamedelima C.},
+           giveni={T\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{efc53d83792cb28abe0437152cc1295e}
+      \strng{fullhash}{34249b2f4700f6ff0d6ccbcfa8300e04}
+      \strng{bibnamehash}{efc53d83792cb28abe0437152cc1295e}
+      \strng{authorbibnamehash}{efc53d83792cb28abe0437152cc1295e}
+      \strng{authornamehash}{efc53d83792cb28abe0437152cc1295e}
+      \strng{authorfullhash}{34249b2f4700f6ff0d6ccbcfa8300e04}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Doxorubicin (Dox), a widely used treatment for cancer, can result in chemotherapy-induced cognitive impairments (chemobrain). Chemobrain is associated with inflammation and oxidative stress similar to aging. As such, Dox treatment has also been used as a model of aging. However, it is unclear if Dox induces brain changes similar to that observed during aging since Dox does not readily enter the brain. Rather, the mechanism for chemobrain likely involves the induction of peripheral cellular senescence and the release of senescence-associated secretory phenotype (SASP) factors and these SASP factors can enter the brain to disrupt cognition. We examined the effect of Dox on peripheral and brain markers of aging and cognition. In addition, we employed the senolytic, ABT-263, which also has limited access to the brain. The results indicate that plasma SASP factors enter the brain, activating microglia, increasing oxidative stress, and altering gene transcription. In turn, the synaptic function required for memory was reduced in response to altered redox signaling. ABT-263 prevented or limited most of the Dox-induced effects. The results emphasize a link between cognitive decline and the release of SASP factors from peripheral senescent cells and indicate some differences as well as similarities between advanced age and Dox treatment.}
+      \field{issn}{14749726}
+      \field{journaltitle}{Aging Cell}
+      \field{number}{2}
+      \field{title}{{Senolytic treatment alleviates doxorubicin-induced chemobrain}}
+      \field{volume}{23}
+      \field{year}{2024}
+      \field{pages}{1\bibrangedash 19}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1111/acel.14037
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Aging Cell/2024 - Budamagunta et al. - Senolytic treatment alleviates doxorubicin-induced chemobrain.pdf:pdf
+      \endverb
+      \keyw{chemobrain,cognition,inflammation,oxidative stress,senolytic NMDA receptor,transcription}
+    \endentry
+    \entry{Cavalier2021}{article}{}
+      \name{author}{10}{}{%
+        {{un=0,uniquepart=base,hash=a9fef8f9845bf77fd82711e07433b617}{%
+           family={Cavalier},
+           familyi={C\bibinitperiod},
+           given={Alyssa\bibnamedelima N.},
+           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f0403bbe12607691a2c115a21cfd9052}{%
+           family={Clayton},
+           familyi={C\bibinitperiod},
+           given={Zachary\bibnamedelima S.},
+           giveni={Z\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=42bca9f67867a8a4a664de3cadab3f4b}{%
+           family={Hutton},
+           familyi={H\bibinitperiod},
+           given={David\bibnamedelima A.},
+           giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=952a74db6e717e5b6fd48613625c3469}{%
+           family={Wahl},
+           familyi={W\bibinitperiod},
+           given={Devin},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c00903a32d383505540b51bf983e182e}{%
+           family={Lark},
+           familyi={L\bibinitperiod},
+           given={Daniel\bibnamedelima S.},
+           giveni={D\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f97e3792580015f1fefde6edfa3a864d}{%
+           family={Reisz},
+           familyi={R\bibinitperiod},
+           given={Julie\bibnamedelima A.},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7cfdec8494cd8bbfd43737611f3fd45a}{%
+           family={Melov},
+           familyi={M\bibinitperiod},
+           given={Simon},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8c10b1a2fca8f1e62bb7cd0b17e226e0}{%
+           family={Campisi},
+           familyi={C\bibinitperiod},
+           given={Judith},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6476c0f63c03dbf91a128cc4317e9372}{%
+           family={Seals},
+           familyi={S\bibinitperiod},
+           given={Douglas\bibnamedelima R.},
+           giveni={D\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bb5df42d4a2859171b25f13177745134}{%
+           family={LaRocca},
+           familyi={L\bibinitperiod},
+           given={Thomas\bibnamedelima J.},
+           giveni={T\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier Inc.}%
+      }
+      \strng{namehash}{1da5f28ea959fc4574b4e4e728795785}
+      \strng{fullhash}{44016620c7a9326b1f6ddf8b7ec900d7}
+      \strng{bibnamehash}{1da5f28ea959fc4574b4e4e728795785}
+      \strng{authorbibnamehash}{1da5f28ea959fc4574b4e4e728795785}
+      \strng{authornamehash}{1da5f28ea959fc4574b4e4e728795785}
+      \strng{authorfullhash}{44016620c7a9326b1f6ddf8b7ec900d7}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Cancer is one of the most common age-related diseases, and over one-third of cancer patients will receive chemotherapy. One frequently reported side effect of chemotherapeutic agents like doxorubicin (Doxo) is impaired cognitive function, commonly known as “chemotherapy-induced cognitive impairment (CICI)”, which may mimic accelerated brain aging. The biological mechanisms underlying the adverse effects of Doxo on the brain are unclear but could involve mitochondrial dysfunction. Here, we characterized brain (hippocampal) transcriptome and cognitive/behavioral changes in young mice treated with Doxo +/− the mitochondrial therapeutic MitoQ. We found that Doxo altered transcriptome/biological processes related to synaptic transmission and neurotransmitter function, neuronal health and behavior, and that these gene expression changes were: 1) similar to key differences observed in transcriptome data on brain aging; and 2) associated with related, aging-like behavioral differences, such as decreased exploration time and impaired novel object recognition test (NOR, an index of learning/memory) performance. Interestingly, MitoQ partially prevented Doxo-induced transcriptome changes in the brain, but it had no effect on behavior or cognitive function. Collectively, our findings are consistent with the idea that chemotherapeutic agents could induce neuronal/gene expression and behavioral changes similar to those that occur during brain aging. In this context, mitochondrial therapeutics may have potential as treatments for CICI at the biological level, but their effects on behavior/cognitive function require further investigation.}
+      \field{issn}{18736815}
+      \field{journaltitle}{Exp. Gerontol.}
+      \field{number}{June}
+      \field{title}{{Accelerated aging of the brain transcriptome by the common chemotherapeutic doxorubicin}}
+      \field{volume}{152}
+      \field{year}{2021}
+      \field{pages}{111451}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.exger.2021.111451
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Experimental Gerontology/2021 - Cavalier et al. - Accelerated aging of the brain transcriptome by the common chemotherapeutic doxorubicin.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.exger.2021.111451
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.exger.2021.111451
+      \endverb
+      \keyw{Accelerated aging,Aging,Brain,Chemotherapy,Cognitive function,Doxorubicin,Transcriptomics}
+    \endentry
+    \entry{DaVitoriaLobo2024}{article}{}
+      \name{author}{9}{}{%
+        {{un=0,uniquepart=base,hash=1618b42e42c9b672e8e9f4d60acea5d6}{%
+           family={{Da Vitoria Lobo}},
+           familyi={D\bibinitperiod},
+           given={Marlene},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d6b6853e470a8c6f1593b4255752928b}{%
+           family={Hardowar},
+           familyi={H\bibinitperiod},
+           given={Lydia},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a6f6fe198bd944bdced2428ca3f55d92}{%
+           family={Valentine},
+           familyi={V\bibinitperiod},
+           given={Tameille},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=40c932d64291fbe744e93b0715bc87dc}{%
+           family={Tomblin},
+           familyi={T\bibinitperiod},
+           given={Lucy},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=df49cc95a0a2955ea100be0a369ee1ad}{%
+           family={Guest},
+           familyi={G\bibinitperiod},
+           given={Charlotte},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=da237e3855d30f4391b352ee8904166f}{%
+           family={Sharma},
+           familyi={S\bibinitperiod},
+           given={Dhyana},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9f365d2dca133d335cce490a8796195f}{%
+           family={Dickins},
+           familyi={D\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=55547f38c69b32cf655aa18540ea71af}{%
+           family={Paul-Clark},
+           familyi={P\bibinithyphendelim C\bibinitperiod},
+           given={Mark},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=83912d1e85f28f0814a2e94d8f76a0ce}{%
+           family={Hulse},
+           familyi={H\bibinitperiod},
+           given={Richard\bibnamedelima Philip},
+           giveni={R\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{7adaaed7638ddca0be8ac6a85ade6c1d}
+      \strng{fullhash}{0f01179fce255aeff46c0b5e7fedd224}
+      \strng{bibnamehash}{7adaaed7638ddca0be8ac6a85ade6c1d}
+      \strng{authorbibnamehash}{7adaaed7638ddca0be8ac6a85ade6c1d}
+      \strng{authornamehash}{7adaaed7638ddca0be8ac6a85ade6c1d}
+      \strng{authorfullhash}{0f01179fce255aeff46c0b5e7fedd224}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Chemotherapy-induced neuropathic pain (CINP) is a common adverse health-related comorbidity that manifests later in life in patients with paediatric cancer. Current analgesia is ineffective, aligning closely with our lack of understanding of CINP. The aim of this study was to investigate how cisplatin induces nerve growth factor (NGF)mediated neuroinflammation and nociceptor sensitisation. In a rat model of cisplatin-induced survivorship pain, cisplatin induced a neuroinflammatory environment in the dorsal root ganglia (DRG), demonstrated by NGF-positive macrophages infiltrating into the DRG. Cisplatin-treated CD11b- and F4/80-positive macrophages expressed more NGF compared to those treated with vehicle control. Mouse primary DRG sensory neuronal cultures demonstrated enhanced NGF-dependent TRPV1-mediated nociceptor activity after cisplatin treatment. Increased nociceptor activity was also observed when cultured mouse DRG neurons were treated with conditioned medium from cisplatin-activated macrophages. Elevated nociceptor activity was inhibited in a dose-dependent manner by an NGF-neutralising antibody. Intraperitoneal administration of the NGF-neutralising antibody reduced cisplatin-induced mechanical hypersensitivity and aberrant nociceptor intraepidermal nerve fibre density. These findings identify that a monocyte- or macrophage-driven NGF–TrkA pathway is a novel analgesic target for adult survivors of childhood cancer.}
+      \field{issn}{17548411}
+      \field{journaltitle}{DMM Dis. Model. Mech.}
+      \field{number}{11}
+      \field{title}{{Early-life cisplatin exposure induces neuroinflammation and chemotherapy-induced neuropathic pain}}
+      \field{volume}{17}
+      \field{year}{2024}
+      \verb{doi}
+      \verb 10.1242/dmm.052062
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/DMM Disease Models and Mechanisms/2024 - Da Vitoria Lobo et al. - Early-life cisplatin exposure induces neuroinflammation and chemotherapy-induced neuropathic pain.pdf:pdf
+      \endverb
+      \keyw{Chemotherapy,Cisplatin,Dorsal root ganglia,Inflammation,Macrophage,Nerve growth factor,Neurodegeneration,Nociceptor,TRPV1}
+    \endentry
+    \entry{Davis1987}{article}{}
+      \name{author}{7}{}{%
+        {{un=0,uniquepart=base,hash=2c9ca7365720ba3edfa72e762eff78bc}{%
+           family={Davis},
+           familyi={D\bibinitperiod},
+           given={Bill\bibnamedelima D.},
+           giveni={B\bibinitperiod\bibinitdelim D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ee694f5698e6f87114ee16811e9accbb}{%
+           family={Fernandez},
+           familyi={F\bibinitperiod},
+           given={Francisco},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=90148c55416e23853d166a0118934d39}{%
+           family={Adams},
+           familyi={A\bibinitperiod},
+           given={Frank},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=322f6fd4d5036c8ba5d7f4adf817b002}{%
+           family={Holmes},
+           familyi={H\bibinitperiod},
+           given={Valerie},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8ab6d6cfedfad4ed80aca393504ff42b}{%
+           family={Levy},
+           familyi={L\bibinitperiod},
+           given={Joel\bibnamedelima K.},
+           giveni={J\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=46f6e54e73e3b0ebee683c89f3465909}{%
+           family={Lewis},
+           familyi={L\bibinitperiod},
+           given={Douglas},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=68deb20e7c5af1eb8b044398f512cf9b}{%
+           family={Neidhart},
+           familyi={N\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{6e0bac795b9dfc210aef4e82327eaaab}
+      \strng{fullhash}{b4eb4440aa7b5f46e273e0f6bcee1f7a}
+      \strng{bibnamehash}{6e0bac795b9dfc210aef4e82327eaaab}
+      \strng{authorbibnamehash}{6e0bac795b9dfc210aef4e82327eaaab}
+      \strng{authornamehash}{6e0bac795b9dfc210aef4e82327eaaab}
+      \strng{authorfullhash}{b4eb4440aa7b5f46e273e0f6bcee1f7a}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Among 61 cancer patients referred for neuropsychiatric consultation, 43 (71{\%}) had an organic mental disorder, and in 11 patients the disorder was consistent with dementia. Three of these cases are described in some detail to discuss the possible etiology of the organic mental disorder and to stress the importance of understanding the neurotoxic effects of chemotherapeutic agents. {©} 2011, The Academy of Psychosomatic Medicine. All rights reserved.}
+      \field{issn}{00333182}
+      \field{journaltitle}{Psychosomatics}
+      \field{month}{4}
+      \field{number}{4}
+      \field{title}{{Diagnosis of dementia in cancer patients}}
+      \field{volume}{28}
+      \field{year}{1987}
+      \field{pages}{175\bibrangedash 179}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1016/S0033-3182(87)72542-0
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Psychosomatics/1987 - Davis et al. - Diagnosis of dementia in cancer patients.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0033318287725420
+      \endverb
+      \verb{url}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0033318287725420
+      \endverb
+    \endentry
+    \entry{Gutmann2019}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=c5c9dc3566ba238f7f3fb313878fecdf}{%
+           family={Gutmann},
+           familyi={G\bibinitperiod},
+           given={David\bibnamedelima H.},
+           giveni={D\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier Inc.}%
+      }
+      \strng{namehash}{c5c9dc3566ba238f7f3fb313878fecdf}
+      \strng{fullhash}{c5c9dc3566ba238f7f3fb313878fecdf}
+      \strng{bibnamehash}{c5c9dc3566ba238f7f3fb313878fecdf}
+      \strng{authorbibnamehash}{c5c9dc3566ba238f7f3fb313878fecdf}
+      \strng{authornamehash}{c5c9dc3566ba238f7f3fb313878fecdf}
+      \strng{authorfullhash}{c5c9dc3566ba238f7f3fb313878fecdf}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{With the advent of more successful chemotherapies, the number of cancer survivors continues to increase. Unfortunately, many of these patients will exhibit long-term sequelae from their treatments, including serious cognitive deficits that impair daily function. In this issue of Cell, Gibson et al. (2019) demonstrate that chemotherapy-related cognitive impairment is orchestrated by microglia.}
+      \field{issn}{10974172}
+      \field{journaltitle}{Cell}
+      \field{number}{1-2}
+      \field{title}{{Clearing the Fog surrounding Chemobrain}}
+      \field{volume}{176}
+      \field{year}{2019}
+      \field{pages}{2\bibrangedash 4}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1016/j.cell.2018.12.027
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Cell/2019 - Gutmann - Clearing the Fog surrounding Chemobrain.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.cell.2018.12.027
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.cell.2018.12.027
+      \endverb
+    \endentry
+    \entry{Hinton1972}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=317e2f2e234eebf656aa572d48f52764}{%
+           family={Hinton},
+           familyi={H\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{317e2f2e234eebf656aa572d48f52764}
+      \strng{fullhash}{317e2f2e234eebf656aa572d48f52764}
+      \strng{bibnamehash}{317e2f2e234eebf656aa572d48f52764}
+      \strng{authorbibnamehash}{317e2f2e234eebf656aa572d48f52764}
+      \strng{authornamehash}{317e2f2e234eebf656aa572d48f52764}
+      \strng{authorfullhash}{317e2f2e234eebf656aa572d48f52764}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{01410768}
+      \field{journaltitle}{J. R. Soc. Med.}
+      \field{number}{11}
+      \field{title}{{Psychiatric Consultation in Fatal Illness}}
+      \field{volume}{65}
+      \field{year}{1972}
+      \field{pages}{1039\bibrangedash 1040}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1177/003591577206501165
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Journal of the Royal Society of Medicine/1972 - Hinton - Psychiatric Consultation in Fatal Illness.pdf:pdf
+      \endverb
+    \endentry
+    \entry{Ju2024}{article}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=79fef2fbcb4e16b4ae73b66ca031a021}{%
+           family={Ju},
+           familyi={J\bibinitperiod},
+           given={Yeongdon},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6460e21b3f4adbdb4aa472fe9f42276b}{%
+           family={Baek},
+           familyi={B\bibinitperiod},
+           given={Dong\bibnamedelima Hoon},
+           giveni={D\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2fbcdd9b0fbe1243bdbe3a2ace701fbf}{%
+           family={Choi},
+           familyi={C\bibinitperiod},
+           given={Go\bibnamedelima Eun},
+           giveni={G\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=11a30d20c39604ae4e63206779623b9f}{%
+           family={Jang},
+           familyi={J\bibinitperiod},
+           given={Aelee},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier B.V.}%
+      }
+      \strng{namehash}{ca76b26ae94d98d4819d02491f9e8ec8}
+      \strng{fullhash}{1cac93a8cf3aee8ab67529ca2114a011}
+      \strng{bibnamehash}{ca76b26ae94d98d4819d02491f9e8ec8}
+      \strng{authorbibnamehash}{ca76b26ae94d98d4819d02491f9e8ec8}
+      \strng{authornamehash}{ca76b26ae94d98d4819d02491f9e8ec8}
+      \strng{authorfullhash}{1cac93a8cf3aee8ab67529ca2114a011}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{FOLFOX is a combination of chemotherapeutic agents (5-fluorouracil, leucovorin, and oxaliplatin) and is used to treat advanced colorectal cancer (CRC) but induces various side effects. Chemotherapy-induced peripheral neuropathy (CIPN) is one of the most critical side effects that compromise the quality of life of patients with CRC undergoing FOLFOX chemotherapy. This study aimed to evaluate circulating miRNA, cortisol and catecholamine as potential biomarkers that can predict FOLFOX-CIPN symptoms. High-throughput microRNA (miRNA) sequencing was performed on the RNA circulating in the plasma of eight patients with CRC who underwent FOLFOX chemotherapy. miRNA expression profiles were evaluated according to two groups: those who underwent ≤3 cycles and those who underwent ≥6 cycles of FOLFOX chemotherapy. The identified miRNAs were validated in 27 patients with CRC who underwent FOLFOX chemotherapy using quantitative reverse transcription polymerase chain reaction. Target genes were predicted using bioinformatics and functional analyses. Cortisol and catecholamine concentrations in peripheral plasma were measured using an enzyme-linked immunosorbent assay. miR-3184-5p was differentially expressed when miRNA expression was compared between the groups that underwent ≤3 and ≥6 cycles of FOLFOX chemotherapy. Cortisol levels were significantly higher in the group that underwent ≥6 cycles of FOLFOX chemotherapy than in the group that underwent ≤3 cycles. This study suggests that miR-3184-5p may be a potential marker for predicting CIPN.}
+      \field{issn}{1879260X}
+      \field{journaltitle}{Biochim. Biophys. Acta - Mol. Basis Dis.}
+      \field{number}{5}
+      \field{title}{{Exploring microRNA patterns as biomarkers of FOLFOX chemotherapy-induced peripheral neuropathy in patients with colorectal cancer}}
+      \field{volume}{1870}
+      \field{year}{2024}
+      \field{pages}{167209}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.bbadis.2024.167209
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Biochimica et Biophysica Acta - Molecular Basis of Disease/2024 - Ju et al. - Exploring microRNA patterns as biomarkers of FOLFOX chemotherapy-induced peripheral neuropathy in patients with color.pdf:pdf;:D$\backslash$:/Mendeley/Biochimica et Biophysica Acta - Molecular Basis of Disease/2024 - Ju et al. - Exploring microRNA patterns as biomarkers of FOLFOX chemotherapy-induced peripheral neuropathy in patients with color.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.bbadis.2024.167209
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.bbadis.2024.167209
+      \endverb
+      \keyw{Biomarker,CIPN,Colorectal cancer,FOLFOX,MicroRNA}
+    \endentry
+    \entry{Kim2024}{article}{}
+      \name{author}{9}{}{%
+        {{un=0,uniquepart=base,hash=614d5896b0e9cafecce34eae741a88be}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Tae\bibnamedelima Hyun},
+           giveni={T\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e4d7755288182671445fa156a4e56352}{%
+           family={James},
+           familyi={J\bibinitperiod},
+           given={Benjamin\bibnamedelima T.},
+           giveni={B\bibinitperiod\bibinitdelim T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=aae0fe1aec16b40766fca02175e9d80e}{%
+           family={Kahn},
+           familyi={K\bibinitperiod},
+           given={Martin\bibnamedelima C.},
+           giveni={M\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b57ed3c61de94e1821a1b5e7d1b54f64}{%
+           family={Blanco-Duque},
+           familyi={B\bibinithyphendelim D\bibinitperiod},
+           given={Cristina},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6f1ffef951b15f0d6229d16a02ad09e9}{%
+           family={Abdurrob},
+           familyi={A\bibinitperiod},
+           given={Fatema},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6064d0608ecd8a14f6ac63f0915107fa}{%
+           family={Islam},
+           familyi={I\bibinitperiod},
+           given={Md\bibnamedelima Rezaul},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d10b8971e824b2d6b7b6d1ddd3ada812}{%
+           family={Lavoie},
+           familyi={L\bibinitperiod},
+           given={Nicolas\bibnamedelima S.},
+           giveni={N\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6a99dd95bca575ed4b17ba598894fedc}{%
+           family={Kellis},
+           familyi={K\bibinitperiod},
+           given={Manolis},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6996b3f089dbc728cf245e309cb232c3}{%
+           family={Tsai},
+           familyi={T\bibinitperiod},
+           given={Li\bibnamedelima Huei},
+           giveni={L\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{bc180bcd08fa4c1b32829a420785959a}
+      \strng{fullhash}{f0e25120f0cd7385ec4fb258af42b845}
+      \strng{bibnamehash}{bc180bcd08fa4c1b32829a420785959a}
+      \strng{authorbibnamehash}{bc180bcd08fa4c1b32829a420785959a}
+      \strng{authornamehash}{bc180bcd08fa4c1b32829a420785959a}
+      \strng{authorfullhash}{f0e25120f0cd7385ec4fb258af42b845}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Patients with cancer undergoing chemotherapy frequently experience a neurological condition known as chemotherapy-related cognitive impairment, or "chemobrain," which can persist for the remainder of their lives. Despite the growing prevalence of chemobrain, both its underlying mechanisms and treatment strategies remain poorly understood. Recent findings suggest that chemobrain shares several characteristics with neurodegenerative diseases, including chronic neuroinflammation, DNA damage, and synaptic loss. We investigated whether a noninvasive sensory stimulation treatment we term gamma entrainment using sensory stimuli (GENUS), which has been shown to alleviate aberrant immune and synaptic pathologies in mouse models of neurodegeneration, could also mitigate chemobrain phenotypes in mice administered a chemotherapeutic drug. When administered concurrently with the chemotherapeutic agent cisplatin, GENUS alleviated cisplatin-induced brain pathology, promoted oligodendrocyte survival, and improved cognitive function in a mouse model of chemobrain. These effects persisted for up to 105 days after GENUS treatment, suggesting the potential for long-lasting benefits. However, when administered to mice 90 days after chemotherapy, GENUS treatment only provided limited benefits, indicating that it was most effective when used to prevent the progression of chemobrain pathology. Furthermore, we demonstrated that the effects of GENUS in mice were not limited to cisplatin-induced chemobrain but also extended to methotrexate-induced chemobrain. Collectively, these findings suggest that GENUS may represent a versatile approach for treating chemobrain induced by different chemotherapy agents.}
+      \field{issn}{19466242}
+      \field{journaltitle}{Sci. Transl. Med.}
+      \field{number}{737}
+      \field{title}{{Gamma entrainment using audiovisual stimuli alleviates chemobrain pathology and cognitive impairment induced by chemotherapy in mice}}
+      \field{volume}{16}
+      \field{year}{2024}
+      \field{pages}{eadf4601}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1126/scitranslmed.adf4601
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Science translational medicine/2024 - Kim et al. - Gamma entrainment using audiovisual stimuli alleviates chemobrain pathology and cognitive impairment induced by chem.pdf:pdf
+      \endverb
+    \endentry
+    \entry{Koh2021}{article}{}
+      \name{author}{10}{}{%
+        {{un=0,uniquepart=base,hash=c5a9a82df69c5305eb714195e8e59d7e}{%
+           family={Koh},
+           familyi={K\bibinitperiod},
+           given={Yong\bibnamedelima Qin},
+           giveni={Y\bibinitperiod\bibinitdelim Q\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=299564943f821882ed8ffe0179e71068}{%
+           family={Ng},
+           familyi={N\bibinitperiod},
+           given={Ding\bibnamedelima Quan},
+           giveni={D\bibinitperiod\bibinitdelim Q\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f86e97f4b00f498417292f8da4de040d}{%
+           family={Ng},
+           familyi={N\bibinitperiod},
+           given={Chiu\bibnamedelima Chin},
+           giveni={C\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=931005d44da69e35dd239ad7e71474d2}{%
+           family={Boey},
+           familyi={B\bibinitperiod},
+           given={Adrian},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=08d03153fe5713828f264bd6bae9955b}{%
+           family={Wei},
+           familyi={W\bibinitperiod},
+           given={Meng},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cdfeeb68f5bf5d51c2a8306b4bed2441}{%
+           family={Sze},
+           familyi={S\bibinitperiod},
+           given={Siu\bibnamedelima Kwan},
+           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=afeebcd88981ccb0c17f9834a3352e97}{%
+           family={Ho},
+           familyi={H\bibinitperiod},
+           given={Han\bibnamedelima Kiat},
+           giveni={H\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6424e293b1285f190c40cdc34503e06b}{%
+           family={Acharya},
+           familyi={A\bibinitperiod},
+           given={Munjal},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=65a684000ca2e133f0b9745067e0b989}{%
+           family={Limoli},
+           familyi={L\bibinitperiod},
+           given={Charles\bibnamedelima L.},
+           giveni={C\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=17a44d0d5a35d815d67a66570622cede}{%
+           family={Chan},
+           familyi={C\bibinitperiod},
+           given={Alexandre},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{48071b594f08fefeebd97f683cb9c0a3}
+      \strng{fullhash}{ecf1caa3644843eee8c15fcfdca8bf01}
+      \strng{bibnamehash}{48071b594f08fefeebd97f683cb9c0a3}
+      \strng{authorbibnamehash}{48071b594f08fefeebd97f683cb9c0a3}
+      \strng{authornamehash}{48071b594f08fefeebd97f683cb9c0a3}
+      \strng{authorfullhash}{ecf1caa3644843eee8c15fcfdca8bf01}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Cognitive impairment due to cancer and its therapy is a major concern among cancer patients and survivors. Extracellular vesicle (EVs) composition altered by cancer and chemotherapy may affect neurological processes such as neuroplasticity, potentially impacting the cognitive abilities of cancer patients and survivors. We investigated the EV proteome of breast cancer patients with and without cognitive impairment following anthracycline-based chemotherapy from longitudinally collected plasma. EVs were cup-shaped and positive for Flotillin-1 and TSG-101. We identified 517 differentially expressed EV proteins between the cognitive impaired and non-impaired groups during and post-chemotherapy. The observed decreased expression of p2X purinoceptor, cofilin-1, ADAM 10, and dynamin-1 in the plasma EVs of the cognitive impaired group may suggest alterations in the mechanisms underlying synaptic plasticity. The reduced expression of tight junction proteins among cognitive-impaired patients may imply weakening of the blood-brain barrier. These EV protein signatures may serve as a fingerprint that underscores the mechanisms underlying cognitive impairment in cancer patients and survivors.}
+      \field{isbn}{1177271921101}
+      \field{issn}{11772719}
+      \field{journaltitle}{Biomark. Insights}
+      \field{title}{{Extracellular Vesicle Proteome of Breast Cancer Patients with and Without Cognitive Impairment Following Anthracycline-based Chemotherapy: An Exploratory Study}}
+      \field{volume}{16}
+      \field{year}{2021}
+      \verb{doi}
+      \verb 10.1177/11772719211018204
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Biomarker Insights/2021 - Koh et al. - Extracellular Vesicle Proteome of Breast Cancer Patients with and Without Cognitive Impairment Following Anthracycli.pdf:pdf
+      \endverb
+      \keyw{Extracellular vesicles,cancer,cancer-related cognitive impairment,chemotherapy,mass spectrometry}
+    \endentry
+    \entry{Kveler2018}{article}{}
+      \name{author}{16}{}{%
+        {{un=0,uniquepart=base,hash=de7f19bfdd938826d10f087759103309}{%
+           family={Kveler},
+           familyi={K\bibinitperiod},
+           given={Ksenya},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f32a1c3fc417105930bb29d0fc473b52}{%
+           family={Starosvetsky},
+           familyi={S\bibinitperiod},
+           given={Elina},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d9e2628efeeaf6da9664f38a4aeacac6}{%
+           family={Ziv-Kenet},
+           familyi={Z\bibinithyphendelim K\bibinitperiod},
+           given={Amit},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=846a6ffd44cd5d8b4cc2f67913f033aa}{%
+           family={Kalugny},
+           familyi={K\bibinitperiod},
+           given={Yuval},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a937b09b89d425b76f3eb8fc3b75e496}{%
+           family={Gorelik},
+           familyi={G\bibinitperiod},
+           given={Yuri},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=82ee88ece04eab11fd1a4025241757dd}{%
+           family={Shalev-Malul},
+           familyi={S\bibinithyphendelim M\bibinitperiod},
+           given={Gali},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=444a488e3501c0671f5edc5310cbb343}{%
+           family={Aizenbud-Reshef},
+           familyi={A\bibinithyphendelim R\bibinitperiod},
+           given={Netta},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0ce8590723498751c8958ffded04cce0}{%
+           family={Dubovik},
+           familyi={D\bibinitperiod},
+           given={Tania},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0a39724d30f2fa1827186385205adba8}{%
+           family={Briller},
+           familyi={B\bibinitperiod},
+           given={Mayan},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4b04cb15d0d768a854f0de031a941c53}{%
+           family={Campbell},
+           familyi={C\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5628658ed68acf4627cfad91c0326899}{%
+           family={Rieckmann},
+           familyi={R\bibinitperiod},
+           given={Jan\bibnamedelima C.},
+           giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f5ec18d39d9030b8ce2632db03c506b1}{%
+           family={Asbeh},
+           familyi={A\bibinitperiod},
+           given={Nuaman},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a0a69095b6a986ced34d1d239cb9bdd3}{%
+           family={Rimar},
+           familyi={R\bibinitperiod},
+           given={Doron},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f2f5c029526b36dcbf11864c14dc8574}{%
+           family={Meissner},
+           familyi={M\bibinitperiod},
+           given={Felix},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5daa37e0abf1bdc61a3e4ac70daa901a}{%
+           family={Wiser},
+           familyi={W\bibinitperiod},
+           given={Jeff},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=71b1b4504c7faf35a2d50efdacaed68c}{%
+           family={Shen-Orr},
+           familyi={S\bibinithyphendelim O\bibinitperiod},
+           given={Shai\bibnamedelima S.},
+           giveni={S\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{138afe5ae7c16017f38c4ed7f4e4ff86}
+      \strng{fullhash}{c2091fa244f91159464d75a6e06c8657}
+      \strng{bibnamehash}{138afe5ae7c16017f38c4ed7f4e4ff86}
+      \strng{authorbibnamehash}{138afe5ae7c16017f38c4ed7f4e4ff86}
+      \strng{authornamehash}{138afe5ae7c16017f38c4ed7f4e4ff86}
+      \strng{authorfullhash}{c2091fa244f91159464d75a6e06c8657}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Cytokines are signaling molecules secreted and sensed by immune and other cell types, enabling dynamic intercellular communication. Although a vast amount of data on these interactions exists, this information is not compiled, integrated or easily searchable. Here we report immuneXpresso, a text-mining engine that structures and standardizes knowledge of immune intercellular communication. We applied immuneXpresso to PubMed to identify relationships between 340 cell types and 140 cytokines across thousands of diseases. The method is able to distinguish between incoming and outgoing interactions, and it includes the effect of the interaction and the cellular function involved. These factors are assigned a confidence score and linked to the disease. By leveraging the breadth of this network, we predicted and experimentally verified previously unappreciated cell-cytokine interactions. We also built a global immune-centric view of diseases and used it to predict cytokine-disease associations. This standardized knowledgebase (http://www.immunexpresso.org) opens up new directions for interpretation of immune data and model-driven systems immunology.}
+      \field{issn}{15461696}
+      \field{journaltitle}{Nat. Biotechnol.}
+      \field{number}{7}
+      \field{title}{{Immune-centric network of cytokines and cells in disease context identified by computational mining of PubMed}}
+      \field{volume}{36}
+      \field{year}{2018}
+      \field{pages}{651\bibrangedash 659}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1038/nbt.4152
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Nature Biotechnology/2018 - Kveler et al. - Immune-centric network of cytokines and cells in disease context identified by computational mining of PubMed.pdf:pdf
+      \endverb
+    \endentry
+    \entry{Levine1978}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=ee5b48a5527112c492b795f7036c28fc}{%
+           family={Levine},
+           familyi={L\bibinitperiod},
+           given={Peter\bibnamedelima M},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=043a2e74829b65506ae679563c711e22}{%
+           family={Silberfarb},
+           familyi={S\bibinitperiod},
+           given={Peter\bibnamedelima M},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7e52c9a456599541a3d96a8bba881f63}{%
+           family={Lipowski},
+           familyi={L\bibinitperiod},
+           given={Z\bibnamedelima J},
+           giveni={Z\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{cd57f70bbc8ae73543c603e2eb7733ed}
+      \strng{fullhash}{cd57f70bbc8ae73543c603e2eb7733ed}
+      \strng{bibnamehash}{cd57f70bbc8ae73543c603e2eb7733ed}
+      \strng{authorbibnamehash}{cd57f70bbc8ae73543c603e2eb7733ed}
+      \strng{authornamehash}{cd57f70bbc8ae73543c603e2eb7733ed}
+      \strng{authorfullhash}{cd57f70bbc8ae73543c603e2eb7733ed}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0008-543X}
+      \field{journaltitle}{Cancer}
+      \field{month}{9}
+      \field{number}{3}
+      \field{title}{{Mental disorders in cancer patients.A study of 100 psychiatric referrals}}
+      \field{volume}{42}
+      \field{year}{1978}
+      \field{pages}{1385\bibrangedash 1391}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1002/1097-0142(197809)42:3<1385::AID-CNCR2820420349>3.0.CO;2-0
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Cancer/1978 - Levine, Silberfarb, Lipowski - Mental disorders in cancer patients.A study of 100 psychiatric referrals.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/10.1002/1097-0142(197809)42:3{\%}3C1385::AID-CNCR2820420349{\%}3E3.0.CO;2-0
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/10.1002/1097-0142(197809)42:3%7B%5C%%7D3C1385::AID-CNCR2820420349%7B%5C%%7D3E3.0.CO;2-0
+      \endverb
+    \endentry
+    \entry{Liang2020}{article}{}
+      \name{author}{9}{}{%
+        {{un=0,uniquepart=base,hash=7ee54dfe5a1c8024358c4aa73e90d8a8}{%
+           family={Liang},
+           familyi={L\bibinitperiod},
+           given={Lingli},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7058c714667ea4696ca1f1967ec5d0b5}{%
+           family={Wei},
+           familyi={W\bibinitperiod},
+           given={Jianxiong},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e85bf9ca8d001f80f750f9d3d3923ef7}{%
+           family={Tian},
+           familyi={T\bibinitperiod},
+           given={Lixia},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1663fc187acf29895ac85b9fc690324b}{%
+           family={{Padma Nagendra}},
+           familyi={P\bibinitperiod},
+           given={Borra\bibnamedelima V.},
+           giveni={B\bibinitperiod\bibinitdelim V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c8c5bb9f8ba6ff0df0521ea75cae9bda}{%
+           family={Gao},
+           familyi={G\bibinitperiod},
+           given={Feng},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c085572f860d99d03a37c331ee13ff68}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Jun},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3b5c468fd5abb594bd5fb4f9b6dbcc63}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Linping},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=feea3af2a585e38435861f221fae8723}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Haoruo},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=609f92984a91c9fc17671317f70fcaca}{%
+           family={Huo},
+           familyi={H\bibinitperiod},
+           given={Fu\bibnamedelima Quan},
+           giveni={F\bibinitperiod\bibinitdelim Q\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {IBRO}%
+      }
+      \strng{namehash}{4ad140b5defb724910d8d01d94f48513}
+      \strng{fullhash}{af13e47acdc5f8113f34e22d530add43}
+      \strng{bibnamehash}{4ad140b5defb724910d8d01d94f48513}
+      \strng{authorbibnamehash}{4ad140b5defb724910d8d01d94f48513}
+      \strng{authornamehash}{4ad140b5defb724910d8d01d94f48513}
+      \strng{authorfullhash}{af13e47acdc5f8113f34e22d530add43}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Paclitaxel (PTX) is one of the most commonly used chemotherapeutic agents for various cancer diseases. Despite its advantages, PTX also causes behavioral deficits related to nervous-system dysfunction, such as neuropathic pain, depression, anxiety, and cognitive impairments. The prefrontal cortex (PFC) is one of the areas that is susceptible to adverse effects of chemotherapeutic agents. Therefore, the present study was designed to examine sex-biased behavioral deficits and whole-transcriptome changes in gene expression in the PFC of mice treated with vehicle or PTX. In this study, PTX (4 mg/kg) was injected intraperitoneally four times in mice every other day. Three weeks later, both PTX-treated male and female mice developed mechanical pain hypersensitivities, as indicated by increased paw withdrawal responses to 0.16-g von Frey filaments. Additionally, PTX-treated mice exhibited depression-like symptoms, as they exhibited increased immobility times in the forced swim test. PTX also induced cognitive impairment, as demonstrated via results of a novel object recognition (NOR) test and anxiety-like behavior in an elevated plus-maze test in male mice, but not in female mice. RNA sequencing and in-depth gene expression analysis of the PFC in paired vehicle and PTX-treated mice showed that PTX induced 1755 differentially expressed genes in the PFCs of male and female mice. Quantitative real-time RT-PCR verified that some gene expressions in the medial PFC (mPFC) were related to neurotransmission. In conclusion, this study identified a sex-biased effect of PTX on PFC function and gene expression, which provides a foundation for future studies to explore the precise mechanisms of PTX-induced behavioral deficits.}
+      \field{issn}{18737544}
+      \field{journaltitle}{Neuroscience}
+      \field{title}{{Paclitaxel Induces Sex-biased Behavioral Deficits and Changes in Gene Expression in Mouse Prefrontal Cortex}}
+      \field{volume}{426}
+      \field{year}{2020}
+      \field{pages}{168\bibrangedash 178}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1016/j.neuroscience.2019.11.031
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Neuroscience/2020 - Liang et al. - Paclitaxel Induces Sex-biased Behavioral Deficits and Changes in Gene Expression in Mouse Prefrontal Cortex.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.neuroscience.2019.11.031
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.neuroscience.2019.11.031
+      \endverb
+      \keyw{cognitive impairment,depression and anxiety,neuropathic pain,paclitaxel,prefrontal cortex,sex difference}
+    \endentry
+    \entry{McElroy2020}{article}{}
+      \name{author}{7}{}{%
+        {{un=0,uniquepart=base,hash=3d0df651efabea57f131c4872b06d991}{%
+           family={McElroy},
+           familyi={M\bibinitperiod},
+           given={Taylor},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ecfd03b1f1b3dc54b72f48f1dcd725c0}{%
+           family={Brown},
+           familyi={B\bibinitperiod},
+           given={Taurean},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ab514219f5a8e9436bf9b737c92799f7}{%
+           family={Kiffer},
+           familyi={K\bibinitperiod},
+           given={Fred},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=49a19e08791a3dc09c932ff975949361}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Jing},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=19bf346b2c5762dbdd37ec7e7e830c37}{%
+           family={Byrum},
+           familyi={B\bibinitperiod},
+           given={Stephanie\bibnamedelima D.},
+           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=08315c7c8f583cb6f6bee2f5a800d67a}{%
+           family={Oberley-Deegan},
+           familyi={O\bibinithyphendelim D\bibinitperiod},
+           given={Rebecca\bibnamedelima E.},
+           giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=63293452d679f39a2aa93969b1ed9bd8}{%
+           family={Allen},
+           familyi={A\bibinitperiod},
+           given={Antiño\bibnamedelima R.},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{16e685b55b4fa2cac040160a7ee16902}
+      \strng{fullhash}{dd22667d6ca29b19d8ebabb133a9fe9e}
+      \strng{bibnamehash}{16e685b55b4fa2cac040160a7ee16902}
+      \strng{authorbibnamehash}{16e685b55b4fa2cac040160a7ee16902}
+      \strng{authornamehash}{16e685b55b4fa2cac040160a7ee16902}
+      \strng{authorfullhash}{dd22667d6ca29b19d8ebabb133a9fe9e}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Background: Chemotherapy treatment for breast cancer can induce cognitive impairments often involving oxidative stress. The brain, as a whole, is susceptible to oxidative stress due to its high-energy requirements, limited anaerobic respiration capacities, and limited antioxidant defenses. The goal of the current study was to determine if the manganese porphyrin superoxide dismutase mimetic MnTnBuOE-2-PyP (MnBuOE) could ameliorate the effects of doxorubicin, cyclophosphamide, and paclitaxel (AC-T) on mature dendrite morphology and cognitive function. Methods: Four-month-old female C57BL/6 mice received intraperitoneal injections of chemotherapy followed by subcutaneous injections of MnBuOE. Four weeks following chemotherapy treatment, mice were tested for hippocampus-dependent cognitive performance in the Morris water maze. After testing, brains were collected for Golgi staining and molecular analyses. Results: MnBuOE treatment preserved spatial memory during the Morris water-maze. MnBuOE/AC-T showed spatial memory retention during all probe trials. AC-T treatment significantly impaired spatial memory retention in the first and third probe trial (no platform). AC-T treatment decreased dendritic length in the Cornu Ammonis 1 (CA1) and dentate gyrus (DG) areas of the hippocampus while AC-T/MnBuOE maintained dendritic length. Comparative proteomic analysis revealed affected protein networks associated with cell morphology and behavior functions in both the AC-T and AC-T/MnBuOE treatment groups.}
+      \field{issn}{14220067}
+      \field{journaltitle}{Int. J. Mol. Sci.}
+      \field{number}{5}
+      \field{title}{{Assessing the effects of redox modifier MnTnBuOE-2-PyP 5+ on cognition and hippocampal physiology following doxorubicin, cyclophosphamide, and paclitaxel treatment}}
+      \field{volume}{21}
+      \field{year}{2020}
+      \verb{doi}
+      \verb 10.3390/ijms21051867
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/International Journal of Molecular Sciences/2020 - McElroy et al. - Assessing the effects of redox modifier MnTnBuOE-2-PyP 5 on cognition and hippocampal physiology following doxor.pdf:pdf
+      \endverb
+      \keyw{Cognition,Cyclophosphamide,Doxorubicin,Hippocampus,MnTnBuOE-2-PyP,Paclitaxel}
+    \endentry
+    \entry{Meadows1976}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=cc0df7d0f47df6d98bc14715293b591f}{%
+           family={Meadows},
+           familyi={M\bibinitperiod},
+           given={Anna\bibnamedelima T.},
+           giveni={A\bibinitperiod\bibinitdelim T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3d14010bd83c3e494a074592a500396e}{%
+           family={Evans},
+           familyi={E\bibinitperiod},
+           given={Audrey\bibnamedelima E.},
+           giveni={A\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{964195c428877cf6e594696d3f722bf2}
+      \strng{fullhash}{964195c428877cf6e594696d3f722bf2}
+      \strng{bibnamehash}{964195c428877cf6e594696d3f722bf2}
+      \strng{authorbibnamehash}{964195c428877cf6e594696d3f722bf2}
+      \strng{authornamehash}{964195c428877cf6e594696d3f722bf2}
+      \strng{authorfullhash}{964195c428877cf6e594696d3f722bf2}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Twenty‐three children surviving more than 5 years from the diagnosis of leukemia, lymphoma, or malignant histiocytosis were evaluated for clinical evidence of central nervous system disease. Severe impairment, consisting of seizures, paraplegia, and dementia was present in 4, all of whom received methotrexate (MTX) and other agents for 2 to 7 years. Brain biopsies in 3 of these children showed white‐matter gliosis and no evidence of viral or other infections or leukemic infiltrates. Of the remaining children, 10/19 were found to have mild clinical or EEG abnormalities. All had received i.v. MTX with other drugs for 2–6 years; 5 did not receive cranial irradiation. Common to all impaired patients was the administration of intravenous methotrexate in relatively high doses over a prolonged period of time. Impairment in nervous system function may present as a spectrum of deficiencies, with the most severe resulting in death, or as in the 4 patients described here, profound dementia and dependence. Less dramatic changes in functioning may, however, result from various combinations of chemotherapy and radiation therapy. Methods of assessing their etiology and impact on survivors need now to be devised. Copyright {©} 1976 American Cancer Society}
+      \field{issn}{10970142}
+      \field{journaltitle}{Cancer}
+      \field{number}{2 S}
+      \field{title}{{Effects of chemotherapy on the central nervous system—A study of parenteral methotrexate in long‐term survivors of leukemia and lymphoma in childhood}}
+      \field{volume}{37}
+      \field{year}{1976}
+      \field{pages}{1079\bibrangedash 1085}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1002/1097-0142(197602)37:2+<1079::AID-CNCR2820370815>3.0.CO;2-D
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Cancer/1976 - Meadows, Evans - Effects of chemotherapy on the central nervous system—A study of parenteral methotrexate in long‐term survivors.pdf:pdf
+      \endverb
+    \endentry
+    \entry{Mosquera2023}{article}{}
+      \name{author}{23}{}{%
+        {{un=0,uniquepart=base,hash=1dbc8d37af785010c3023d187b7d4a99}{%
+           family={Mosquera},
+           familyi={M\bibinitperiod},
+           given={Jose\bibnamedelima Verdezoto},
+           giveni={J\bibinitperiod\bibinitdelim V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=52a22f5412cdc39ce6f7b2d0335119a3}{%
+           family={Auguste},
+           familyi={A\bibinitperiod},
+           given={Gaëlle},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bda29a45a8a701586d544b177a8c39fb}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={Doris},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=133d4e826b71d134668e7dbf693c07f8}{%
+           family={Turner},
+           familyi={T\bibinitperiod},
+           given={Adam\bibnamedelima W.},
+           giveni={A\bibinitperiod\bibinitdelim W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0ffd1dce1b6a2e5b881f60a6df639153}{%
+           family={Hodonsky},
+           familyi={H\bibinitperiod},
+           given={Chani\bibnamedelima J.},
+           giveni={C\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=48f18a6b0ae250c9af3100db5d1cabce}{%
+           family={Alvarez-Yela},
+           familyi={A\bibinithyphendelim Y\bibinitperiod},
+           given={Astrid\bibnamedelima Catalina},
+           giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=16b85ec9e4792d99ddd8c40acee336ad}{%
+           family={Song},
+           familyi={S\bibinitperiod},
+           given={Yipei},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=770e7c711019da51108553899d1b9825}{%
+           family={Cheng},
+           familyi={C\bibinitperiod},
+           given={Qi},
+           giveni={Q\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=49c44b0321b03f3773518b4c0c13b13b}{%
+           family={{Lino Cardenas}},
+           familyi={L\bibinitperiod},
+           given={Christian\bibnamedelima L.},
+           giveni={C\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7ee8114e4f5c8ab5f12ff179dcdb8647}{%
+           family={Theofilatos},
+           familyi={T\bibinitperiod},
+           given={Konstantinos},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7220b986adab8f4f31cb74dadac61d4f}{%
+           family={Bos},
+           familyi={B\bibinitperiod},
+           given={Maxime},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ca60c637d0d48b69fe5572741cc29486}{%
+           family={Kavousi},
+           familyi={K\bibinitperiod},
+           given={Maryam},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ea9c0c00d218f65283e2d15509b76b0b}{%
+           family={Peyser},
+           familyi={P\bibinitperiod},
+           given={Patricia\bibnamedelima A.},
+           giveni={P\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2bbbff98e8f87dd02bf0f7271fbe956b}{%
+           family={Mayr},
+           familyi={M\bibinitperiod},
+           given={Manuel},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c79517c2b7bed5571ee4784f4047e694}{%
+           family={Kovacic},
+           familyi={K\bibinitperiod},
+           given={Jason\bibnamedelima C.},
+           giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=562b36c20da3ed7b1bed7b18b566892e}{%
+           family={Björkegren},
+           familyi={B\bibinitperiod},
+           given={Johan\bibnamedelima L.M.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bf7179107de184afd0a4da907c0fe462}{%
+           family={Malhotra},
+           familyi={M\bibinitperiod},
+           given={Rajeev},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4b650e4589812d8d77656298eb69275a}{%
+           family={Stukenberg},
+           familyi={S\bibinitperiod},
+           given={P.\bibnamedelimi Todd},
+           giveni={P\bibinitperiod\bibinitdelim T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ba190f22533f0e329497aaac04ce3e43}{%
+           family={Finn},
+           familyi={F\bibinitperiod},
+           given={Aloke\bibnamedelima V.},
+           giveni={A\bibinitperiod\bibinitdelim V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2b95f25b77b21cea47aa4ee00f79c917}{%
+           family={Laan},
+           familyi={L\bibinitperiod},
+           given={Sander\bibnamedelima W.},
+           giveni={S\bibinitperiod\bibinitdelim W\bibinitperiod},
+           givenun=0,
+           prefix={van\bibnamedelima der},
+           prefixi={v\bibinitperiod\bibinitdelim d\bibinitperiod},
+           prefixun=0}}%
+        {{un=0,uniquepart=base,hash=2bbe278773384d86394eb8f0fce50d11}{%
+           family={Zang},
+           familyi={Z\bibinitperiod},
+           given={Chongzhi},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2e4f4a6afb4fc78f62ece95bc41e7f53}{%
+           family={Sheffield},
+           familyi={S\bibinitperiod},
+           given={Nathan\bibnamedelima C.},
+           giveni={N\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1e29d4f044dc4baff5cf9ca2d489c118}{%
+           family={Miller},
+           familyi={M\bibinitperiod},
+           given={Clint\bibnamedelima L.},
+           giveni={C\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{56b5afd57eae7f990109757085830ff6}
+      \strng{fullhash}{cde215205f1da54b6f6725c5c83a1dfc}
+      \strng{bibnamehash}{56b5afd57eae7f990109757085830ff6}
+      \strng{authorbibnamehash}{56b5afd57eae7f990109757085830ff6}
+      \strng{authornamehash}{56b5afd57eae7f990109757085830ff6}
+      \strng{authorfullhash}{cde215205f1da54b6f6725c5c83a1dfc}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Coronary artery disease (CAD) is characterized by atherosclerotic plaque formation in the arterial wall. CAD progression involves complex interactions and phenotypic plasticity among vascular and immune cell lineages. Single-cell RNA-seq (scRNA-seq) studies have highlighted lineage-specific transcriptomic signatures, but human cell phenotypes remain controversial. Here, we perform an integrated meta-analysis of 22 scRNA-seq libraries to generate a comprehensive map of human atherosclerosis with 118,578 cells. Besides characterizing granular cell-type diversity and communication, we leverage this atlas to provide insights into smooth muscle cell (SMC) modulation. We integrate genome-wide association study data and uncover a critical role for modulated SMC phenotypes in CAD, myocardial infarction, and coronary calcification. Finally, we identify fibromyocyte/fibrochondrogenic SMC markers (LTBP1 and CRTAC1) as proxies of atherosclerosis progression and validate these through omics and spatial imaging analyses. Altogether, we create a unified atlas of human atherosclerosis informing cell state-specific mechanistic and translational studies of cardiovascular diseases.}
+      \field{issn}{22111247}
+      \field{journaltitle}{Cell Rep.}
+      \field{number}{11}
+      \field{title}{{Integrative single-cell meta-analysis reveals disease-relevant vascular cell states and markers in human atherosclerosis}}
+      \field{volume}{42}
+      \field{year}{2023}
+      \verb{doi}
+      \verb 10.1016/j.celrep.2023.113380
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Cell Reports/2023 - Mosquera et al. - Integrative single-cell meta-analysis reveals disease-relevant vascular cell states and markers in human athero.pdf:pdf
+      \endverb
+      \keyw{CP: Genomics,atherosclerosis,coronary artery disease,genome-wide association studies,integration analyses,single cell RNA-seq,smooth muscle cells}
+    \endentry
+    \entry{Naratadam2024}{article}{}
+      \name{author}{8}{}{%
+        {{un=0,uniquepart=base,hash=b1aac77b53020a5d2924134810b2ea8a}{%
+           family={Naratadam},
+           familyi={N\bibinitperiod},
+           given={George\bibnamedelima T.},
+           giveni={G\bibinitperiod\bibinitdelim T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e75b6542bcaa929d3e153b13c661ba9d}{%
+           family={Mecklenburg},
+           familyi={M\bibinitperiod},
+           given={Jennifer},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c1e653ffacf9535dfd07309dc92724d1}{%
+           family={Shein},
+           familyi={S\bibinitperiod},
+           given={Sergey\bibnamedelima A.},
+           giveni={S\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7fca0627c41ce24ebfdc0b4fa8cf4bf6}{%
+           family={Zou},
+           familyi={Z\bibinitperiod},
+           given={Yi},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=433197463cd784b0b5469e2c90657de7}{%
+           family={Lai},
+           familyi={L\bibinitperiod},
+           given={Zhao},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=18ac28867978a2a339d67992e42cc4d5}{%
+           family={Tumanov},
+           familyi={T\bibinitperiod},
+           given={Alexei\bibnamedelima V.},
+           giveni={A\bibinitperiod\bibinitdelim V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=eef9f50422bc9fa61cd49792adbed9be}{%
+           family={Price},
+           familyi={P\bibinitperiod},
+           given={Theodore\bibnamedelima J.},
+           giveni={T\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=138cff73f23b634453da7a6e7e59884d}{%
+           family={Akopian},
+           familyi={A\bibinitperiod},
+           given={Armen\bibnamedelima N.},
+           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Nature Publishing Group UK}%
+      }
+      \strng{namehash}{01cff18b1509ae69bff8aad8b5f61be3}
+      \strng{fullhash}{6d00597b42840c1af576108c0f4d5f0b}
+      \strng{bibnamehash}{01cff18b1509ae69bff8aad8b5f61be3}
+      \strng{authorbibnamehash}{01cff18b1509ae69bff8aad8b5f61be3}
+      \strng{authornamehash}{01cff18b1509ae69bff8aad8b5f61be3}
+      \strng{authorfullhash}{6d00597b42840c1af576108c0f4d5f0b}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This study investigated the time course of gene expression changes during the progression of persistent painful neuropathy caused by paclitaxel (PTX) in male and female mouse hindpaws and dorsal root ganglia (DRG). Bulk RNA-seq was used to examine these gene expression changes at 1, 16, and 31 days post-last PTX. At these time points, differentially expressed genes (DEGs) were predominantly related to the reduction or increase in epithelial, skin, bone, and muscle development and to angiogenesis, myelination, axonogenesis, and neurogenesis. These processes are accompanied by the regulation of DEGs related to the cytoskeleton, extracellular matrix organization, and cellular energy production. This gene plasticity during the progression of persistent painful neuropathy could be interpreted as a biological process linked to tissue regeneration/degeneration. In contrast, gene plasticity related to immune processes was minimal at 1–31 days after PTX. It was also noted that despite similarities in biological processes and pain chronicity between males and females, specific DEGs differed dramatically according to sex. The main conclusions of this study are that gene expression plasticity in hindpaw and DRG during PTX neuropathy progression similar to tissue regeneration and degeneration, minimally affects immune system processes and is heavily sex-dependent at the individual gene level.}
+      \field{isbn}{0123456789}
+      \field{issn}{20452322}
+      \field{journaltitle}{Sci. Rep.}
+      \field{number}{1}
+      \field{title}{{Degenerative and regenerative peripheral processes are associated with persistent painful chemotherapy-induced neuropathies in males and females}}
+      \field{volume}{14}
+      \field{year}{2024}
+      \field{pages}{1\bibrangedash 16}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.1038/s41598-024-68485-6
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Scientific Reports/2024 - Naratadam et al. - Degenerative and regenerative peripheral processes are associated with persistent painful chemotherapy-induced.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1038/s41598-024-68485-6
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1038/s41598-024-68485-6
+      \endverb
+      \keyw{Bulk RNA sequencing,DRG,Degeneration,Immune system,Paclitaxel,Painful neuropathy,Persistent chronic pain,Regeneration,Sex difference}
+    \endentry
+    \entry{Navia-Pelaez2021}{article}{}
+      \name{author}{21}{}{%
+        {{un=0,uniquepart=base,hash=21d6e4560abe97551e5a8fadca77b57d}{%
+           family={Navia-Pelaez},
+           familyi={N\bibinithyphendelim P\bibinitperiod},
+           given={Juliana\bibnamedelima M.},
+           giveni={J\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2add103099dd47e7efe4246cd95a88d9}{%
+           family={Choi},
+           familyi={C\bibinitperiod},
+           given={Soo\bibnamedelima Ho},
+           giveni={S\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2ad49b7716e468a381645fc34803d4b3}{%
+           family={{dos Santos Aggum Capettini}},
+           familyi={d\bibinitperiod},
+           given={Luciano},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5e9b9dbbd8677c3e970a5335f3d38ddc}{%
+           family={Xia},
+           familyi={X\bibinitperiod},
+           given={Yining},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0f2223f8a3b7b0145de265f79f1a013e}{%
+           family={Gonen},
+           familyi={G\bibinitperiod},
+           given={Ayelet},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=43c20c71dce14e38742bcf2d1899b9db}{%
+           family={Agatisa-Boyle},
+           familyi={A\bibinithyphendelim B\bibinitperiod},
+           given={Colin},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=80e8168c7d18f49c440b446949f5decd}{%
+           family={Delay},
+           familyi={D\bibinitperiod},
+           given={Lauriane},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=150b943ffb9601c1c8add3115d0ebd95}{%
+           family={Santos},
+           familyi={S\bibinitperiod},
+           given={Gilson\bibnamedelima Gonçalves},
+           giveni={G\bibinitperiod\bibinitdelim G\bibinitperiod},
+           givenun=0,
+           prefix={dos},
+           prefixi={d\bibinitperiod},
+           prefixun=0}}%
+        {{un=0,uniquepart=base,hash=3c0f4b32b8bd3e097f41df53e75f61b4}{%
+           family={Catroli},
+           familyi={C\bibinitperiod},
+           given={Glaucilene\bibnamedelima F.},
+           giveni={G\bibinitperiod\bibinitdelim F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=358372f73d7624ca26aea1fc21aa5ee8}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Jungsu},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=aa7529a9857368db4f1c216dcd94a43d}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Jenny\bibnamedelima W.},
+           giveni={J\bibinitperiod\bibinitdelim W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ec90d87bb005ee5dfcbb81f40dffc1f9}{%
+           family={Saylor},
+           familyi={S\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=90f63b02913fdae2c4ff73020e748e13}{%
+           family={Winkels},
+           familyi={W\bibinitperiod},
+           given={Holger},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cb81f28e06ac92e4422089bb2c553192}{%
+           family={Durant},
+           familyi={D\bibinitperiod},
+           given={Christopher\bibnamedelima P.},
+           giveni={C\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cc88da718a14074833a5ce8da47756de}{%
+           family={Ghosheh},
+           familyi={G\bibinitperiod},
+           given={Yanal},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8d8ca19a441b53e224af52d3eb7086cb}{%
+           family={Beaton},
+           familyi={B\bibinitperiod},
+           given={Graham},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9dca16dac542bc586014fd52f6a974cd}{%
+           family={Ley},
+           familyi={L\bibinitperiod},
+           given={Klaus},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=09261cd03a027ae139018aaa70fb9d7d}{%
+           family={Kufareva},
+           familyi={K\bibinitperiod},
+           given={Irina},
+           giveni={I\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d2b39f205b5d87999564caa0f23f96c5}{%
+           family={Corr},
+           familyi={C\bibinitperiod},
+           given={Maripat},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c0c980aa8c815308aa80561d00c0976b}{%
+           family={Yaksh},
+           familyi={Y\bibinitperiod},
+           given={Tony\bibnamedelima L.},
+           giveni={T\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7f70fdd5311a90fd421d39f83acdad48}{%
+           family={Miller},
+           familyi={M\bibinitperiod},
+           given={Yury\bibnamedelima I.},
+           giveni={Y\bibinitperiod\bibinitdelim I\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{e4d6b6d5bd8f980fe3d4735a5839a4eb}
+      \strng{fullhash}{07c063e126e5905dcce1b1926ed579ec}
+      \strng{bibnamehash}{e4d6b6d5bd8f980fe3d4735a5839a4eb}
+      \strng{authorbibnamehash}{e4d6b6d5bd8f980fe3d4735a5839a4eb}
+      \strng{authornamehash}{e4d6b6d5bd8f980fe3d4735a5839a4eb}
+      \strng{authorfullhash}{07c063e126e5905dcce1b1926ed579ec}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Neuroinflammation is a major component in the transition to and perpetuation of neuropathic pain states. Spinal neuroinflammation involves activation of TLR4, localized to enlarged, cholesterol-enriched lipid rafts, designated here as inflammarafts. Conditional deletion of cholesterol transporters ABCA1 and ABCG1 in microglia, leading to inflammaraft formation, induced tactile allodynia in naive mice. The apoA-I binding protein (AIBP) facilitated cholesterol depletion from inflammarafts and reversed neuropathic pain in a model of chemotherapy-induced peripheral neuropathy (CIPN) in wild-type mice, but AIBP failed to reverse allodynia in mice with ABCA1/ABCG1-deficient microglia, suggesting a cholesterol-dependent mechanism. An AIBP mutant lacking the TLR4-binding domain did not bind microglia or reverse CIPN allodynia. The long-lasting therapeutic effect of a single AIBP dose in CIPN was associated with anti-inflammatory and cholesterol metabolism reprogramming and reduced accumulation of lipid droplets in microglia. These results suggest a cholesterol-driven mechanism of regulation of neuropathic pain by controlling the TLR4 inflammarafts and gene expression program in microglia and blocking the perpetuation of neuroinflammation.}
+      \field{issn}{15409538}
+      \field{journaltitle}{J. Exp. Med.}
+      \field{number}{7}
+      \field{title}{{Normalization of cholesterol metabolism in spinal microglia alleviates neuropathic pain}}
+      \field{volume}{218}
+      \field{year}{2021}
+      \verb{doi}
+      \verb 10.1084/jem.20202059
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Journal of Experimental Medicine/2021 - Navia-Pelaez et al. - Normalization of cholesterol metabolism in spinal microglia alleviates neuropathic pain.pdf:pdf
+      \endverb
+    \endentry
+    \entry{Oxman1980}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=dc542c92a8f574126f16a84c3ab543e3}{%
+           family={Oxman},
+           familyi={O\bibinitperiod},
+           given={T.\bibnamedelimi E.},
+           giveni={T\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d31fd542ac704b686de9605b30ed51e5}{%
+           family={Silberfarb},
+           familyi={S\bibinitperiod},
+           given={P.\bibnamedelimi M.},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{a89a2385080da4e2ea2eebee6d9c43c8}
+      \strng{fullhash}{a89a2385080da4e2ea2eebee6d9c43c8}
+      \strng{bibnamehash}{a89a2385080da4e2ea2eebee6d9c43c8}
+      \strng{authorbibnamehash}{a89a2385080da4e2ea2eebee6d9c43c8}
+      \strng{authornamehash}{a89a2385080da4e2ea2eebee6d9c43c8}
+      \strng{authorfullhash}{a89a2385080da4e2ea2eebee6d9c43c8}
+      \field{sortinit}{O}
+      \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0002953X}
+      \field{journaltitle}{Am. J. Psychiatry}
+      \field{number}{10}
+      \field{title}{{Serial cognitive testing in cancer patients receiving chemotherapy}}
+      \field{volume}{137}
+      \field{year}{1980}
+      \field{pages}{1263\bibrangedash 1265}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1176/ajp.137.10.1263
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/American Journal of Psychiatry/1980 - Oxman, Silberfarb - Serial cognitive testing in cancer patients receiving chemotherapy.pdf:pdf
+      \endverb
+    \endentry
+    \entry{Rao2022}{incollection}{}
+      \name{author}{6}{}{%
+        {{un=0,uniquepart=base,hash=0b83492d3b4211cee69db9e25af8f2a6}{%
+           family={Rao},
+           familyi={R\bibinitperiod},
+           given={Vanishree},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=021df8d86171601c54601e8175630541}{%
+           family={Bhushan},
+           familyi={B\bibinitperiod},
+           given={Rashmi},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=51cf90f9e110d5f2c97730e931ee33a1}{%
+           family={Kumari},
+           familyi={K\bibinitperiod},
+           given={Priyanka},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=651686d1f591170095378f0027c14009}{%
+           family={Cheruku},
+           familyi={C\bibinitperiod},
+           given={Sri\bibnamedelima Pragnya},
+           giveni={S\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e35ea2cc02fe61678b7176c12cf2c71f}{%
+           family={Ravichandiran},
+           familyi={R\bibinitperiod},
+           given={V.},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=29a1b014e65bf18f034fcf0e028c9790}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Nitesh},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier Inc.}%
+      }
+      \strng{namehash}{c527c9b372aca8285921f3547d507a88}
+      \strng{fullhash}{be25f648f0ad8eb7c33f2360a97625c4}
+      \strng{bibnamehash}{c527c9b372aca8285921f3547d507a88}
+      \strng{authorbibnamehash}{c527c9b372aca8285921f3547d507a88}
+      \strng{authornamehash}{c527c9b372aca8285921f3547d507a88}
+      \strng{authorfullhash}{be25f648f0ad8eb7c33f2360a97625c4}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Chemo-brain refers to the thinking and memory problems that occur in cancer patients during and after chemotherapy. It is also known as cognitive dysfunction or chemo-fog. Risk factors include brain malignancies, either primary or metastatic, radiotherapy and chemotherapy, either systemic or brain targeted. There are various mechanisms by which chemo-brain occurs in patients post-chemotherapy, including inflammation of neurons, stress due to free radical generation, and alterations in normal neuronal cell process due to biochemical changes. While chemotherapy drugs that are non-brain targeted, usually fail to cross the blood-brain barrier (BBB), this is not the case for inflammatory cytokines that are released, which easily cross the BBB. These inflammatory neurotoxic agents may represent the primary mediators of chemobrain and include the pro-inflammatory cytokines such as interleukins 1 and 6 and tumor necrosis factor. The pronounced rise in oxidative stress due to continuous chemotherapy also leads to a reduction in neurogenesis and gliogenesis, loss of spine and dendritic cells, and a reduction in neurotransmitter release. Based on recent research, potential agents to prevent and treat chemo brain have been identified, which include Lithium, Fluoxetine, Metformin, Rolipram, Astaxanthin, and microglial inhibitors. However, more defined animal models for cognitive dysfunction are required to study in detail the mechanisms involved in chemo-brain; furthermore, well-defined clinical trials are required to identify drug targets and their therapeutic significance. With these focused approaches, the future for improved therapies is promising.}
+      \field{booktitle}{Adv. Cancer Res.}
+      \field{edition}{1}
+      \field{issn}{21625557}
+      \field{title}{{Chemobrain: A review on mechanistic insight, targets and treatments}}
+      \field{volume}{155}
+      \field{year}{2022}
+      \field{pages}{29\bibrangedash 76}
+      \range{pages}{48}
+      \verb{doi}
+      \verb 10.1016/bs.acr.2022.04.001
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Advances in Cancer Research/2022 - Rao et al. - Chemobrain A review on mechanistic insight, targets and treatments.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1016/bs.acr.2022.04.001
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1016/bs.acr.2022.04.001
+      \endverb
+      \keyw{Cognitive dysfunction,Gliogenesis,Neuroinflammation,Oxidative stress,Targeted therapy}
+    \endentry
+    \entry{Ren2019a}{article}{}
+      \name{author}{6}{ul=2}{%
+        {{un=0,uniquepart=base,hash=b9dba81430b7449f6223f39d81647ff1}{%
+           family={Ren},
+           familyi={R\bibinitperiod},
+           given={Xiaojia},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=52469a0acb484b82041b299d87d1c82d}{%
+           family={Boriero},
+           familyi={B\bibinitperiod},
+           given={Diana},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=513bbe35156250775a80a9ff1142dd0e}{%
+           family={Chaiswing},
+           familyi={C\bibinitperiod},
+           given={Luksana},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1bd90247e9e68e9036d8ebab27d1ddad}{%
+           family={Bondada},
+           familyi={B\bibinitperiod},
+           given={Subbarao},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1def92d3b98699ead79d16ddc481283b}{%
+           family={{St. Clair}},
+           familyi={S\bibinitperiod},
+           given={Daret\bibnamedelima K.},
+           giveni={D\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=746a9e1142576af7c076b2d7edb219c2}{%
+           family={Butterfield},
+           familyi={B\bibinitperiod},
+           given={D.\bibnamedelimi Allan},
+           giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{586b9cd7eb350bb37a45ff37122e98b8}
+      \strng{fullhash}{59d946c2f780611aaf7627c1b4cedfd8}
+      \strng{bibnamehash}{586b9cd7eb350bb37a45ff37122e98b8}
+      \strng{authorbibnamehash}{586b9cd7eb350bb37a45ff37122e98b8}
+      \strng{authornamehash}{586b9cd7eb350bb37a45ff37122e98b8}
+      \strng{authorfullhash}{59d946c2f780611aaf7627c1b4cedfd8}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Increasing numbers of cancer patients survive and live longer than five years after therapy, but very often side effects of cancer treatment arise at same time. One of the side effects, chemotherapy-induced cognitive impairment (CICI), also called “chemobrain” or “chemofog” by patients, brings enormous challenges to cancer survivors following successful chemotherapeutic treatment. Decreased abilities of learning, memory, attention, executive function and processing speed in cancer survivors with CICI, are some of the challenges that greatly impair survivors' quality of life. The molecular mechanisms of CICI involve very complicated processes, which have been the subject of investigation over the past decades. Many mechanistic candidates have been studied including disruption of the blood-brain barrier (BBB), DNA damage, telomere shortening, oxidative stress and associated inflammatory response, gene polymorphism of neural repair, altered neurotransmission, and hormone changes. Oxidative stress is considered as a vital mechanism, since over 50{\%} of FDA-approved anti-cancer drugs can generate reactive oxygen species (ROS) or reactive nitrogen species (RNS), which lead to neuronal death. In this review paper, we discuss these important candidate mechanisms, in particular oxidative stress and the cytokine, TNF-alpha and their potential roles in CICI.}
+      \field{issn}{1879260X}
+      \field{journaltitle}{Biochim. Biophys. Acta - Mol. Basis Dis.}
+      \field{number}{6}
+      \field{title}{{Plausible biochemical mechanisms of chemotherapy-induced cognitive impairment (“chemobrain”), a condition that significantly impairs the quality of life of many cancer survivors}}
+      \field{volume}{1865}
+      \field{year}{2019}
+      \field{pages}{1088\bibrangedash 1097}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1016/j.bbadis.2019.02.007
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Biochimica et Biophysica Acta - Molecular Basis of Disease/2019 - Ren et al. - Plausible biochemical mechanisms of chemotherapy-induced cognitive impairment (“chemobrain”), a condition that si(2).pdf:pdf
+      \endverb
+      \keyw{Blood-brain barrier,Chemotherapy-induced cognitive impairment,Mitochondrial dysfunction,Oxidative damage,TNF-alpha}
+    \endentry
+    \entry{Ren2019}{article}{}
+      \name{author}{9}{ul=2}{%
+        {{un=0,uniquepart=base,hash=b9dba81430b7449f6223f39d81647ff1}{%
+           family={Ren},
+           familyi={R\bibinitperiod},
+           given={Xiaojia},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=147e97e8275ea7af691e246dd231ad66}{%
+           family={Keeney},
+           familyi={K\bibinitperiod},
+           given={Jeriel\bibnamedelima T.R.},
+           giveni={J\bibinitperiod\bibinitdelim T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6923acf915a08eb672d22f7578363244}{%
+           family={Miriyala},
+           familyi={M\bibinitperiod},
+           given={Sumitra},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=df2f2bafa683d54d89cbe6121586ff32}{%
+           family={Noel},
+           familyi={N\bibinitperiod},
+           given={Teresa},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=511de8539597edc34b8ff3cd12703173}{%
+           family={Powell},
+           familyi={P\bibinitperiod},
+           given={David\bibnamedelima K.},
+           giveni={D\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=513bbe35156250775a80a9ff1142dd0e}{%
+           family={Chaiswing},
+           familyi={C\bibinitperiod},
+           given={Luksana},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1bd90247e9e68e9036d8ebab27d1ddad}{%
+           family={Bondada},
+           familyi={B\bibinitperiod},
+           given={Subbarao},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1def92d3b98699ead79d16ddc481283b}{%
+           family={{St. Clair}},
+           familyi={S\bibinitperiod},
+           given={Daret\bibnamedelima K.},
+           giveni={D\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=746a9e1142576af7c076b2d7edb219c2}{%
+           family={Butterfield},
+           familyi={B\bibinitperiod},
+           given={D.\bibnamedelimi Allan},
+           giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier B.V.}%
+      }
+      \strng{namehash}{e30ad6f660a72420660c96e188bad0fd}
+      \strng{fullhash}{9ecff0e5530b8f29a001cc9b0bf08fc0}
+      \strng{bibnamehash}{e30ad6f660a72420660c96e188bad0fd}
+      \strng{authorbibnamehash}{e30ad6f660a72420660c96e188bad0fd}
+      \strng{authornamehash}{e30ad6f660a72420660c96e188bad0fd}
+      \strng{authorfullhash}{9ecff0e5530b8f29a001cc9b0bf08fc0}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Cancer treatments are developing fast and the number of cancer survivors could arise to 20 million in United State by 2025. However, a large fraction of cancer survivors demonstrate cognitive dysfunction and associated decreased quality of life both shortly, and often long-term, after chemotherapy treatment. The etiologies of chemotherapy induced cognitive impairment (CICI) are complicated, made more so by the fact that many anti-cancer drugs cannot cross the blood-brain barrier (BBB). Multiple related factors and confounders lead to difficulties in determining the underlying mechanisms. Chemotherapy induced, oxidative stress-mediated tumor necrosis factor-alpha (TNF-$\alpha$) elevation was considered as one of the main candidate mechanisms underlying CICI. Doxorubicin (Dox) is a prototypical reactive oxygen species (ROS)-generating chemotherapeutic agent used to treat solid tumors and lymphomas as part of multi-drug chemotherapeutic regimens. We previously reported that peripheral Dox-administration leads to plasma protein damage and elevation of TNF-$\alpha$ in plasma and brain of mice. In the present study, we used TNF-$\alpha$ null (TNFKO) mice to investigate the role of TNF-$\alpha$ in Dox-induced, oxidative stress-mediated alterations in brain. We report that Dox-induced oxidative stress in brain is ameliorated and brain mitochondrial function assessed by the Seahorse-determined oxygen consumption rate (OCR) is preserved in brains of TNFKO mice. Further, we show that Dox-decreased the level of hippocampal choline-containing compounds and brain phospholipases activity are partially protected in TNFKO group in MRS study. Our results provide strong evidence that Dox-targeted mitochondrial damage and levels of brain choline-containing metabolites, as well as phospholipases changes decreased in the CNS are associated with oxidative stress mediated by TNF-$\alpha$. These results are consistent with the notion that oxidative stress and elevated TNF-$\alpha$ in brain underlie the damage to mitochondria and other pathological changes that lead to CICI. The results are discussed with reference to our identifying a potential therapeutic target to protect against cognitive problems after chemotherapy.}
+      \field{issn}{18734596}
+      \field{journaltitle}{Free Radic. Biol. Med.}
+      \field{number}{December 2018}
+      \field{title}{{The triangle of death of neurons: Oxidative damage, mitochondrial dysfunction, and loss of choline-containing biomolecules in brains of mice treated with doxorubicin. Advanced insights into mechanisms of chemotherapy induced cognitive impairment (“chemobr}}
+      \field{volume}{134}
+      \field{year}{2019}
+      \field{pages}{1\bibrangedash 8}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1016/j.freeradbiomed.2018.12.029
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Free Radical Biology and Medicine/2019 - Ren et al. - The triangle of death of neurons Oxidative damage, mitochondrial dysfunction, and loss of choline-containing biomole.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.freeradbiomed.2018.12.029
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.freeradbiomed.2018.12.029
+      \endverb
+      \keyw{Chemotherapy-induced cognitive impairment,Doxorubicin,MRS,Mitochondrial dysfunction,Oxidative stress,Phospholipases,Tumor necrosis factor-alpha}
+    \endentry
+    \entry{Sierra2025}{article}{}
+      \name{author}{6}{}{%
+        {{un=0,uniquepart=base,hash=646f71db7dae531fccb2dee423953aed}{%
+           family={Sierra},
+           familyi={S\bibinitperiod},
+           given={Salvador},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=de6a01366712070288574be86e99a5e2}{%
+           family={Herz},
+           familyi={H\bibinitperiod},
+           given={Sara\bibnamedelima M.},
+           giveni={S\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9d99de2ebccdd785681c14d39f8edbaa}{%
+           family={On},
+           familyi={O\bibinitperiod},
+           given={Doan},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1f778a1eafd422afc6f9b7c029c9bc92}{%
+           family={Dozmorov},
+           familyi={D\bibinitperiod},
+           given={Mikhail\bibnamedelima G.},
+           giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a4c04e7f3ee2a777324d32683feac6e9}{%
+           family={Damaj},
+           familyi={D\bibinitperiod},
+           given={M.\bibnamedelimi Imad},
+           giveni={M\bibinitperiod\bibinitdelim I\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=03ee0731d95f56affec2b55024f26d53}{%
+           family={Gonzalez-Maeso},
+           familyi={G\bibinithyphendelim M\bibinitperiod},
+           given={Javier},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{ec35bd691d69c73b73486980560099e0}
+      \strng{fullhash}{befba6a6f78a2b53677137020c854fc3}
+      \strng{bibnamehash}{ec35bd691d69c73b73486980560099e0}
+      \strng{authorbibnamehash}{ec35bd691d69c73b73486980560099e0}
+      \strng{authornamehash}{ec35bd691d69c73b73486980560099e0}
+      \strng{authorfullhash}{befba6a6f78a2b53677137020c854fc3}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Chemotherapy-induced peripheral neuropathy (CIPN) is a prevalent and severe side effect affecting cancer patients undergoing paclitaxel treatment. Growing evidence underscores the pivotal role of calcitonin-related peptide (CGRP) in the development of CIPN. Repeated administration of paclitaxel induces alterations in CGRP release from sensory neurons within the dorsal root ganglia (DRG). The density of the CGRP receptor is most prominent in the dorsal horn of the spinal cord, where it overlaps with the distribution of CGRP. However, the impact of chemotherapy treatment on expression of the CGRP receptor in the spinal cord remains unclear, as well as the potential therapeutic benefits of a CGRP receptor antagonist in an animal model of CIPN. Using a mouse model of paclitaxel-induced mechanical hypersensitivity, we show upregulation of Calcitonin receptor-like receptor (Calcrl) mRNA expression in the spinal cord, an event that occurred in association with upregulation of the H3K4 methyltransferase MLL2. This effect of repeated paclitaxel administration was also linked to an increase in the recruitment of MLL2, thereby enhancing levels of the active mark H3K4me2 at the Calcrl promoter. Furthermore, administration of the CGRP receptor antagonist BIBN4096 mitigated mechanical and cold hypersensitivity in paclitaxel-treated mice. Together, these observations suggest the CGRP receptor in the spinal cord as a potential target for reducing paclitaxel-induced neuropathic pain in animal models.}
+      \field{issn}{17448069}
+      \field{journaltitle}{Mol. Pain}
+      \field{title}{{Upregulation of the neuropeptide receptor calcitonin receptor-like in the spinal cord via MLL2 in a mouse model of paclitaxel-induced peripheral neuropathy}}
+      \field{volume}{21}
+      \field{year}{2025}
+      \verb{doi}
+      \verb 10.1177/17448069251314857
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Molecular Pain/2025 - Sierra et al. - Upregulation of the neuropeptide receptor calcitonin receptor-like in the spinal cord via MLL2 in a mouse model o.pdf:pdf;:D$\backslash$:/Mendeley/Molecular Pain/2025 - Sierra et al. - Upregulation of the neuropeptide receptor calcitonin receptor-like in the spinal cord via MLL2 in a mouse model o.pdf:pdf
+      \endverb
+      \keyw{CGRP receptor,Chemotherapy-induced peripheral neuropathy (CIPN),antinociception,pain}
+    \endentry
+    \entry{Silberfarb1980}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=45858f9c496536d0603836ac2b702e0b}{%
+           family={Silberfarb},
+           familyi={S\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ee3bb923197ea15a42d1a7aa3079b401}{%
+           family={Levine},
+           familyi={L\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{4c7bb1d58c657f5f77d6997e7b69609c}
+      \strng{fullhash}{4c7bb1d58c657f5f77d6997e7b69609c}
+      \strng{bibnamehash}{4c7bb1d58c657f5f77d6997e7b69609c}
+      \strng{authorbibnamehash}{4c7bb1d58c657f5f77d6997e7b69609c}
+      \strng{authornamehash}{4c7bb1d58c657f5f77d6997e7b69609c}
+      \strng{authorfullhash}{4c7bb1d58c657f5f77d6997e7b69609c}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0002-953X}
+      \field{journaltitle}{Am. J. Psychiatry}
+      \field{month}{5}
+      \field{number}{5}
+      \field{title}{{Psychosocial aspects of neoplastic disease: II. Affective and cognitive effects of chemotherapy in cancer patients}}
+      \field{volume}{137}
+      \field{year}{1980}
+      \field{pages}{597\bibrangedash 601}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1176/ajp.137.5.597
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/American Journal of Psychiatry/1980 - Silberfarb, Levine - Psychosocial aspects of neoplastic disease II. Affective and cognitive effects of chemotherapy in cancer pat.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://psychiatryonline.org/doi/10.1176/ajp.137.5.597
+      \endverb
+      \verb{url}
+      \verb https://psychiatryonline.org/doi/10.1176/ajp.137.5.597
+      \endverb
+    \endentry
+    \entry{Starobova2020}{article}{}
+      \name{author}{5}{}{%
+        {{un=0,uniquepart=base,hash=024464fa2efdd52c4b3d257bac3be144}{%
+           family={Starobova},
+           familyi={S\bibinitperiod},
+           given={Hana},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=970dfaf313613b91224f2cdf3a0e2d73}{%
+           family={Mueller},
+           familyi={M\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=59a739a343e17e3a13b7f97d1185238c}{%
+           family={Deuis},
+           familyi={D\bibinitperiod},
+           given={Jennifer\bibnamedelima R.},
+           giveni={J\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=74a53cd7641bd194caee38a5a506c036}{%
+           family={Carter},
+           familyi={C\bibinitperiod},
+           given={David\bibnamedelima A.},
+           giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d70790d89dfc84ca21b140d7885a3dd7}{%
+           family={Vetter},
+           familyi={V\bibinitperiod},
+           given={Irina},
+           giveni={I\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier Inc.}%
+      }
+      \strng{namehash}{0ab064e45978f5d46a3dfb0398f73e51}
+      \strng{fullhash}{f9bd8337c5ace4bd381b0f0f9e66b116}
+      \strng{bibnamehash}{0ab064e45978f5d46a3dfb0398f73e51}
+      \strng{authorbibnamehash}{0ab064e45978f5d46a3dfb0398f73e51}
+      \strng{authornamehash}{0ab064e45978f5d46a3dfb0398f73e51}
+      \strng{authorfullhash}{f9bd8337c5ace4bd381b0f0f9e66b116}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Vincristine, oxaliplatin, and cisplatin are commonly prescribed chemotherapeutic agents for the treatment of many tumors. However, a main side effect is chemotherapy-induced peripheral neuropathy (CIPN), which may lead to changes in chemotherapeutic treatment. Although symptoms associated with CIPN are recapitulated by mouse models, there is limited knowledge of how these drugs affect the expression of genes in sensory neurons. The present study carried out a transcriptomic analysis of dorsal root ganglia following vincristine, oxaliplatin, and cisplatin treatment with a view to gain insight into the comparative pathophysiological mechanisms of CIPN. RNA-Seq revealed 368, 295, and 256 differential expressed genes induced by treatment with vincristine, oxaliplatin, and cisplatin, respectively, and only 5 shared genes were dysregulated in all 3 groups. Cell type enrichment analysis and gene set enrichment analysis showed predominant effects on genes associated with the immune system after treatment with vincristine, while oxaliplatin treatment affected mainly neuronal genes. Treatment with cisplatin resulted in a mixed gene expression signature. Perspective: These results provide insight into the recruitment of immune responses to dorsal root ganglia and indicate enhanced neuroinflammatory processes following administration of vincristine, oxaliplatin, and cisplatin. These gene expression signatures may provide insight into novel drug targets for treatment of CIPN.}
+      \field{issn}{15288447}
+      \field{journaltitle}{J. Pain}
+      \field{number}{1-2}
+      \field{title}{{Inflammatory and Neuropathic Gene Expression Signatures of Chemotherapy-Induced Neuropathy Induced by Vincristine, Cisplatin, and Oxaliplatin in C57BL/6J Mice}}
+      \field{volume}{21}
+      \field{year}{2020}
+      \field{pages}{182\bibrangedash 194}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1016/j.jpain.2019.06.008
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Journal of Pain/2020 - Starobova et al. - Inflammatory and Neuropathic Gene Expression Signatures of Chemotherapy-Induced Neuropathy Induced by Vincrist.pdf:pdf;:D$\backslash$:/Mendeley/Journal of Pain/2020 - Starobova et al. - Inflammatory and Neuropathic Gene Expression Signatures of Chemotherapy-Induced Neuropathy Induced by Vincrist.pdf:pdf
+      \endverb
+      \keyw{Neuroinflammation,antineoplastic agents,gene expression profile,pain,transcriptome}
+    \endentry
+    \entry{Wang2024c}{article}{}
+      \name{author}{8}{}{%
+        {{un=0,uniquepart=base,hash=09d82fde59033d94a54373afff701d14}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Huanbai},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bb86e8282819caf05b4000e54266731c}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Xiaodan},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bb5e88f2813fda1ecab71d06595e7b20}{%
+           family={Qiao},
+           familyi={Q\bibinitperiod},
+           given={Yamin},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e0e884b35915a5c201d60bb27d6c47bc}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Meiting},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=04cdb4a24855839e54389c90008c17fc}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Wen},
+           giveni={W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e0571b30b29fefce0539dbfc51b4bc15}{%
+           family={McIntosh},
+           familyi={M\bibinitperiod},
+           given={J.\bibnamedelimi Michael},
+           giveni={J\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d54866d5cf9280511dea753b93c12892}{%
+           family={Zhangsun},
+           familyi={Z\bibinitperiod},
+           given={Dongting},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2b893372a2932d198d68ef682249993a}{%
+           family={Luo},
+           familyi={L\bibinitperiod},
+           given={Sulan},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{726220724f546d7871533e952b69f880}
+      \strng{fullhash}{8a41f5dcafa0d4d8ff2f43c9d53ad8e0}
+      \strng{bibnamehash}{726220724f546d7871533e952b69f880}
+      \strng{authorbibnamehash}{726220724f546d7871533e952b69f880}
+      \strng{authornamehash}{726220724f546d7871533e952b69f880}
+      \strng{authorfullhash}{8a41f5dcafa0d4d8ff2f43c9d53ad8e0}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Chemotherapy-induced peripheral neuropathy (CIPN) is a dose-limiting painful neuropathy that occurs commonly during cancer management, which often leads to the discontinuation of medication. Previous studies suggest that the $\alpha$9$\alpha$10 nicotinic acetylcholine receptor (nAChR)-specific antagonist $\alpha$O-conotoxin GeXIVA[1,2] is effective in CIPN models; however, the related mechanisms remain unclear. Here, we analyzed the preventive effect of GeXIVA[1,2] on neuropathic pain in the long-term oxaliplatin injection-induced CIPN model. At the end of treatment, lumbar (L4-L6) spinal cord was extracted, and RNA sequencing and bioinformatic analysis were performed to investigate the potential genes and pathways related to CIPN and GeXIVA[1,2]. GeXIVA[1,2] inhibited the development of mechanical allodynia induced by chronic oxaliplatin treatment. Repeated injections of GeXIVA[1,2] for 3 weeks had no effect on the mice's normal pain threshold or locomotor activity and anxiety-like behavior, as evaluated in the open field test (OFT) and elevated plus maze (EPM). Our RNA sequencing results identified 209 differentially expressed genes (DEGs) in the CIPN model, and simultaneously injecting GeXIVA[1,2] with oxaliplatin altered 53 of the identified DEGs. These reverted genes were significantly enriched in immune-related pathways represented by the cytokine–cytokine receptor interaction pathway. Our findings suggest that GeXIVA[1,2] could be a potential therapeutic compound for chronic oxaliplatin-induced CIPN management.}
+      \field{issn}{16603397}
+      \field{journaltitle}{Mar. Drugs}
+      \field{number}{1}
+      \field{title}{{$\alpha$O-Conotoxin GeXIVA[1,2] Reduced Neuropathic Pain and Changed Gene Expression in Chronic Oxaliplatin-Induced Neuropathy Mice Model}}
+      \field{volume}{22}
+      \field{year}{2024}
+      \field{pages}{1\bibrangedash 16}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.3390/md22010049
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Marine Drugs/2024 - Wang et al. - $\alpha$O-Conotoxin GeXIVA1,2 Reduced Neuropathic Pain and Changed Gene Expression in Chronic Oxaliplatin-Induced Neuropat.pdf:pdf;:D$\backslash$:/Mendeley/Marine Drugs/2024 - Wang et al. - $\alpha$O-Conotoxin GeXIVA1,2 Reduced Neuropathic Pain and Changed Gene Expression in Chronic Oxaliplatin-Induced Neuropat.pdf:pdf
+      \endverb
+      \keyw{CIPN,RNA sequencing,neuropathic pain,oxaliplatin,$\alpha$9$\alpha$10 nAChR,$\alpha$O-conotoxin GeXIVA[1,2]}
+    \endentry
+    \entry{WorldHealthOrganization2022}{misc}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=531217507bec092b6ec36c0f78f46736}{%
+           family={{World Health Organization}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{531217507bec092b6ec36c0f78f46736}
+      \strng{fullhash}{531217507bec092b6ec36c0f78f46736}
+      \strng{bibnamehash}{531217507bec092b6ec36c0f78f46736}
+      \strng{authorbibnamehash}{531217507bec092b6ec36c0f78f46736}
+      \strng{authornamehash}{531217507bec092b6ec36c0f78f46736}
+      \strng{authorfullhash}{531217507bec092b6ec36c0f78f46736}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{International Agency for Research on Cancer}}
+      \field{urlday}{22}
+      \field{urlmonth}{6}
+      \field{urlyear}{2022}
+      \field{year}{2022}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.iarc.fr/
+      \endverb
+      \verb{url}
+      \verb https://www.iarc.fr/
+      \endverb
+    \endentry
+    \entry{Zhong2023}{article}{}
+      \name{author}{13}{}{%
+        {{un=0,uniquepart=base,hash=8660660f17e00463ec96f66525a73f38}{%
+           family={Zhong},
+           familyi={Z\bibinitperiod},
+           given={Shanshan},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=38b4c08f66d3c2260e350e68c6cfc37c}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Fangxi},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3f7879c7a263cc390ac16161ccb43c0f}{%
+           family={Giniatullin},
+           familyi={G\bibinitperiod},
+           given={Rashid},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8c8138f8634fad8421398ec0c4c7587f}{%
+           family={Jolkkonen},
+           familyi={J\bibinitperiod},
+           given={Jukka},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=78be8ea0cb80e4e1b59bf06100942e90}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Yong},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8fbabf016d7a34296e62db4ea5a7730f}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Zhike},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7f21a54173b70852115573759f09a60c}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Xinyu},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9d9ac6815e27331ba6620def723e357f}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Chang},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=446f292c4e7f24bffbccbdf726cde2fd}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xiuchun},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5f262365c6b6b22193e8016578ec8610}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Zhouyang},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1c82a3f86faaa89efdfecd44c66bf953}{%
+           family={Lv},
+           familyi={L\bibinitperiod},
+           given={Cheng},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=865474bb7acc65a716a6972b3d9a2eed}{%
+           family={Guo},
+           familyi={G\bibinitperiod},
+           given={Qianqian},
+           giveni={Q\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a6d26f96ea96e9e0d4dccf019d7473c2}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Chuansheng},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {The Author(s)}%
+      }
+      \strng{namehash}{0457a4c731d10cbb762df17408d3023b}
+      \strng{fullhash}{f93836ffd6483fda1262622dc55a5bb2}
+      \strng{bibnamehash}{0457a4c731d10cbb762df17408d3023b}
+      \strng{authorbibnamehash}{0457a4c731d10cbb762df17408d3023b}
+      \strng{authornamehash}{0457a4c731d10cbb762df17408d3023b}
+      \strng{authorfullhash}{f93836ffd6483fda1262622dc55a5bb2}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Paclitaxel leads to peripheral neuropathy (paclitaxel-induced peripheral neuropathy [PIPN]) in approximately 50{\%} of cancer patients. At present, there are no effective treatment strategies for PIPN, the mechanisms of which also remain unclear. In this study, we performed microbiome and metabolome analysis of feces and serum from breast cancer patients with different PIPN grades due to paclitaxel treatment. Our analysis reveals that levels of deoxycholic acid (DCA) are highly increased because of ingrowth of Clostridium species, which is associated with severe neuropathy. DCA, in turn, elevates serum level of C-C motif ligand 5 (CCL5) and induces CCL5 receptor 5 (CCR5) overexpression in dorsal root ganglion (DRG) through the bile acid receptor Takeda G-protein-coupled receptor 5 (TGR5), contributing to neuronal hyperexcitability. Consistent with this, administration of CCR5 antagonist maraviroc suppresses the development of neuropathic nociception. These results implicate gut microbiota/bile acids/CCR5 signaling in the induction of PIPN, thus suggesting a target for PIPN treatment.}
+      \field{issn}{22111247}
+      \field{journaltitle}{Cell Rep.}
+      \field{number}{11}
+      \field{title}{{Blockade of CCR5 suppresses paclitaxel-induced peripheral neuropathic pain caused by increased deoxycholic acid}}
+      \field{volume}{42}
+      \field{year}{2023}
+      \field{pages}{113386}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.celrep.2023.113386
+      \endverb
+      \verb{file}
+      \verb :D$\backslash$:/Mendeley/Cell Reports/2023 - Zhong et al. - Blockade of CCR5 suppresses paclitaxel-induced peripheral neuropathic pain caused by increased deoxycholic acid.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.celrep.2023.113386
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.celrep.2023.113386
+      \endverb
+      \keyw{CCR5,CP: Neuroscience,bile acids,chemotherapy-induced neuropathic pain,gut microbiota}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
