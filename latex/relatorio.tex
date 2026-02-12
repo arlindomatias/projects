@@ -1,0 +1,72 @@
+\documentclass[12pt,dvipsnames,a4paper]{article}
+
+\usepackage[backend=biber,style=abnt,ittitles,justify,indent,language=brazilian-abnt,
+giveninits,uniquename=mininit,
+repeatfields,noslsn,natbib=true]{biblatex}
+\bibliography{relatorio-references}
+\usepackage{pdfpages} \usepackage[export]{adjustbox}
+\usepackage[brazil]{babel}
+\usepackage{csquotes}
+\usepackage[top=30mm,bottom=35mm,left=30mm,right=15mm,a4paper]{geometry}
+\usepackage{xurl}
+\usepackage[breaklinks,colorlinks,allcolors=Blue]{hyperref}
+\usepackage[sfdefault]{carlito}
+
+
+
+
+
+\begin{document}
+\sloppy
+\frenchspacing 
+
+\thispagestyle{empty}
+\begin{center}
+{   
+\begin{center}
+   \includegraphics[keepaspectratio,height=2cm]{fapesp.png}
+   \end{center}
+}{Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP)}
+
+\vfill
+
+{{\bf\LARGE RELATÓRIO CIENTÍFICO}
+
+\vfill
+
+Nome Sobrenome}
+\end{center}
+
+\vfill
+
+{\noindent\textbf{Título do projeto:} Título\\
+\textbf{Número do Processo FAPESP:} xxxx/xxxxx-x\\
+\textbf{Período de vigência:} dd/mm/aaaa a dd/mm/aaaa\\
+\textbf{Período coberto pelo Relatório Científico em questão:} dd/mm/aaaa a \today}
+
+\vfill
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+\setcounter{page}{0}
+\section{Formulário de acompanhamento de atividades do Bolsista}
+
+\section{Relatório Científico}
+\subsection{Resumo do projeto proposto}
+
+\subsection{Realizações no período}
+\subsection{Como o Plano de Gestão de Dados está sendo seguido}
+
+\section{Plano de atividades para o próximo período}
+
+\section{Participação em evento científico}
+
+\section{Lista das publicações resultantes da Bolsa no período a que se refere o Relatório Científico}
+
+\section{Cópias das primeiras páginas dos trabalhos listados na seção anterior}
+%\input{copias}
+
+\section{Lista dos trabalhos preparados ou submetidos para publicação}
+
+\section{Cópia do relatório do estágio BEPE e a avaliação do supervisor no exterior}
+\end{document}

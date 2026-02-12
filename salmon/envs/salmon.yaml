@@ -1,0 +1,11 @@
+name: salmon
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - salmon
+  - sra-tools
+  - fastqc
+  - wget
+  - pigz
+  - python

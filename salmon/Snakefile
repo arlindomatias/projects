@@ -1,0 +1,170 @@
+############################################
+# Configuração
+############################################
+
+THREADS = 8
+TRANSCRIPTOME_URL = "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M35/gencode.vM35.transcripts.fa.gz"
+TRANSCRIPTOME = "ref/gencode.vM35.transcripts.fa"
+SALMON_INDEX = "ref/salmon_mm39_index"
+
+with open("srr_list.txt") as f:
+    SRRS = [line.strip() for line in f if line.strip()]
+
+############################################
+# Regra final
+############################################
+
+rule all:
+    input:
+        expand("salmon_quant/{srr}", srr=SRRS)
+
+############################################
+# Download SRA
+############################################
+
+rule prefetch:
+    output:
+        "sra/{srr}.sra"
+    conda:
+        "envs/salmon.yaml"
+    shell:
+        """
+        prefetch {wildcards.srr}
+        mv ~/ncbi/public/sra/{wildcards.srr}.sra sra/
+        """
+
+############################################
+# FASTQ
+############################################
+
+rule fasterq_dump:
+    input:
+        "sra/{srr}.sra"
+    output:
+        r1="fastq/{srr}_1.fastq",
+        r2="fastq/{srr}_2.fastq"
+    threads: THREADS
+    conda:
+        "envs/salmon.yaml"
+    shell:
+        """
+        fasterq-dump {wildcards.srr} \
+            --split-files \
+            --threads {threads}
+        mv {wildcards.srr}_1.fastq fastq/
+        mv {wildcards.srr}_2.fastq fastq/
+        """
+
+############################################
+# FastQC
+############################################
+
+rule fastqc:
+    input:
+        r1="fastq/{srr}_1.fastq",
+        r2="fastq/{srr}_2.fastq"
+    output:
+        "qc/{srr}_fastqc.html"
+    conda:
+        "envs/salmon.yaml"
+    shell:
+        """
+        fastqc {input.r1} {input.r2} -o qc/
+        """
+
+############################################
+# Transcriptoma
+############################################
+
+rule download_transcriptome:
+    output:
+        TRANSCRIPTOME
+    conda:
+        "envs/salmon.yaml"
+    shell:
+        """
+        mkdir -p ref
+        wget {TRANSCRIPTOME_URL} -O {TRANSCRIPTOME}.gz
+        gunzip {TRANSCRIPTOME}.gz
+        """
+
+############################################
+# Índice Salmon
+############################################
+
+rule salmon_index:
+    input:
+        TRANSCRIPTOME
+    output:
+        directory(SALMON_INDEX)
+    threads: THREADS
+    conda:
+        "envs/salmon.yaml"
+    shell:
+        """
+        salmon index \
+            -t {input} \
+            -i {output} \
+            -k 31 \
+            --gencode
+        """
+
+############################################
+# Quantificação Salmon
+############################################
+
+rule salmon_quant:
+    input:
+        r1="fastq/{srr}_1.fastq",
+        r2="fastq/{srr}_2.fastq",
+        index=SALMON_INDEX
+    output:
+        directory("salmon_quant/{srr}")
+    threads: THREADS
+    conda:
+        "envs/salmon.yaml"
+    log:
+        "logs/salmon/{srr}.log"
+    shell:
+        """
+        salmon quant \
+            -i {input.index} \
+            -l A \
+            -1 {input.r1} \
+            -2 {input.r2} \
+            -p {threads} \
+            --validateMappings \
+            --gcBias \
+            --seqBias \
+            -o {output} \
+            &> {log}
+        """
+
+############################################
+# Checagem de mapping rate (hard stop)
+############################################
+
+rule check_mapping_rate:
+    input:
+        "salmon_quant/{srr}/logs/salmon_quant.log"
+    output:
+        "salmon_quant/{srr}/mapping_checked.ok"
+    run:
+        import re
+
+        with open(input[0]) as f:
+            log = f.read()
+
+        m = re.search(r"Mapping rate = ([0-9.]+)%", log)
+        if not m:
+            raise ValueError("Mapping rate não encontrado")
+
+        rate = float(m.group(1))
+        print(f"{wildcards.srr}: mapping rate = {rate}%")
+
+        if rate < 30:
+            raise ValueError(f"Mapping rate muito baixo ({rate}%)")
+
+        with open(output[0], "w") as f:
+            f.write("OK\n")
+

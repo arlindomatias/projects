@@ -1,0 +1,189 @@
+# Baixar arquivos SRA
+
+## Criar ambiente
+conda create -n salmon -c bioconda salmon
+conda activate salmon
+conda install -c bioconda -c conda-forge \
+    sra-tools \
+    ca-certificates \
+    certifi \
+    openssl
+conda install -c bioconda fastqc
+vdb-config --interactive
+
+## Criar srr_list.txt contendo os IDs das amostras. Ex:
+SRR33247676
+SRR33247677
+SRR33247678
+SRR33247679
+SRR33247680
+SRR33247681
+SRR33247682
+SRR33247683
+SRR33247684
+SRR33247685
+SRR33247686
+
+## Testar com uma amostra, se funcionar, montar loop com os IDs no arquivo txt
+prefetch SRR33247678
+fasterq-dump SRR33247678 --split-files --threads 8
+
+### LOOP
+while read SRR; do
+  echo "Baixando $SRR"
+  prefetch $SRR
+  fasterq-dump $SRR --split-files --threads 8
+done < srr_list.txt
+
+### Caso não conseguir baixar com o prefetch, dá pra baixar manual
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR332/476/SRR33247678/SRR33247678_1.fastq.gz
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR332/476/SRR33247678/SRR33247678_2.fastq.gz
+gunzip *.gz # Descompactar
+
+### Para ver todo o conteúdo do endereço
+wget --spider -r ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR332/476/SRR33247678/
+
+
+### IMPORTANTE: Caso o tamanho dos arquivos sejá maior que o espaço disponível,
+é possível baixar e processar por partes. O Salmon não precisa dos FASTQs, 
+apenas dos arquivos quanto.sf. Portanto, tendo o sf, é possível apagar FASTQs e sra, mantendo:
+- salmon_quant/SRRxxxx/quant.sf
+- metadados (seu sample_table)
+- index
+
+## Mover para um diretório próprio
+mkdir -p fastq salmon_quant
+mv SRR*_*.fastq fastq/
+
+## Controle de qualidade 
+fastqc fastq/*.fastq -o fastq/
+
+## Baixar transcriptoma
+### Formato Salmon
+wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M35/gencode.vM35.transcripts.fa.gz
+gunzip gencode.vM35.transcripts.fa.gz
+head gencode.vM35.transcripts.fa
+
+### Formato txd (R)
+wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M35/gencode.vM35.annotation.gtf.gz
+gunzip gencode.vM35.annotation.gtf.gz
+
+## Índice Salmon (uma vez por dataset)
+salmon index \
+  -t gencode.vM35.transcripts.fa \
+  -i salmon_mm39_index \
+  -k 31 \
+  --gencode
+
+## Rodar Salmon em uma amostra
+salmon quant \
+  -i salmon_mm39_index \
+  -l A \
+  -1 fastq/SRR33247677_1.fastq \
+  -2 fastq/SRR33247677_2.fastq \
+  -p 8 \
+  --validateMappings \
+  --gcBias \
+  --seqBias \
+  -o salmon_quant/SRR33247677
+
+less salmon_quant/SRR33247677/logs/salmon_quant.log 
+
+Olhe especialmente:
+- Detected lib type
+- Mapping rate
+- Warnings
+Se a taxa de mapeamento for absurdamente baixa (<30%), pare aqui. Algo está errado.
+
+## Rodar Salmon em loop
+for r1 in fastq/*_1.fastq; do
+  base=$(basename $r1 _1.fastq)
+  r2=fastq/${base}_2.fastq
+
+  salmon quant \
+    -i salmon_mm39_index \
+    -l A \
+    -1 $r1 \
+    -2 $r2 \
+    -p 8 \
+    --validateMappings \
+    --gcBias \
+    --seqBias \
+    -o salmon_quant/$base
+done
+
+### Resultado esperado
+salmon_quant/
+  SRR33247676/
+    quant.sf
+    logs/
+  SRR33247677/
+    quant.sf
+    logs/
+
+### Checar cada dado
+head salmon_quant/SRR33247677/quant.sf
+
+Você deve ver:
+- transcript_id
+- NumReads
+- TPM
+Nada NaN.
+
+ls salmon_quant/SRR33247676
+Agora você precisa ver:
+- quant.sf
+- aux_info
+- libParams
+- logs
+
+Antes de qualquer DE:
+awk '{s+=$4} END {print s}' salmon_quant/SRR33247677/quant.sf
+A soma dos TPMs deve dar ~1.000.000 (com erro de arredondamento).
+
+awk '{s+=$5} END {print s}' salmon_quant/SRR33247676/quant.sf
+Isso deve dar algo da ordem de dezenas de milhões, coerente com o log.
+
+# Estatística
+Com poucos SRR, você não faz DE ainda, mas já pode:
+- importar com tximport (Bioconductor)
+- verificar correlação entre amostras
+- testar PCA
+- validar que o pipeline gera números estáveis
+O ponto é: confirmar que tudo funciona antes de escalar.
+
+## Decisão racional antes de baixar tudo
+
+Depois do piloto, você olha:
+- tempo por SRR
+- uso de disco
+- taxa de mapeamento
+- variabilidade entre amostras
+
+## Para o R
+O que vem em seguida (próximo degrau lógico)
+Depois que 2–3 SRRs quantificarem corretamente, o próximo bloco é:
+- checar consistência entre SRRs
+- importar com tximport
+- decidir nível: transcript vs gene
+- só então pensar em DE
+
+### Organizar. Ex:
+salmon_quant/
+  SRR33247676/
+    quant.sf
+  SRR33247677/
+    quant.sf
+  SRR33247678/
+    quant.sf
+
+.
+├── Snakefile
+├── srr_list.txt
+├── envs/
+│   └── salmon.yaml
+├── fastq/
+├── qc/
+├── salmon_quant/
+└── ref/
+
