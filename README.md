@@ -62,7 +62,5 @@ Python code for machine learning applications.
 
 ### web
 Code for creating simple websites (HTML/CSS/JavaScript) and for web scraping (Python).
----
-
 
 ---
