@@ -24,6 +24,8 @@ Bash scripts for FASTQ data extraction and sample processing with Salmon.
 ## * [bulk_rna_seq](bulk_rna_seq)
 R scripts for bulk RNA-Seq data analysis.
 
+  <img width="645" height="645" alt="v" src="https://github.com/user-attachments/assets/4ab4fc1f-75bc-4837-a17f-5c859f5af9fc" />
+
 ## * [single_cell_rna_seq](single_cell_rna_seq)
 Python scripts for single-cell data analysis.
 
@@ -32,6 +34,9 @@ R scripts for microbiome data analysis.
 
 ## * [latex](latex)
 LaTeX scripts for document creation.
+
+## * [text_analysis](text_analysis)
+Codes for bibliometrics analysis in R and bash
 
 ## * [machine_learning](machine_learning)
 Python code for machine learning applications.
