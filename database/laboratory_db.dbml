@@ -1,0 +1,58 @@
+Table room {
+  room_id integer [primary key]
+  laboratory_technician_id integer
+  last_clean timestamp
+}
+
+Table users {
+  user_id integer [primary key]
+  user_name varchar
+  role_id integer 
+  birthday timestamp
+}
+
+Table supplier {
+  supplier_id integer [primary key]
+  supplier_name varchar
+  contact_technician_id integer
+}
+
+Table roles {
+  role_id integer [primary key]
+  role_name varchar
+}
+
+Table experiments {
+  experiment_id integer [primary key]
+  experiment_name varchar
+  room_id integer
+}
+
+Table experiment_users {
+  experiment_id integer [pk]
+  user_id integer [pk]
+}
+
+Table equipment {
+  equipment_id integer [primary key]
+  equipment_name varchar
+  responsible_technician_id integer
+  manufacturer_id integer
+  last_maintenance timestamp
+}
+
+Table experiment_equipment {
+  experiment_id integer [pk]
+  equipment_id integer [pk]
+}
+
+Ref: equipment.manufacturer_id > supplier.supplier_id
+Ref: experiment_equipment.experiment_id > experiments.experiment_id
+Ref: experiment_equipment.equipment_id > equipment.equipment_id
+Ref: experiment_users.experiment_id > experiments.experiment_id
+Ref: experiment_users.user_id > users.user_id
+Ref: equipment.responsible_technician_id > users.user_id
+Ref: experiments.room_id > room.room_id
+Ref: users.role_id > roles.role_id
+Ref: room.laboratory_technician_id > users.user_id
+Ref: supplier.contact_technician_id > users.user_id
