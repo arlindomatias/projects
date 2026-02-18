@@ -13,7 +13,7 @@ CREATE TABLE users (
   user_id INT PRIMARY KEY,
   user_name VARCHAR(150) NOT NULL,
   role_id INT,
-  birthday TIMESTAMP,
+  birthday DATE,
 
   CONSTRAINT fk_users_role
     FOREIGN KEY (role_id)
