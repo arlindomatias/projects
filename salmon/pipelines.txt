@@ -1,3 +1,4 @@
+# Documentação Salmon https://salmon.readthedocs.io/en/latest/
 # Baixar arquivos SRA
 # GSE295281 - https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA1254109&o=acc_s%3Aa
 # BioProject (PRJNA1254109)
@@ -32,13 +33,8 @@ fasterq-dump SRR33247678 --split-files --threads 8 # Converte em FASTQ
 
 # Baixar Metadados pelo código do projeto PRJ
 curl -L \
-"https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA1254109&result=read_run&fields=run_accession,experiment_accession,study_accession,sample_accession,library_layout,library_strategy,instrument_model,scientific_name,fastq_ftp,fastq_bytes&format=tsv" \
--o PRJNA1254109_metadata.tsv 
-
-# Baixar sample table
-curl -L \
 "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA1254109&result=read_run&fields=run_accession,sample_accession,experiment_accession,study_accession,library_layout,library_strategy,instrument_model,scientific_name,sample_title,sample_description&format=tsv" \
--o PRJNA1254109_samples.tsv
+-o Metadados.tsv
 
 ### LOOP
 while read SRR; do
