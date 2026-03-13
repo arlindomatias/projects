@@ -137,7 +137,7 @@ apenas dos arquivos quanto.sf. Portanto, tendo o sf, é possível apagar FASTQs 
 - metadados (seu sample_table)
 - index
 
-ls salmon_quant/SRR33247676
+ls salmon_quant/SRR33247678
 Agora você precisa ver:
 - quant.sf
 - aux_info
@@ -145,11 +145,14 @@ Agora você precisa ver:
 - logs
 
 Antes de qualquer DE:
-awk '{s+=$4} END {print s}' salmon_quant/SRR33247677/quant.sf
-A soma dos TPMs deve dar ~1.000.000 (com erro de arredondamento).
+awk '{s+=$4} END {print s}' salmon_quant/SRR33247678/quant.sf 
+# Esse comando awk soma todos os valores da coluna 4 do arquivo quant.sf gerado pelo Salmon e imprime o total.
+# A soma dos TPMs deve dar ~1.000.000 (com erro de arredondamento).
 
-awk '{s+=$5} END {print s}' salmon_quant/SRR33247676/quant.sf
-Isso deve dar algo da ordem de dezenas de milhões, coerente com o log.
+awk '{s+=$5} END {print s}' salmon_quant/SRR33247678/quant.sf
+# Isso te daria o total de reads mapeados, útil para ver a taxa de mapeamento bruta. 
+# Deve dar algo da ordem de dezenas de milhões, coerente com o log.
+
 
 # Estatística
 Com poucos SRR, você não faz DE ainda, mas já pode:
