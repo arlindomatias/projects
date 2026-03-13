@@ -35,6 +35,11 @@ curl -L \
 "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA1254109&result=read_run&fields=run_accession,experiment_accession,study_accession,sample_accession,library_layout,library_strategy,instrument_model,scientific_name,fastq_ftp,fastq_bytes&format=tsv" \
 -o PRJNA1254109_metadata.tsv 
 
+# Baixar sample table
+curl -L \
+"https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA1254109&result=read_run&fields=run_accession,sample_accession,experiment_accession,study_accession,library_layout,library_strategy,instrument_model,scientific_name,sample_title,sample_description&format=tsv" \
+-o PRJNA1254109_samples.tsv
+
 ### LOOP
 while read SRR; do
   echo "Baixando $SRR"
