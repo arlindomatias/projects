@@ -1,64 +1,47 @@
 # Pacotes
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("Bioconductor")
+library(BiocManager)
 library(tximport)
 library(readr)
 library(DESeq2)
 library(GenomicFeatures)
-library(txdbmaker)
+library(readr)
+library(dplyr)
+
+setwd("/home/arlindo/")
 
 # Identificar amostras
-samples <- c(
-  "SRR33247676","SRR33247677"
-)
+Metadados <- read_delim("Metadados.tsv", 
+                             delim = "\t", escape_double = FALSE, 
+                             trim_ws = TRUE)
+Metadados <- as.data.frame(Metadados)
+Metadados <- arrange(Metadados, Metadados$run_accession)
+rownames(Metadados) <- Metadados$run_accession
+Metadados$run_accession <- NULL
 
-setwd("/home/arlindo/github/teste")
+delineamento <- Metadados[ncol(Metadados)]
+
 
 # Listar os quant.sf
-files <- file.path("salmon_quant", samples, "quant.sf")
-names(files) <- samples
-files
+files <- file.path("salmon_quant", rownames(delineamento), "quant.sf")
+names(files) <- rownames(delineamento)
 all(file.exists(files))
 
-# Mapeamento transcrito
-txdb <- txdbmaker::makeTxDbFromGFF("gencode.vM35.annotation.gtf")
+txdb <- makeTxDbFromGFF("ref/gencode.vM35.annotation.gtf", format = "gtf")
 k <- keys(txdb, keytype = "TXNAME")
 tx2gene <- select(txdb, keys = k, keytype = "TXNAME", columns = "GENEID")
-head(tx2gene)
 
-# Importar os dados
-txi <- tximport(
-  files,
-  type = "salmon",
-  tx2gene = tx2gene,
-  countsFromAbundance = "lengthScaledTPM"
-)
-
-str(txi)
-
-# Criar DF
-colData <- data.frame(
-  row.names = samples,
-  condition = as.factor(c("control", "treated"))
-)
+txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
 
 
-# Análise DE
-dds <- DESeqDataSetFromTximport(
-  txi,
-  colData = colData,
-  design = ~ condition
-)
+dds <- DESeqDataSetFromTximport(txi, colData = sample_table, design = ~ condition)
 
-dds <- dds[rowSums(counts(dds)) > 10, ]
+dds <- dds[rowSums(counts(dds) >= 10) >= 3, ]
+
 dds <- DESeq(dds)
-
-res <- results(dds, contrast = c("condition", "treated", "control"))
-
-res <- res[order(res$padj), ]
-head(res)
-
+res <- results(dds, contrast = c("condition", "KO", "WT"))
 summary(res)
-plotMA(res)
-
-
-
 
