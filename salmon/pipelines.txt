@@ -30,6 +30,11 @@ SRR33247686
 prefetch SRR33247678 # Baixar o SRA
 fasterq-dump SRR33247678 --split-files --threads 8 # Converte em FASTQ
 
+# Baixar Metadados pelo código do projeto PRJ
+curl -L \
+"https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA1254109&result=read_run&fields=run_accession,experiment_accession,study_accession,sample_accession,library_layout,library_strategy,instrument_model,scientific_name,fastq_ftp,fastq_bytes&format=tsv" \
+-o PRJNA1254109_metadata.tsv 
+
 ### LOOP
 while read SRR; do
   echo "Baixando $SRR"
@@ -116,7 +121,7 @@ salmon_quant/
     logs/
 
 ### Checar cada dado
-head salmon_quant/SRR33247677/quant.sf
+head salmon_quant/SRR33247678/quant.sf
 
 Você deve ver:
 - transcript_id
