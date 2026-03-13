@@ -1,4 +1,5 @@
 # Baixar arquivos SRA
+# GSE295281 - https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA1254109&o=acc_s%3Aa
 
 ## Criar ambiente
 conda create -n salmon -c bioconda salmon
