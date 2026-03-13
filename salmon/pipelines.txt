@@ -1,5 +1,6 @@
 # Baixar arquivos SRA
 # GSE295281 - https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA1254109&o=acc_s%3Aa
+# BioProject (PRJNA1254109)
 
 ## Criar ambiente
 conda create -n salmon -c bioconda salmon
@@ -26,8 +27,8 @@ SRR33247685
 SRR33247686
 
 ## Testar com uma amostra, se funcionar, montar loop com os IDs no arquivo txt
-prefetch SRR33247678
-fasterq-dump SRR33247678 --split-files --threads 8
+prefetch SRR33247678 # Baixar o SRA
+fasterq-dump SRR33247678 --split-files --threads 8 # Converte em FASTQ
 
 ### LOOP
 while read SRR; do
@@ -43,14 +44,6 @@ gunzip *.gz # Descompactar
 
 ### Para ver todo o conteúdo do endereço
 wget --spider -r ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR332/476/SRR33247678/
-
-
-### IMPORTANTE: Caso o tamanho dos arquivos sejá maior que o espaço disponível,
-é possível baixar e processar por partes. O Salmon não precisa dos FASTQs, 
-apenas dos arquivos quanto.sf. Portanto, tendo o sf, é possível apagar FASTQs e sra, mantendo:
-- salmon_quant/SRRxxxx/quant.sf
-- metadados (seu sample_table)
-- index
 
 ## Mover para um diretório próprio
 mkdir -p fastq salmon_quant
@@ -80,15 +73,15 @@ salmon index \
 salmon quant \
   -i salmon_mm39_index \
   -l A \
-  -1 fastq/SRR33247677_1.fastq \
-  -2 fastq/SRR33247677_2.fastq \
+  -1 fastq/SRR33247678_1.fastq \
+  -2 fastq/SRR33247678_2.fastq \
   -p 8 \
   --validateMappings \
   --gcBias \
   --seqBias \
-  -o salmon_quant/SRR33247677
+  -o salmon_quant/SRR33247678
 
-less salmon_quant/SRR33247677/logs/salmon_quant.log 
+less salmon_quant/SRR33247678/logs/salmon_quant.log 
 
 Olhe especialmente:
 - Detected lib type
@@ -130,6 +123,13 @@ Você deve ver:
 - NumReads
 - TPM
 Nada NaN.
+
+### IMPORTANTE: Caso o tamanho dos arquivos sejá maior que o espaço disponível,
+é possível baixar e processar por partes. O Salmon não precisa dos FASTQs, 
+apenas dos arquivos quanto.sf. Portanto, tendo o sf, é possível apagar FASTQs e sra, mantendo:
+- salmon_quant/SRRxxxx/quant.sf
+- metadados (seu sample_table)
+- index
 
 ls salmon_quant/SRR33247676
 Agora você precisa ver:
