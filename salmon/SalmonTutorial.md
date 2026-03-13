@@ -56,7 +56,7 @@ SRR33247686
 ## 4. Organização dos Diretórios
 
 ```bash
-mkdir -p fastq salmon_quant ref qc
+mkdir -p fastq salmon_quant
 ```
 
 Estrutura esperada do projeto:
@@ -153,7 +153,7 @@ gunzip fastq/*.gz
 ## 9. Controle de Qualidade
 
 ```bash
-fastqc fastq/${SRR}_*.fastq -o qc/
+fastqc fastq/*.fastq -o fastq/
 ```
 
 ---
