@@ -28,7 +28,7 @@ vdb-config --interactive
 
 ```bash
 SRR="SRR33247678"   # Amostra de teste — alterar conforme necessário
-THREADS=8           # Número de threads disponíveis na máquina
+THREADS=4           # Número de threads disponíveis na máquina
 ```
 
 ---
