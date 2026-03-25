@@ -1,0 +1,411 @@
+Conversa salva em: 24/03/2026 23:17:45
+============================================================
+
+VOCÊ:
+me explique o procedimento para análise de microbiota diferencial com dados E-MTAB no R
+
+AGENTE:
+A análise de microbiota diferencial é um dos pilares da pesquisa em microbioma, visando identificar microrganismos (ou grupos taxonômicos) cuja abundância difere significativamente entre diferentes grupos experimentais (e.g., doença vs. saúde, tratamento vs. controle). Utilizar dados do E-MTAB (EMBL-EBI Metagenomics Archive) no R para essa análise envolve várias etapas, desde a aquisição dos dados brutos até a interpretação estatística e biológica.
+
+A seguir, detalho o procedimento completo e detalhado:
+
+---
+
+### **Introdução à Análise de Microbiota Diferencial com Dados E-MTAB no R**
+
+O E-MTAB é parte do ArrayExpress e do EMBL-EBI, um repositório de dados de experimentos de ómicas, incluindo dados de sequenciamento de 16S rRNA ou metagenômica shotgun. Esses dados, frequentemente, estão em formato FASTQ (reads brutos), o que exige um pipeline bioinformático robusto antes da análise estatística no R.
+
+**Objetivo:** Identificar ASVs (Amplicon Sequence Variants) ou OTUs (Operational Taxonomic Units) que estão diferencialmente abundantes entre grupos definidos no seu estudo.
+
+**Pré-requisitos:**
+*   Conhecimento básico de R e RStudio.
+*   Familiaridade com conceitos de microbioma e sequenciamento de nova geração.
+*   Capacidade de instalar e carregar pacotes no R.
+*   Recursos computacionais adequados (RAM e CPU) para o processamento de sequências.
+
+---
+
+### **Etapa 1: Aquisição e Preparação dos Dados do E-MTAB**
+
+#### **1.1. Identificação do Estudo no E-MTAB**
+*   **Navegação:** Acesse o site do ArrayExpress (www.ebi.ac.uk/arrayexpress/) ou o EMBL-EBI Metagenomics (www.ebi.ac.uk/metagenomics/).
+*   **Busca:** Procure pelo identificador E-MTAB específico ou use termos de busca relacionados ao seu interesse (e.g., "gut microbiome", "16S rRNA", "mouse colitis").
+*   **Detalhes do Estudo:** Verifique cuidadosamente a descrição do experimento, o tipo de sequenciamento (16S rRNA V3-V4, V4, etc., ou metagenômica shotgun), o número de amostras, as condições experimentais e, o mais importante, os metadados associados.
+
+#### **1.2. Download dos Dados Brutos (FASTQ)**
+*   **ENA Browser:** Uma vez que você encontra o experimento no ArrayExpress, ele geralmente terá links para o European Nucleotide Archive (ENA). O ENA permite baixar os arquivos FASTQ.
+*   **Ferramentas de Download:**
+    *   **Manual:** Baixar via navegador, mas impraticável para muitos arquivos.
+    *   **`wget` ou `curl`:** Ferramentas de linha de comando para download.
+    *   **`aspera connect`:** Ferramenta rápida para grandes volumes de dados, frequentemente recomendada pelo ENA.
+    *   **`sra-tools` (se os dados estiverem também no SRA):** Pode usar `fastq-dump` do pacote SRA Toolkit se o estudo for espelhado no NCBI SRA.
+
+    **Exemplo (linha de comando para `wget`):**
+    ```bash
+    # Exemplo de download de um arquivo FASTQ (substitua pelo URL real do ENA)
+    wget ftp://ftp.ebi.ac.uk/vol1/fastq/ERR000/ERR000000/ERR000000_1.fastq.gz
+    wget ftp://ftp.ebi.ac.uk/vol1/fastq/ERR000/ERR000000/ERR000000_2.fastq.gz
+    ```
+
+#### **1.3. Organização dos Dados e Metadados**
+*   **Estrutura de Pastas:** Crie uma pasta organizada para o projeto (e.g., `projeto_microbiota/dados_brutos`, `projeto_microbiota/metadados`, `projeto_microbiota/resultados`).
+*   **Metadados:** Os metadados são CRUCIAIS. Eles contêm informações sobre cada amostra (e.g., ID da amostra, grupo experimental, idade, sexo, condição da doença, tratamento).
+    *   Normalmente, o E-MTAB fornece um arquivo de metadados (TXT, CSV ou TSV). Baixe-o e revise-o.
+    *   **Padronização:** Certifique-se de que o ID da amostra nos metadados corresponde exatamente aos nomes dos seus arquivos FASTQ (ou aos IDs de amostra que você extrairá deles).
+    *   **Formato:** O metadado deve ser um arquivo tabular onde cada linha é uma amostra e cada coluna é uma variável descritiva.
+
+---
+
+### **Etapa 2: Pré-processamento dos Dados de Sequenciamento (FASTQ para ASV/OTU table)**
+
+Esta é a etapa mais intensiva computacionalmente e geralmente é realizada usando pacotes como `dada2` (para ASVs) ou pipelines baseados em `QIIME2` (que também pode gerar ASVs). Aqui, focaremos no `dada2` por ser um pacote R nativo e amplamente utilizado para ASVs.
+
+#### **2.1. Instalação e Carregamento de Pacotes Essenciais**
+```R
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("dada2")
+BiocManager::install("phyloseq")
+BiocManager::install("DECIPHER") # Para alinhamento e árvore filogenética
+BiocManager::install("phangorn")  # Para árvore filogenética
+BiocManager::install("microbiome") # Funções auxiliares para análise de microbioma
+BiocManager::install("ggplot2")    # Para visualização
+# Para análise diferencial, instalaremos depois
+# BiocManager::install("DESeq2")
+# BiocManager::install("ALDEx2")
+
+library(dada2)
+library(phyloseq)
+library(DECIPHER)
+library(phangorn)
+library(microbiome)
+library(ggplot2)
+```
+
+#### **2.2. Configuração do Diretório e Leitura dos Arquivos FASTQ**
+```R
+path <- "caminho/para/seus/dados_brutos" # Substitua pelo caminho real
+list.files(path) # Verifique os arquivos
+
+# Exemplo para sequências pareadas (forward e reverse reads)
+fnFs <- sort(list.files(path, pattern="_1.fastq.gz", full.names = TRUE)) # Forward reads
+fnRs <- sort(list.files(path, pattern="_2.fastq.gz", full.names = TRUE)) # Reverse reads
+
+# Extrair nomes das amostras dos nomes dos arquivos
+sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
+```
+
+#### **2.3. Qualidade dos Reads**
+*   Visualize os gráficos de qualidade para decidir os parâmetros de corte (trimming).
+```R
+plotQualityProfile(fnFs[1:2]) # Visualize os dois primeiros arquivos forward
+plotQualityProfile(fnRs[1:2]) # Visualize os dois primeiros arquivos reverse
+```
+
+#### **2.4. Filtragem e Trimming**
+*   Cria arquivos filtrados e truncados em um novo diretório.
+```R
+filtFs <- file.path(path, "filtered", paste0(sample.names, "_F_filt.fastq.gz"))
+filtRs <- file.path(path, "filtered", paste0(sample.names, "_R_filt.fastq.gz"))
+names(filtFs) <- sample.names
+names(filtRs) <- sample.names
+
+out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs,
+                     truncLen=c(240,160), # Exemplo: 240bp para forward, 160bp para reverse. Ajuste com base na qualidade!
+                     maxN=0, maxEE=c(2,2), truncQ=2, rm.phix=TRUE,
+                     compress=TRUE, multithread=TRUE) # multithread=TRUE usa múltiplos núcleos
+head(out)
+```
+
+#### **2.5. Aprender Parâmetros de Erro**
+```R
+errF <- learnErrors(filtFs, multithread=TRUE)
+errR <- learnErrors(filtRs, multithread=TRUE)
+plotErrors(errF, nominalQ=TRUE) # Visualize os erros
+```
+
+#### **2.6. Desreplicação e Denoising (Inferência de ASVs)**
+```R
+dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
+dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
+```
+
+#### **2.7. Mergear Paired-End Reads**
+```R
+mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
+head(mergers[[1]])
+```
+
+#### **2.8. Construir a Tabela de Sequências (ASV table)**
+```R
+seqtab <- makeSequenceTable(mergers)
+dim(seqtab) # Dimensões: amostras x ASVs
+table(nchar(getSequences(seqtab))) # Distribuição dos comprimentos das sequências
+```
+
+#### **2.9. Remover Quimeras**
+```R
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
+dim(seqtab.nochim)
+sum(seqtab.nochim)/sum(seqtab) # Proporção de sequências não quiméricas
+```
+
+#### **2.10. Atribuição Taxonômica**
+*   Use um banco de dados de referência (e.g., Silva, GreenGenes, RDP). Baixe a versão adequada para o seu gene 16S e região.
+    *   **Silva database:** Baixe a versão `silva_nr99_v138.1_train_set.fa.gz` ou similar do site do dada2 ou Silva.
+```R
+taxa <- assignTaxonomy(seqtab.nochim, "caminho/para/silva_nr_v138_train_set.fa.gz", multithread=TRUE, minBoot=80, verbose=TRUE)
+taxa.print <- taxa # Guarda uma cópia antes de formatar
+rownames(taxa) <- getSequences(seqtab.nochim) # Renomeia as linhas com as sequências (se quiser)
+
+# Opcional: Atribuir espécie (se tiver um banco de dados de espécies)
+# taxa <- addSpecies(taxa, "caminho/para/silva_species_assignment_v138.fa.gz")
+
+# Reorganizar e visualizar as atribuições
+taxa.print[1:5, ]
+```
+
+#### **2.11. Construir Árvore Filogenética (Opcional, mas útil para alguns métodos)**
+*   A árvore filogenética é necessária para análises de diversidade beta baseadas em distância (e.g., UniFrac) e alguns métodos de análise diferencial.
+```R
+# Alinhamento das sequências
+sequences <- getSequences(seqtab.nochim)
+alignment <- AlignSeqs(DNAStringSet(sequences), anchor=NA)
+
+# Construir árvore filogenética (exemplo com phangorn)
+phang.align <- phyDat(as(alignment, "matrix"), type="DNA")
+dm <- dist.ml(phang.align)
+treeNJ <- NJ(dm) # Árvore Neighbor-Joining
+fit <- pml(treeNJ, data=phang.align)
+fitGTR <- update(fit, k=4, inv=0.2) # Otimização com modelo GTR + Gamma + I
+fitGTR <- optim.pml(fitGTR, model="GTR", optInv=TRUE, optGamma=TRUE,
+                    rearrangement = "stochastic", control = pml.control(trace = 0))
+tree <- fitGTR$tree
+```
+
+---
+
+### **Etapa 3: Criação do Objeto `phyloseq` e Análise Exploratória de Dados (EDA)**
+
+O pacote `phyloseq` é essencial para integrar todos os componentes da análise de microbioma (tabela de abundância, taxonomia, metadados, árvore filogenética).
+
+#### **3.1. Preparar os Metadados**
+*   Carregue seu arquivo de metadados no R.
+*   Certifique-se de que os IDs de amostra correspondem aos nomes de amostra usados no `dada2`.
+```R
+# Carregar metadados (substitua pelo seu arquivo)
+metadata <- read.csv("caminho/para/seus/metadados.csv", row.names=1)
+# Verifique se os nomes das amostras na tabela de sequência e nos metadados são os mesmos
+sample.names.seqtab <- rownames(seqtab.nochim)
+sample.names.metadata <- rownames(metadata)
+all(sample.names.seqtab %in% sample.names.metadata) # Deve ser TRUE
+all(sample.names.metadata %in% sample.names.seqtab) # Deve ser TRUE
+
+# Se houver diferença, ajuste (ex: reordenar e/ou filtrar)
+# Garantir que a ordem das amostras na tabela de sequências seja a mesma que nos metadados
+metadata <- metadata[sample.names.seqtab, ]
+```
+
+#### **3.2. Construir o Objeto `phyloseq`**
+```R
+# Converta para os formatos específicos do phyloseq
+ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE),
+               sample_data(metadata),
+               tax_table(taxa),
+               phy_tree(tree)) # Opcional: se você gerou a árvore
+
+# Visualize o objeto phyloseq
+ps
+sample_names(ps)
+rank_names(ps)
+taxa_names(ps)[1:5] # ASV IDs
+```
+
+#### **3.3. Limpeza e Filtragem Inicial**
+*   Remover ASVs que não foram atribuídos a nível de Reino (e.g., cloroplastos, mitocôndrias).
+```R
+ps_clean <- subset_taxa(ps, !is.na(Phylum) & !Phylum %in% c("Chloroplast", "Mitochondria"))
+ps_clean <- prune_samples(sample_sums(ps_clean) > 500, ps_clean) # Remover amostras com poucas reads (ajuste o limiar)
+ps_clean <- prune_taxa(taxa_sums(ps_clean) > 0, ps_clean) # Remover ASVs com 0 reads após filtragem
+```
+
+#### **3.4. Análise Exploratória de Dados (EDA)**
+*   **Diversidade Alpha:** Compare a riqueza e diversidade dentro das amostras entre os grupos.
+```R
+plot_richness(ps_clean, x="GrupoExperimental", measures=c("Shannon", "Observed"), color="GrupoExperimental") +
+  geom_boxplot() + theme_bw()
+```
+*   **Diversidade Beta:** Visualize a estrutura da comunidade entre os grupos (PCoA, NMDS).
+```R
+# Normalização para diversidade beta (ex: rarefação, mas cuidado com análise diferencial)
+ps_rare <- rarefy_even_depth(ps_clean, sample.size = min(sample_sums(ps_clean)), rngseed = 123, replace = FALSE)
+
+# Calcular distâncias (ex: Bray-Curtis)
+ord.bray <- ordinate(ps_rare, method="PCoA", distance="bray")
+plot_ordination(ps_rare, ord.bray, color="GrupoExperimental") +
+  geom_point(size=3) + stat_ellipse() + theme_bw()
+
+# Teste estatístico para diversidade beta (ex: PERMANOVA com vegan)
+library(vegan)
+dist.bray <- phyloseq::distance(ps_rare, method = "bray")
+metadata_df <- as(sample_data(ps_rare), "data.frame")
+adonis2(dist.bray ~ GrupoExperimental, data = metadata_df) # Substitua GrupoExperimental
+```
+
+---
+
+### **Etapa 4: Análise de Abundância Diferencial**
+
+Esta é a etapa central. Existem vários métodos, cada um com suas premissas. Os mais comuns para dados de sequenciamento de contagens são `DESeq2` e `ALDEx2`.
+
+#### **Considerações Importantes:**
+*   **Dados de Contagem:** Os dados brutos de ASVs são contagens inteiras.
+*   **Composicionalidade:** A natureza composicional dos dados de microbioma (frações, soma 1) pode ser um desafio. Alguns métodos lidam com isso intrinsecamente (`ALDEx2`), enquanto outros (como `DESeq2`) foram desenvolvidos para RNA-seq mas se mostraram robustos para contagens de microbiota.
+*   **Inflação de Zeros:** Muitos ASVs têm contagem zero em muitas amostras.
+*   **Normalização:** Essencial para comparar amostras com diferentes profundidades de sequenciamento. `DESeq2` e `edgeR` têm suas próprias normalizações (`size factors`).
+*   **Correção para Múltiplos Testes:** Absolutamente crítica (`FDR` - False Discovery Rate).
+
+#### **4.1. Método 1: `DESeq2`**
+`DESeq2` modela dados de contagem usando distribuições binomial negativa e é robusto a variação na profundidade de sequenciamento através de fatores de tamanho.
+
+```R
+library(DESeq2)
+
+# Converter o objeto phyloseq para um DESeqDataSet
+# Certifique-se de que a variável de grupo experimental está no sample_data
+dds <- phyloseq_to_deseq2(ps_clean, ~ GrupoExperimental) # Substitua GrupoExperimental
+
+# Rodar o DESeq2
+# Note: Se houver amostras com 0 reads totais, DESeq2 irá reclamar.
+# phyloseq::prune_samples(sample_sums(ps_clean) > 0, ps_clean) resolve isso.
+dds <- DESeq(dds)
+
+# Obter resultados
+# Substitua "GrupoExperimental" e os nomes dos níveis que você quer comparar
+# Ex: "GrupoB" vs "GrupoA"
+res <- results(dds, contrast=c("GrupoExperimental", "GrupoB", "GrupoA"), alpha=0.05)
+res <- res[order(res$padj), ] # Ordenar por p-valor ajustado
+
+# Visualizar resultados
+summary(res)
+head(res)
+
+# Adicionar informações taxonômicas aos resultados
+res_df <- as.data.frame(res)
+res_df$ASV <- rownames(res_df)
+tax_df <- as.data.frame(tax_table(ps_clean))
+res_df <- merge(res_df, tax_df, by.x = "ASV", by.y = 0)
+
+# Filtrar ASVs significativamente diferentes (FDR < 0.05 e fold change > 2)
+sig_ASVs <- subset(res_df, padj < 0.05 & abs(log2FoldChange) > 1) # log2FC de 1 = fold change de 2x
+head(sig_ASVs)
+```
+
+#### **4.2. Método 2: `ALDEx2`**
+`ALDEx2` é projetado especificamente para dados composicionais, usando a transformação Log-Ratio de Abundância Centrada (CLR) e diferentes testes estatísticos (t-test, Wilcoxon, GLM).
+
+```R
+library(ALDEx2)
+
+# Extrair a tabela de contagens e metadados
+count_data <- as.data.frame(otu_table(ps_clean))
+metadata_aldex <- as.data.frame(sample_data(ps_clean))
+
+# Obter o vetor de condições para ALDEx2
+conditions <- metadata_aldex$GrupoExperimental # Substitua GrupoExperimental
+
+# Rodar ALDEx2 (exemplo com t-test)
+# Para dados com mais de 2 grupos, considere aldex.glm
+x <- aldex.clr(count_data, conditions, mc.samples=128, denom="all", verbose=TRUE)
+x_ttest <- aldex.ttest(x, paired.test=FALSE, hist.plot=TRUE, verbose=TRUE)
+x_kw <- aldex.kw(x) # Para mais de 2 grupos (Kruskal-Wallis)
+
+# Visualizar resultados
+head(x_ttest)
+
+# Adicionar informações taxonômicas
+x_ttest_df <- as.data.frame(x_ttest)
+x_ttest_df$ASV <- rownames(x_ttest_df)
+tax_df <- as.data.frame(tax_table(ps_clean))
+x_ttest_df <- merge(x_ttest_df, tax_df, by.x = "ASV", by.y = 0)
+
+# Filtrar ASVs significativamente diferentes (FDR < 0.05 e efeito direcional (ex: we.ep < 0.05))
+# we.eBH é o FDR ajustado para o efeito t-test (Welch)
+sig_ALDEx_ASVs <- subset(x_ttest_df, we.eBH < 0.05 & abs(diff.btw) > 0) # diff.btw é a diferença das médias CLR
+head(sig_ALDEx_ASVs)
+```
+
+**Escolha do Método:**
+*   **`DESeq2` e `edgeR`:** Geralmente são a primeira escolha para dados de contagem se as premissas forem razoavelmente atendidas. Eles são poderosos e testados.
+*   **`ALDEx2`:** Excelente para dados composicionais e quando você quer ser mais rigoroso com a natureza relativa das abundâncias. Útil quando `DESeq2` tem dificuldades ou se a composição é uma preocupação primária.
+*   Outros métodos como `ANCOM-BC` são também opções válidas, especialmente desenhados para dados composicionais de microbioma.
+
+---
+
+### **Etapa 5: Visualização dos Resultados**
+
+Visualizar os ASVs diferencialmente abundantes é crucial para a interpretação.
+
+#### **5.1. Volcano Plot (para DESeq2)**
+```R
+# Criar coluna para o status de significância
+res_df$significant <- ifelse(res_df$padj < 0.05 & abs(res_df$log2FoldChange) > 1,
+                             ifelse(res_df$log2FoldChange > 1, "Increased", "Decreased"),
+                             "Not Significant")
+
+ggplot(res_df, aes(x = log2FoldChange, y = -log10(padj), color = significant)) +
+  geom_point(alpha = 0.8, size = 1.5) +
+  scale_color_manual(values = c("Decreased" = "blue", "Increased" = "red", "Not Significant" = "gray")) +
+  geom_vline(xintercept = c(-1, 1), linetype = "dashed", color = "black") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "black") +
+  labs(title = "Volcano Plot de Abundância Diferencial",
+       x = "Log2 Fold Change",
+       y = "-log10(p-ajustado)") +
+  theme_minimal()
+```
+
+#### **5.2. Box Plots de ASVs/Taxa Selecionados**
+*   Para um ASV específico ou um táxon, visualize sua abundância em cada grupo.
+```R
+# Pegar os 5 ASVs mais significativos para visualização
+top_ASVs <- rownames(head(sig_ASVs, 5))
+
+# Criar um phyloseq com apenas esses ASVs
+ps_top <- prune_taxa(top_ASVs, ps_clean)
+
+# Converter abundância para dados longos para ggplot2
+plot_data <- psmelt(ps_top)
+ggplot(plot_data, aes(x = GrupoExperimental, y = Abundance, fill = GrupoExperimental)) +
+  geom_boxplot() +
+  facet_wrap(~ OTU, scales = "free_y", labeller = label_wrap_gen(width = 30)) + # OTU aqui é o ASV ID
+  labs(title = "Abundância dos ASVs Top em Diferentes Grupos",
+       y = "Abundância Relativa") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Se você quiser usar o nome taxonômico em vez do ASV ID
+plot_data$Taxa <- paste0(plot_data$Phylum, "_", plot_data$Genus) # Ou o nível taxonômico que preferir
+ggplot(plot_data, aes(x = GrupoExperimental, y = Abundance, fill = GrupoExperimental)) +
+  geom_boxplot() +
+  facet_wrap(~ Taxa, scales = "free_y", labeller = label_wrap_gen(width = 30)) +
+  labs(title = "Abundância dos Taxa Top em Diferentes Grupos",
+       y = "Abundância Relativa") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### **5.3. Heatmap dos ASVs Diferenciais**
+*   Útil para visualizar padrões de abundância dos ASVs significativos em todas as amostras.
+```R
+library(pheatmap) # ou ComplexHeatmap para mais customização
+
+# Extrair contagens normalizadas ou transformadas (ex: VST do DESeq2)
+# Para DESeq2:
+vst <- vst(dds, blind=FALSE)
+vst_mat <- assay(vst)
+
+# Filtrar para os ASVs significativos
+sig
+
+------------------------------------------------------------
+
