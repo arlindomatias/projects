@@ -1,10 +1,11 @@
 """ Importing sequences from Entrez directly """
 from Bio import Entrez, SeqIO
-from keys import Email, NCBI
+# from keys import Email, NCBI
 
-Entrez.email = Email
-Entrez.api_key = NCBI
+Entrez.email = Email # Change to you NCBI Email
+Entrez.api_key = NCBI # Change to your NCBI API
 
+# If you do not have credentials, use the sample FASTA file in this folder
 
 gene_name = "Sirt1" # Gene name
 organisms = "Mus musculus" # Organisms to search
