@@ -1,6 +1,6 @@
 """ Importing sequences from Entrez directly """
 from Bio import Entrez, SeqIO
-# from keys import Email, NCBI
+from keys import Email, NCBI
 
 Entrez.email = Email # Change to you NCBI Email
 Entrez.api_key = NCBI # Change to your NCBI API
@@ -44,7 +44,17 @@ def read_FASTA(filename):
         [entry.partition('\n')
         for entry in file.read().split('>')[1:]]]
 
+def print_FASTA_headers(filename): 
+    with open(filename) as file:
+        for line in file:
+            if line[0] == '>':
+                print(line[1:-1])
+
+print_FASTA_headers(output_file)
+
+print_FASTA_headers(output_file) # Print headers
 seq = read_FASTA(output_file)[0][1] # Get the sequence
+
 
 seq.count('A') # count number of occurrences of 'A'
 len(seq) # length of the sequence
@@ -147,4 +157,125 @@ def amino_acid_sequence(nucleotide_sequence):
 
 amino_acid = amino_acid_sequence(processed_RNA)
 print(amino_acid)
+
+#################################################
+# Testes
+
+# Sequence IDs from multiple files
+def extract_gi_id(description):
+    """Given a FASTA file description line, return its GenInfo ID if it has one"""
+    if line[0] != '>':
+        return None
+    fields = description[1:].split('|')
+    if 'gi' not in fields:
+        return None
+    return fields[1 + fields.index('gi')]
+
+def get_gi_ids(filename):
+    """Return a list of the GenInfo IDs of all sequences found in the file named filename"""
+    with open(filename) as file:
+        return [extract_gi_id(line) for line in file if line[0] == '>']
+
+print(get_gi_ids('sirt1_Mus musculus.fasta'))
+
+def get_gi_ids_from_files(filenames):
+    """Return a list of the GenInfo IDs of all sequences found in the
+    files whose names are contained in the collection filenames"""
+    idlst = []
+    for filename in filenames:
+        idlst += get_gi_ids(filename)
+    return idlst
+
+print(get_gi_ids_from_files(['sirt1_Mus musculus.fasta']))
+
+def rna_sequence_is_valid(seq):
+    """Return True if the RNA sequence is valid"""
+    for base in seq:
+        if base not in 'UCAGucag':
+            return False
+    return True
+
+def dna_sequence_contains_N(seq):
+    """Return True if the DNA sequence contains N"""
+    for base in seq:
+        if base == 'N':
+            return True
+    return False
+
+def count_gc_bases(seq):
+    """Return the number of G and C bases in the sequence"""
+    count = 0
+    for base in seq:
+        if base in 'GCgc':
+            count += 1
+    return count
+
+def count_gc_percentage(seq):
+    """Return the percentage of G and C bases in the sequence"""
+    return count_gc_bases(seq) / len(seq) * 100
+
+# DNA sequence manipulation
+def reverse_complement(seq):
+    """Return the reverse complement of a DNA sequence"""
+    complement = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
+    return ''.join([complement[base] for base in seq[::-1]])
+
+print(reverse_complement('ATGC'))
+
+def print_FASTA_headers(filename):
+    """Print the headers of a FASTA file"""
+    with open(filename) as file:
+        for line in file:
+            if line[0] == '>':
+                print(line[1:-1])
+
+print_FASTA_headers('sirt1_Mus musculus.fasta')
+
+def extract_matching_sequences(filename, string):
+    """From a FASTA file named filename, extract all sequences whose descriptions contain string"""
+    sequences = []
+    seq = ''
+    with open(filename) as file:
+        for line in file:
+            if line[0] == '>':
+                if seq: # not first time through
+                    sequences.append(seq)
+                seq = '' # next sequence detected
+                includeflag = string in line # flag for later iterations
+            else:
+                if includeflag:
+                    seq += line[:-1]
+        if seq: # last sequence in file is included
+            sequences.append(seq)
+    return sequences
+
+print(extract_matching_sequences('sirt1_Mus musculus.fasta', 'Mus musculus'))
+
+def list_sequences_in_files(filelist):
+    """For each file whose name is contained in filelist,
+    list the description of each sequence it contains"""
+    for filename in filelist:
+        print(filename)
+        with open(filename) as file:
+            for line in file:
+                if line[0] == '>':
+                    print('\t', line[1:-1])
+
+print(list_sequences_in_files(['sirt1_Mus musculus.fasta']))
+
+DNA_bases = ['A', 'T', 'C', 'G']
+
+def print_codon_table():
+    """Print the DNA codon table in a nice, but simple, arrangement"""
+    for base1 in DNA_bases: # horizontal section (or "group")
+        for base3 in DNA_bases: # line (or "row")
+            for base2 in DNA_bases: # vertical section (or "column")
+                # the base2 loop is inside the base3 loop!
+                print(base1+base2+base3,
+                translate_DNA_codon(base1+base2+base3),
+                end=' ')
+            print()
+        print()
+
+print_codon_table()
 
