@@ -5,9 +5,11 @@ import csv
 from concurrent.futures import ThreadPoolExecutor
 from Bio import Entrez
 
+from dotenv import load_dotenv
+load_dotenv()
 
 # Configurações
-Entrez.email = "arlindo.matias@usp.br"  # obrigatório pelo NCBI
+Entrez.email = os.getenv("Email") # obrigatório pelo NCBI
 TERM = "chemobrain"
 MAX = 20
 OUTDIR = "./pubmed_abstracts"
@@ -22,7 +24,7 @@ def run_cmd(cmd):
     return result.stdout.strip()
 
 # Limpa CSV anterior, se existir
-with open(csv_file, "w", newline='', encoding='utf-8') as f:
+with open(CSV_FILE, "w", newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
     writer.writerow(["ID", "Title", "Authors", "PubDate", "AbstractFile"])
 
