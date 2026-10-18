@@ -1,8 +1,7 @@
 ---
 
 # Projects directory
-In this directory, my projects are organized into different folders according to their nature.  
-Some directories are still under development.  
+In this directory, my public projects under development are organized into different folders according to their nature.  
 
 ## * [behavioral_analysis](behavioral_analysis)
 This directory contains code used for behavioral analysis, including code (in R) for:
@@ -32,19 +31,24 @@ Python scripts for single-cell data analysis.
 ## * [microbiome](microbiome)
 R scripts for microbiome data analysis.
 
-## * [latex](latex)
-LaTeX scripts for document creation.
-
 ## * [text_analysis](text_analysis)
-Codes for bibliometrics analysis in R and bash
+Codes for analysis of text data with R and Python, including:
 
-## * [machine_learning](machine_learning)
-Python code for machine learning applications.
+- Bibliometric analysis
 
-## * [web](web)
-Code for creating simple websites (HTML/CSS/JavaScript) and for web scraping (Python).
+- Natural language processing and text annotation
+
+  <img width="1848" height="2017" alt="STRING network" src="https://github.com/user-attachments/assets/afa6b867-02e5-4c17-860e-6db27543dec2" />
+
+- Extracting biomedical texts from NCBI with E-Utility
+
+## * [miscellaneous](miscellaneous)
+Miscellaneous codes with different purposes.
+
+## * [sequence_analysis](sequence_analysis)
+Preliminary codes for analysis of DNA/RNA sequences.
 
 ## * [database](database)
-Codes in SQL and DBML for database projects
+Codes in SQL and DBML for database projects.
 
 ---
