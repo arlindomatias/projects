@@ -119,25 +119,11 @@ def forecast(latitude=lat, longitude=lon, api_key=openweather_key):
         print(f"Error accessing the API: {e}")
     start()
 
-
-def experiments():
-    with open(r"C:\Users\AsRock\Google Drive\Doutorado\Resultados\Bioinformática\Scripts\experimentos.py",
-              encoding="utf-8") as f:
-        script = f.read()
-
-    # Create a global scope dictionary for exec()
-    global_scope = globals().copy()
-
-    # Run the script in the current global scope
-    exec(script, global_scope)
-
-
 def start():
     print("\nWhat would you like to know?")
     print("1: Current weather;")
     print("2: Weather forecast;")
-    print("3: Run calculations;")
-    print("4: Exit")
+    print("3: Exit")
 
     type_option = input("Enter the option: \n")
 
@@ -146,12 +132,9 @@ def start():
     elif type_option == "2":
         forecast()
     elif type_option == "3":
-        experiments()
-    elif type_option == "4":
         print("Exiting...")
     else:
         print("Option not found.")
         start()
-
 
 start()
