@@ -37,31 +37,28 @@ if (!file.exists(matrix_file)) {
 
 
 # 3. Import expression matrix ----------------------------------
-counts_raw <- read_excel("data/raw/GSE178812_Doxo-counts.xlsx")
-
-# Rename the first two columns.
+counts_raw <- read_excel("GSE178812_Doxo-counts.xlsx")
 colnames(counts_raw)[1] <- c("SYMBOL")
 
 # 4. Retrieve GEO metadata -------------------------------------
-geo_data <- getGEO(
-  geo_accession,
-  GSEMatrix = TRUE
-)
+gse <- getGEO(geo_accession, GSEMatrix = TRUE, returnType = "ExpressionSet")[[1]]
+fvarLabels(gse) <- make.names(fvarLabels(gse))
+info <- pData(gse)
 
-geo_metadata <- as.data.frame(SummarizedExperiment::colData(geo_data[[1]]))
-geo_metadata <- geo_metadata[!grepl("DMQ", geo_metadata$title), ]
+info <- info[!grepl("DMQ", info$title), ]
+
 
 colData <- data.frame(
-  GEO_ID = rownames(geo_metadata),
-  condition = sub(":.*", "", geo_metadata$title))
+  GEO_ID = rownames(info),
+  condition = sub(":.*", "", info$title))
 
 
 # 5. Define experimental groups -------------------------------
 group <- ifelse(
-  grepl("Doxo-treated", geo_metadata$title),
+  grepl("Doxo-treated", info$title),
   "CHEM",
   ifelse(
-    grepl("Sham", geo_metadata$title),
+    grepl("Sham", info$title),
     "VEH",
     NA_character_
   )) 
@@ -82,21 +79,29 @@ duplicated_symbol_values <- length(unique(
 
 cat("Missing symbols:", missing_symbols, "||" ,"Duplicated symbols:", duplicated_symbol_values)
 
-counts_raw <- counts_raw[
+counts <- counts_raw[
   !duplicated(counts_raw$SYMBOL),
 ]
 
-rownames(counts_raw) <- counts_raw$SYMBOL
-counts_raw <- as.data.frame(counts_raw)
+counts <- as.data.frame(counts)
 
-counts <- counts_raw
+rownames(counts) <- counts$SYMBOL
+
 counts$SYMBOL <- NULL
+
 colnames(counts) <- colData$GEO_ID
 
 
+keytable <- bitr(rownames(counts),
+                 fromType = "SYMBOL",
+                 toType = "ENTREZID",
+                 OrgDb = org.Mm.eg.db)
+keytable <- na.omit(keytable)
+
 # 7. Export organized data ------------------------------------
-# Expression matrix.
+
 write.csv(counts, "counts.csv")
 
-# Sample metadata.
 write.csv(colData, "colData.csv")
+
+write.csv(keytable, "keytable.csv")
