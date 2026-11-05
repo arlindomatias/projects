@@ -109,16 +109,8 @@ all(counts == round(counts))  # Should return True
 any(counts < 0)               # Should return False
 anyNA(counts)                 # Should return False
 
-### 5. Create keytable to convert gene IDs ----------------------
-keytable <- bitr(rownames(counts),
-                 fromType = "SYMBOL",
-                 toType = "ENTREZID",
-                 OrgDb = org.Mm.eg.db)
-keytable <- na.omit(keytable)
-
-# 6. Export organized data ------------------------------------
+# 5. Export organized data ------------------------------------
 write.csv(counts, "data/counts.csv", row.names = F)
 write.csv(colData, "data/colData.csv", row.names = F)
-write.csv(keytable, "data/keytable.csv", row.names = F)
 
 gc()

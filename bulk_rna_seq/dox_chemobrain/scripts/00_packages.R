@@ -7,7 +7,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 cran_packages <- c(
   "readr", "dplyr", "tidyr", "ggplot2", "gridExtra",
   "pheatmap", "ggrepel", "readxl", "tibble", "ggforce",
-  "shadowtext", "stringr", "qqman"
+  "shadowtext", "stringr", "qqman", "patchwork", "ggtangle"
 )
 
 
@@ -15,7 +15,7 @@ cran_packages <- c(
 bioc_packages <- c(
   "GEOquery", "DESeq2", "clusterProfiler", "org.Mm.eg.db",
   "EnhancedVolcano", "enrichplot", "pathview", "apeglm",
-  "SummarizedExperiment",
+  "SummarizedExperiment"
 )
 
 # Install only what is missing
