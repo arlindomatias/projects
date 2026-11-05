@@ -6,37 +6,50 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 # CRAN packages
 cran_packages <- c(
   "readr", "dplyr", "tidyr", "ggplot2", "gridExtra",
-  "pheatmap", "ggrepel", "readxl", "tibble", "ggforce", "shadowtext"
+  "pheatmap", "ggrepel", "readxl", "tibble", "ggforce",
+  "shadowtext", "stringr", "qqman"
 )
+
 
 # Bioconductor packages
 bioc_packages <- c(
   "GEOquery", "DESeq2", "clusterProfiler", "org.Mm.eg.db",
-  "EnhancedVolcano", "enrichplot", "org.Hs.eg.db", "pathview"
+  "EnhancedVolcano", "enrichplot", "pathview", "apeglm",
+  "SummarizedExperiment",
 )
 
-if (!require(bioc_packages, quietly = TRUE))
-  BiocManager::install(bioc_packages)
+# Install only what is missing
+installed <- rownames(installed.packages())
 
-if (!require(cran_packages, quietly = TRUE))
-  install.packages(cran_packages)
+missing_cran <- setdiff(cran_packages, installed)
+  if (length(missing_cran) > 0) install.packages(missing_cran)
+
+missing_bioc <- setdiff(bioc_packages, installed)
+  if (length(missing_bioc) > 0) BiocManager::install(missing_bioc, update = FALSE, ask = FALSE)
+
+
 
 # Load packages (each one only once)
-invisible(lapply(
-  c(cran_packages, bioc_packages),
-  library,
-  character.only = TRUE
-))
+invisible(lapply(c(cran_packages, bioc_packages),
+                 library, character.only = TRUE))
+
+rm(list = ls())
 
 # Project configuration
 # 1. Project configuration -----------------------------------
 project_dir <- path.expand("~/github/projects/bulk_rna_seq/dox_chemobrain")
-
 setwd(project_dir)
+
+dir.create("data", showWarnings = FALSE)
+data <- file.path(project_dir, "data")
+
+dir.create("plots", showWarnings = FALSE)
+plots <- file.path(project_dir, "plots")
+
+geo_accession <- "GSE178812"
+options(timeout = 600)
+
+options(device = "RStudioGD")
 
 writeLines(capture.output(sessionInfo()), "sessionInfo.txt")
 
-par(mar=c(4.1, 4.1, 3.1, 2.1), cex.axis = 0.3, cex.lab = 2) 
-palette(c("#3399FF", "#CC0000", "#66A61E"))
-dev.new(width= 10, height=10, noRStudioGD = TRUE)
-options(scipen=0)
