@@ -1,0 +1,17 @@
+# Reference genome (GRCh38). Contig names must match the truth set (GIAB GRCh38 uses "chr20").
+reference: "ref/GRCh38.fa"
+
+# Restrict calling and benchmarking to one region to keep runtime low.
+region: "chr20"
+
+# GIAB HG002 benchmark (v4.2.1, GRCh38): bgzipped + tabix-indexed VCF and high-confidence BED.
+truth_vcf: "truth/HG002_GRCh38_benchmark.vcf.gz"
+truth_bed: "truth/HG002_GRCh38_benchmark.bed"
+
+# bcftools filter expression: variants matching it are removed.
+filter: "QUAL<20 || FORMAT/DP<10"
+
+samples:
+  HG002:
+    r1: "data/HG002_R1.fastq.gz"
+    r2: "data/HG002_R2.fastq.gz"

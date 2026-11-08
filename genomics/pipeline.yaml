@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - fastp
+  - bwa-mem2
+  - samtools
+  - bcftools
+  - htslib
+  - rtg-tools

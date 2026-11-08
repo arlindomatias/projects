@@ -1,0 +1,119 @@
+# Minimal germline variant-calling pipeline: FASTQ -> filtered VCF -> benchmark vs GIAB truth set.
+# Usage: snakemake --use-conda --cores 8
+
+configfile: "config.yaml"
+
+SAMPLES = config["samples"]
+REF = config["reference"]
+REGION = config["region"]
+
+
+rule all:
+    input:
+        expand("results/eval/{sample}", sample=SAMPLES),
+        expand("results/qc/{sample}_fastp.html", sample=SAMPLES),
+
+
+rule fastp:
+    input:
+        r1=lambda wc: SAMPLES[wc.sample]["r1"],
+        r2=lambda wc: SAMPLES[wc.sample]["r2"],
+    output:
+        r1="results/trimmed/{sample}_R1.fastq.gz",
+        r2="results/trimmed/{sample}_R2.fastq.gz",
+        html="results/qc/{sample}_fastp.html",
+        json="results/qc/{sample}_fastp.json",
+    threads: 4
+    conda: "envs/pipeline.yaml"
+    shell:
+        "fastp -i {input.r1} -I {input.r2} -o {output.r1} -O {output.r2} "
+        "-h {output.html} -j {output.json} -w {threads}"
+
+
+rule bwa_index:
+    input: REF
+    output: multiext(REF, ".0123", ".amb", ".ann", ".bwt.2bit.64", ".pac")
+    conda: "envs/pipeline.yaml"
+    shell: "bwa-mem2 index {input}"
+
+
+rule faidx:
+    input: REF
+    output: REF + ".fai"
+    conda: "envs/pipeline.yaml"
+    shell: "samtools faidx {input}"
+
+
+rule map_and_markdup:
+    input:
+        ref=REF,
+        idx=multiext(REF, ".0123", ".amb", ".ann", ".bwt.2bit.64", ".pac"),
+        r1="results/trimmed/{sample}_R1.fastq.gz",
+        r2="results/trimmed/{sample}_R2.fastq.gz",
+    output:
+        bam="results/bam/{sample}.markdup.bam",
+        bai="results/bam/{sample}.markdup.bam.bai",
+    params:
+        rg=lambda wc: f"@RG\\tID:{wc.sample}\\tSM:{wc.sample}\\tPL:ILLUMINA",
+    threads: 8
+    conda: "envs/pipeline.yaml"
+    shell:
+        "bwa-mem2 mem -t {threads} -R '{params.rg}' {input.ref} {input.r1} {input.r2} "
+        "| samtools sort -n -u -@ 2 - "
+        "| samtools fixmate -m -u - - "
+        "| samtools sort -u -@ 2 - "
+        "| samtools markdup -@ 2 - {output.bam} && "
+        "samtools index {output.bam}"
+
+
+rule call_variants:
+    input:
+        ref=REF,
+        fai=REF + ".fai",
+        bam="results/bam/{sample}.markdup.bam",
+    output:
+        vcf="results/vcf/{sample}.raw.vcf.gz",
+        tbi="results/vcf/{sample}.raw.vcf.gz.tbi",
+    params:
+        region=REGION,
+    threads: 4
+    conda: "envs/pipeline.yaml"
+    shell:
+        "bcftools mpileup -f {input.ref} -r {params.region} -a AD,DP -Ou {input.bam} "
+        "| bcftools call -mv -Oz --threads {threads} -o {output.vcf} && "
+        "tabix -p vcf {output.vcf}"
+
+
+rule filter_variants:
+    input: "results/vcf/{sample}.raw.vcf.gz"
+    output:
+        vcf="results/vcf/{sample}.filtered.vcf.gz",
+        tbi="results/vcf/{sample}.filtered.vcf.gz.tbi",
+    params:
+        expr=config["filter"],
+    conda: "envs/pipeline.yaml"
+    shell:
+        "bcftools filter -e '{params.expr}' -Oz -o {output.vcf} {input} && "
+        "tabix -p vcf {output.vcf}"
+
+
+rule rtg_sdf:
+    input: REF
+    output: directory("results/ref.sdf")
+    conda: "envs/pipeline.yaml"
+    shell: "rtg format -o {output} {input}"
+
+
+rule benchmark:
+    input:
+        query="results/vcf/{sample}.filtered.vcf.gz",
+        sdf="results/ref.sdf",
+        truth=config["truth_vcf"],
+        bed=config["truth_bed"],
+    output: directory("results/eval/{sample}")
+    params:
+        region=REGION,
+    conda: "envs/pipeline.yaml"
+    shell:
+        "rtg vcfeval -b {input.truth} -c {input.query} -t {input.sdf} "
+        "-e {input.bed} --region {params.region} -o {output}"
