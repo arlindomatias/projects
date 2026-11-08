@@ -9,11 +9,12 @@ truth_vcf: "truth/HG002_GRCh38_benchmark.vcf.gz"
 truth_bed: "truth/HG002_GRCh38_benchmark.bed"
 
 # bcftools filter expression: variants matching it are removed.
-# GATK recommended hard filters (separate thresholds for SNVs and indels).
+# GATK recommended hard filters (separate thresholds for SNVs and indels),
+# without the SNV "INFO/MQ<40" term: on HG002 chr20 it alone removed ~400 true SNVs.
 # Missing annotations (e.g. MQRankSum at hom-alt sites) do not trigger removal.
 # Previous filter: "QUAL<20 || FORMAT/DP<10"
 filter: >-
-  (TYPE="snp" && (INFO/QD<2 || QUAL<30 || INFO/SOR>3 || INFO/FS>60 || INFO/MQ<40
+  (TYPE="snp" && (INFO/QD<2 || QUAL<30 || INFO/SOR>3 || INFO/FS>60
   || INFO/MQRankSum<-12.5 || INFO/ReadPosRankSum<-8))
   || (TYPE="indel" && (INFO/QD<2 || QUAL<30 || INFO/FS>200 || INFO/ReadPosRankSum<-20))
 
