@@ -1,0 +1,22 @@
+name: genomics-variants
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - snakemake
+  # pipeline tools
+  - fastp
+  - bwa-mem2
+  - samtools
+  - bcftools
+  - htslib
+  - rtg-tools
+  # downstream analysis (Python)
+  - cyvcf2
+  - pysam
+  - pandas
+  - numpy
+  - scikit-allel
+  - matplotlib
+  - jupyterlab
