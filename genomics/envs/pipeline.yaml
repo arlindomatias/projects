@@ -3,7 +3,7 @@ channels:
   - bioconda
 dependencies:
   - fastp
-  - bwa-mem2
+  - bwa
   - samtools
   - bcftools
   - htslib

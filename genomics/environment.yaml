@@ -5,9 +5,11 @@ channels:
 dependencies:
   - python=3.12
   - snakemake
+  - mamba  # default conda frontend for `snakemake --use-conda`
   # pipeline tools
   - fastp
-  - bwa-mem2
+  - bwa
+  - gatk4
   - samtools
   - bcftools
   - htslib

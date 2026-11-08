@@ -1,9 +1,17 @@
 # Minimal germline variant-calling pipeline: FASTQ -> filtered VCF -> benchmark vs GIAB truth set.
 # Usage: snakemake --use-conda --cores 8
 
+import os
+
 configfile: "config.yaml"
 
-SAMPLES = config["samples"]
+# Expand environment variables (e.g. $DATA) in sample paths; fail early if unset.
+if "DATA" not in os.environ:
+    raise ValueError("Environment variable DATA is not set (raw reads are read from $DATA).")
+SAMPLES = {
+    s: {k: os.path.expandvars(v) for k, v in reads.items()}
+    for s, reads in config["samples"].items()
+}
 REF = config["reference"]
 REGION = config["region"]
 
@@ -32,9 +40,9 @@ rule fastp:
 
 rule bwa_index:
     input: REF
-    output: multiext(REF, ".0123", ".amb", ".ann", ".bwt.2bit.64", ".pac")
+    output: multiext(REF, ".amb", ".ann", ".bwt", ".pac", ".sa")
     conda: "envs/pipeline.yaml"
-    shell: "bwa-mem2 index {input}"
+    shell: "bwa index {input}"
 
 
 rule faidx:
@@ -47,7 +55,7 @@ rule faidx:
 rule map_and_markdup:
     input:
         ref=REF,
-        idx=multiext(REF, ".0123", ".amb", ".ann", ".bwt.2bit.64", ".pac"),
+        idx=multiext(REF, ".amb", ".ann", ".bwt", ".pac", ".sa"),
         r1="results/trimmed/{sample}_R1.fastq.gz",
         r2="results/trimmed/{sample}_R2.fastq.gz",
     output:
@@ -55,33 +63,49 @@ rule map_and_markdup:
         bai="results/bam/{sample}.markdup.bam.bai",
     params:
         rg=lambda wc: f"@RG\\tID:{wc.sample}\\tSM:{wc.sample}\\tPL:ILLUMINA",
+        sort_mem="512M",  # per sort thread; keeps peak RAM low next to bwa's ~5 GB index
+        sort_tmp=lambda wc: f"results/bam/{wc.sample}.sort_tmp",
     threads: 8
     conda: "envs/pipeline.yaml"
     shell:
-        "bwa-mem2 mem -t {threads} -R '{params.rg}' {input.ref} {input.r1} {input.r2} "
-        "| samtools sort -n -u -@ 2 - "
+        # bwa mem output is already name-grouped (mates adjacent), so fixmate can read it directly.
+        "bwa mem -t {threads} -R '{params.rg}' {input.ref} {input.r1} {input.r2} "
         "| samtools fixmate -m -u - - "
-        "| samtools sort -u -@ 2 - "
+        "| samtools sort -u -@ 2 -m {params.sort_mem} -T {params.sort_tmp} - "
         "| samtools markdup -@ 2 - {output.bam} && "
         "samtools index {output.bam}"
+
+
+rule seq_dict:
+    input: REF
+    output: os.path.splitext(REF)[0] + ".dict"
+    threads: 1
+    conda: "envs/gatk.yaml"
+    log: "logs/seq_dict/reference.log"
+    shell: "gatk CreateSequenceDictionary -R {input} -O {output} > {log} 2>&1"
 
 
 rule call_variants:
     input:
         ref=REF,
         fai=REF + ".fai",
+        dict=os.path.splitext(REF)[0] + ".dict",
         bam="results/bam/{sample}.markdup.bam",
+        bai="results/bam/{sample}.markdup.bam.bai",
     output:
         vcf="results/vcf/{sample}.raw.vcf.gz",
         tbi="results/vcf/{sample}.raw.vcf.gz.tbi",
     params:
         region=REGION,
+        java_mem="-Xmx4g",
     threads: 4
-    conda: "envs/pipeline.yaml"
+    conda: "envs/gatk.yaml"
+    log: "logs/call_variants/{sample}.log"
     shell:
-        "bcftools mpileup -f {input.ref} -r {params.region} -a AD,DP -Ou {input.bam} "
-        "| bcftools call -mv -Oz --threads {threads} -o {output.vcf} && "
-        "tabix -p vcf {output.vcf}"
+        # GATK HaplotypeCaller (single-sample, direct VCF); writes the .tbi index itself.
+        "gatk --java-options '{params.java_mem}' HaplotypeCaller "
+        "-R {input.ref} -I {input.bam} -L {params.region} -O {output.vcf} "
+        "--native-pair-hmm-threads {threads} > {log} 2>&1"
 
 
 rule filter_variants:

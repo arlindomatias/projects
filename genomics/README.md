@@ -2,7 +2,7 @@
 
 Minimal Snakemake pipeline for germline variant calling, benchmarked against the GIAB HG002 truth set.
 
-**Steps:** fastp (QC/trimming) -> bwa-mem2 -> samtools (sort, fixmate, markdup) -> bcftools (call, filter) -> rtg vcfeval.
+**Steps:** fastp (QC/trimming) -> bwa mem -> samtools (sort, fixmate, markdup) -> GATK HaplotypeCaller -> bcftools filter -> rtg vcfeval.
 
 ## Setup
 

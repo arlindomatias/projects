@@ -9,9 +9,17 @@ truth_vcf: "truth/HG002_GRCh38_benchmark.vcf.gz"
 truth_bed: "truth/HG002_GRCh38_benchmark.bed"
 
 # bcftools filter expression: variants matching it are removed.
-filter: "QUAL<20 || FORMAT/DP<10"
+# GATK recommended hard filters (separate thresholds for SNVs and indels).
+# Missing annotations (e.g. MQRankSum at hom-alt sites) do not trigger removal.
+# Previous filter: "QUAL<20 || FORMAT/DP<10"
+filter: >-
+  (TYPE="snp" && (INFO/QD<2 || QUAL<30 || INFO/SOR>3 || INFO/FS>60 || INFO/MQ<40
+  || INFO/MQRankSum<-12.5 || INFO/ReadPosRankSum<-8))
+  || (TYPE="indel" && (INFO/QD<2 || QUAL<30 || INFO/FS>200 || INFO/ReadPosRankSum<-20))
 
+# Raw reads live outside the repo, under $DATA (expanded by the Snakefile).
+# HG002 chr20 reads extracted from GIAB HG002.GRCh38.60x.1.bam (NHGRI novoalign, HiSeq 2x148, ~60x).
 samples:
   HG002:
-    r1: "data/HG002_R1.fastq.gz"
-    r2: "data/HG002_R2.fastq.gz"
+    r1: "$DATA/GIAB_HG002/HG002_chr20_R1.fastq.gz"
+    r2: "$DATA/GIAB_HG002/HG002_chr20_R2.fastq.gz"
