@@ -24,3 +24,10 @@ samples:
   HG002:
     r1: "$DATA/GIAB_HG002/HG002_chr20_R1.fastq.gz"
     r2: "$DATA/GIAB_HG002/HG002_chr20_R2.fastq.gz"
+
+# SnpEff annotation database (Ensembl GRCh38) and where its files are stored (outside the repo).
+snpeff_db: "GRCh38.115"
+snpeff_data_dir: "$DATA/snpEff_data"
+
+# DeepVariant Docker image (run via `docker run` in the deepvariant rule).
+deepvariant_image: "google/deepvariant:1.10.0"

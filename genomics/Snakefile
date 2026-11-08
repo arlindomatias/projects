@@ -1,4 +1,5 @@
-# Minimal germline variant-calling pipeline: FASTQ -> filtered VCF -> benchmark vs GIAB truth set.
+# Germline variant-calling pipeline: FASTQ -> filtered VCF -> benchmark vs GIAB truth set,
+# plus SnpEff annotation and a DeepVariant comparison on the same BAM.
 # Usage: snakemake --use-conda --cores 8
 
 import os
@@ -13,14 +14,22 @@ SAMPLES = {
     for s, reads in config["samples"].items()
 }
 REF = config["reference"]
+REF_DICT = os.path.splitext(REF)[0] + ".dict"
 REGION = config["region"]
+SNPEFF_DB = config["snpeff_db"]
+SNPEFF_DIR = os.path.abspath(os.path.expandvars(config["snpeff_data_dir"]))
+WORKDIR = os.getcwd()
 
 
 rule all:
     input:
-        expand("results/eval/{sample}", sample=SAMPLES),
         expand("results/qc/{sample}_fastp.html", sample=SAMPLES),
+        expand("results/eval/{sample}", sample=SAMPLES),
+        expand("results/annot/{sample}.snpeff.vcf.gz", sample=SAMPLES),
+        expand("results/eval_deepvariant/{sample}", sample=SAMPLES),
 
+
+# ---------------------------------------------------------------- QC and alignment
 
 rule fastp:
     input:
@@ -33,23 +42,28 @@ rule fastp:
         json="results/qc/{sample}_fastp.json",
     threads: 4
     conda: "envs/pipeline.yaml"
+    log: "logs/fastp/{sample}.log"
     shell:
         "fastp -i {input.r1} -I {input.r2} -o {output.r1} -O {output.r2} "
-        "-h {output.html} -j {output.json} -w {threads}"
+        "-h {output.html} -j {output.json} -w {threads} 2> {log}"
 
 
 rule bwa_index:
     input: REF
     output: multiext(REF, ".amb", ".ann", ".bwt", ".pac", ".sa")
+    threads: 1
     conda: "envs/pipeline.yaml"
-    shell: "bwa index {input}"
+    log: "logs/bwa_index/reference.log"
+    shell: "bwa index {input} > {log} 2>&1"
 
 
 rule faidx:
     input: REF
     output: REF + ".fai"
+    threads: 1
     conda: "envs/pipeline.yaml"
-    shell: "samtools faidx {input}"
+    log: "logs/faidx/reference.log"
+    shell: "samtools faidx {input} > {log} 2>&1"
 
 
 rule map_and_markdup:
@@ -67,18 +81,21 @@ rule map_and_markdup:
         sort_tmp=lambda wc: f"results/bam/{wc.sample}.sort_tmp",
     threads: 8
     conda: "envs/pipeline.yaml"
+    log: "logs/map_and_markdup/{sample}.log"
     shell:
         # bwa mem output is already name-grouped (mates adjacent), so fixmate can read it directly.
-        "bwa mem -t {threads} -R '{params.rg}' {input.ref} {input.r1} {input.r2} "
+        "(bwa mem -t {threads} -R '{params.rg}' {input.ref} {input.r1} {input.r2} "
         "| samtools fixmate -m -u - - "
         "| samtools sort -u -@ 2 -m {params.sort_mem} -T {params.sort_tmp} - "
         "| samtools markdup -@ 2 - {output.bam} && "
-        "samtools index {output.bam}"
+        "samtools index {output.bam}) 2> {log}"
 
+
+# ---------------------------------------------------------------- GATK calling and filtering
 
 rule seq_dict:
     input: REF
-    output: os.path.splitext(REF)[0] + ".dict"
+    output: REF_DICT
     threads: 1
     conda: "envs/gatk.yaml"
     log: "logs/seq_dict/reference.log"
@@ -89,7 +106,7 @@ rule call_variants:
     input:
         ref=REF,
         fai=REF + ".fai",
-        dict=os.path.splitext(REF)[0] + ".dict",
+        dict=REF_DICT,
         bam="results/bam/{sample}.markdup.bam",
         bai="results/bam/{sample}.markdup.bam.bai",
     output:
@@ -115,17 +132,23 @@ rule filter_variants:
         tbi="results/vcf/{sample}.filtered.vcf.gz.tbi",
     params:
         expr=config["filter"],
+    threads: 1
     conda: "envs/pipeline.yaml"
+    log: "logs/filter_variants/{sample}.log"
     shell:
-        "bcftools filter -e '{params.expr}' -Oz -o {output.vcf} {input} && "
-        "tabix -p vcf {output.vcf}"
+        "(bcftools filter -e '{params.expr}' -Oz -o {output.vcf} {input} && "
+        "tabix -p vcf {output.vcf}) 2> {log}"
 
+
+# ---------------------------------------------------------------- Benchmark (GIAB truth set)
 
 rule rtg_sdf:
     input: REF
     output: directory("results/ref.sdf")
+    threads: 1
     conda: "envs/pipeline.yaml"
-    shell: "rtg format -o {output} {input}"
+    log: "logs/rtg_sdf/reference.log"
+    shell: "rtg format -o {output} {input} > {log} 2>&1"
 
 
 rule benchmark:
@@ -137,7 +160,91 @@ rule benchmark:
     output: directory("results/eval/{sample}")
     params:
         region=REGION,
+    threads: 1
     conda: "envs/pipeline.yaml"
+    log: "logs/benchmark/{sample}.log"
     shell:
         "rtg vcfeval -b {input.truth} -c {input.query} -t {input.sdf} "
-        "-e {input.bed} --region {params.region} -o {output}"
+        "-e {input.bed} --region {params.region} -o {output} > {log} 2>&1"
+
+
+# ---------------------------------------------------------------- Annotation (SnpEff)
+
+rule snpeff_db:
+    output: directory(os.path.join(SNPEFF_DIR, SNPEFF_DB))
+    params:
+        db=SNPEFF_DB,
+        data_dir=SNPEFF_DIR,
+    threads: 1
+    conda: "envs/annotation.yaml"
+    log: "logs/snpeff_db/download.log"
+    shell: "snpEff download -v -dataDir {params.data_dir} {params.db} > {log} 2>&1"
+
+
+rule annotate:
+    input:
+        vcf="results/vcf/{sample}.filtered.vcf.gz",
+        db=os.path.join(SNPEFF_DIR, SNPEFF_DB),
+    output:
+        vcf="results/annot/{sample}.snpeff.vcf.gz",
+        tbi="results/annot/{sample}.snpeff.vcf.gz.tbi",
+        html="results/annot/{sample}.snpeff.html",
+    params:
+        db=SNPEFF_DB,
+        data_dir=SNPEFF_DIR,
+        java_mem="-Xmx4g",
+    threads: 1
+    conda: "envs/annotation.yaml"
+    log: "logs/annotate/{sample}.log"
+    shell:
+        # SnpEff matches "chr20" to the database's "20" contig automatically.
+        "(snpEff {params.java_mem} ann -dataDir {params.data_dir} -stats {output.html} "
+        "{params.db} {input.vcf} | bgzip -c > {output.vcf} && "
+        "tabix -p vcf {output.vcf}) 2> {log}"
+
+
+# ---------------------------------------------------------------- DeepVariant comparison
+
+# DeepVariant ships as an official Docker image (no working conda package), so this rule
+# runs it through `docker run` instead of a `conda:` env. The project dir is mounted at the
+# same path, so all paths stay relative to the working directory.
+rule deepvariant:
+    input:
+        ref=REF,
+        fai=REF + ".fai",
+        bam="results/bam/{sample}.markdup.bam",
+        bai="results/bam/{sample}.markdup.bam.bai",
+    output:
+        vcf="results/vcf/{sample}.deepvariant.vcf.gz",
+        tbi="results/vcf/{sample}.deepvariant.vcf.gz.tbi",
+    params:
+        image=config["deepvariant_image"],
+        region=REGION,
+        workdir=WORKDIR,
+        tmp=lambda wc: f"results/deepvariant_tmp/{wc.sample}",
+    threads: 8
+    log: "logs/deepvariant/{sample}.log"
+    shell:
+        "docker run --rm -u $(id -u):$(id -g) -v {params.workdir}:{params.workdir} "
+        "-w {params.workdir} {params.image} /opt/deepvariant/bin/run_deepvariant "
+        "--model_type=WGS --ref={input.ref} --reads={input.bam} --regions={params.region} "
+        "--output_vcf={output.vcf} --num_shards={threads} "
+        "--intermediate_results_dir={params.tmp} > {log} 2>&1 && rm -rf {params.tmp}"
+
+
+rule benchmark_deepvariant:
+    input:
+        # vcfeval only scores PASS records, so DeepVariant's RefCall/NoCall sites are ignored.
+        query="results/vcf/{sample}.deepvariant.vcf.gz",
+        sdf="results/ref.sdf",
+        truth=config["truth_vcf"],
+        bed=config["truth_bed"],
+    output: directory("results/eval_deepvariant/{sample}")
+    params:
+        region=REGION,
+    threads: 1
+    conda: "envs/pipeline.yaml"
+    log: "logs/benchmark_deepvariant/{sample}.log"
+    shell:
+        "rtg vcfeval -b {input.truth} -c {input.query} -t {input.sdf} "
+        "-e {input.bed} --region {params.region} -o {output} > {log} 2>&1"
