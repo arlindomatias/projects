@@ -192,7 +192,7 @@ rule annotate:
     params:
         db=SNPEFF_DB,
         data_dir=SNPEFF_DIR,
-        java_mem="-Xmx4g",
+        java_mem="-Xmx6g",  # GRCh38 database + stats thrash the GC at 4 GB
     threads: 1
     conda: "envs/annotation.yaml"
     log: "logs/annotate/{sample}.log"
