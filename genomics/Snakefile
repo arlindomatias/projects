@@ -20,6 +20,10 @@ SNPEFF_DB = config["snpeff_db"]
 SNPEFF_DIR = os.path.abspath(os.path.expandvars(config["snpeff_data_dir"]))
 WORKDIR = os.getcwd()
 
+# Keep {sample} from matching paths such as results/eval/baseline_bcftools/...
+wildcard_constraints:
+    sample="|".join(SAMPLES),
+
 
 rule all:
     input:
@@ -27,6 +31,8 @@ rule all:
         expand("results/eval/{sample}", sample=SAMPLES),
         expand("results/annot/{sample}.snpeff.vcf.gz", sample=SAMPLES),
         expand("results/eval_deepvariant/{sample}", sample=SAMPLES),
+        expand("results/plots/{sample}_precision_recall.png", sample=SAMPLES),
+        expand("results/plots/{sample}_snpeff.png", sample=SAMPLES),
 
 
 # ---------------------------------------------------------------- QC and alignment
@@ -248,3 +254,67 @@ rule benchmark_deepvariant:
     shell:
         "rtg vcfeval -b {input.truth} -c {input.query} -t {input.sdf} "
         "-e {input.bed} --region {params.region} -o {output} > {log} 2>&1"
+
+
+# ---------------------------------------------------------------- bcftools baseline (for plots)
+
+# The bcftools baseline VCF kept from the first run was scored without ROC output.
+# Re-run vcfeval on it (QUAL as score; bcftools call writes no GQ) to get its curve.
+rule index_bcftools_baseline:
+    input: "results/eval/baseline_bcftools/{sample}.filtered.vcf.gz"
+    output:
+        vcf="results/vcf/{sample}.bcftools_baseline.vcf.gz",
+        tbi="results/vcf/{sample}.bcftools_baseline.vcf.gz.tbi",
+    threads: 1
+    conda: "envs/pipeline.yaml"
+    log: "logs/index_bcftools_baseline/{sample}.log"
+    shell: "(cp {input} {output.vcf} && tabix -p vcf {output.vcf}) 2> {log}"
+
+
+rule benchmark_bcftools_baseline:
+    input:
+        query="results/vcf/{sample}.bcftools_baseline.vcf.gz",
+        tbi="results/vcf/{sample}.bcftools_baseline.vcf.gz.tbi",
+        sdf="results/ref.sdf",
+        truth=config["truth_vcf"],
+        bed=config["truth_bed"],
+    output: directory("results/eval_bcftools/{sample}")
+    params:
+        region=REGION,
+    threads: 1
+    conda: "envs/pipeline.yaml"
+    log: "logs/benchmark_bcftools_baseline/{sample}.log"
+    shell:
+        "rtg vcfeval -b {input.truth} -c {input.query} -t {input.sdf} "
+        "-e {input.bed} --region {params.region} --vcf-score-field QUAL "
+        "-o {output} > {log} 2>&1"
+
+
+# ---------------------------------------------------------------- Plots
+
+rule plot_benchmark:
+    input:
+        bcftools="results/eval_bcftools/{sample}",
+        gatk="results/eval/{sample}",
+        deepvariant="results/eval_deepvariant/{sample}",
+    output: "results/plots/{sample}_precision_recall.png"
+    params:
+        evals=lambda wc, input: {
+            "bcftools": input.bcftools,
+            "GATK": input.gatk,
+            "DeepVariant": input.deepvariant,
+        },
+    threads: 1
+    conda: "envs/plots.yaml"
+    log: "logs/plot_benchmark/{sample}.log"
+    script: "scripts/plot_benchmark.py"
+
+
+rule plot_snpeff:
+    input:
+        vcf="results/annot/{sample}.snpeff.vcf.gz",
+    output: "results/plots/{sample}_snpeff.png"
+    threads: 1
+    conda: "envs/plots.yaml"
+    log: "logs/plot_snpeff/{sample}.log"
+    script: "scripts/plot_snpeff.py"

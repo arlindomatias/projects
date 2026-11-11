@@ -4,19 +4,28 @@ Minimal Snakemake pipeline for germline variant calling, benchmarked against the
 
 **Steps:** fastp (QC/trimming) -> bwa mem -> samtools (sort, fixmate, markdup) -> GATK HaplotypeCaller -> bcftools filter -> rtg vcfeval.
 
-**Extras:** SnpEff annotation of the filtered VCF, and DeepVariant (Docker) on the same BAM, benchmarked the same way.
+**Extras:** SnpEff annotation of the filtered VCF, DeepVariant (Docker) on the same BAM, benchmarked the same way, and plots (`scripts/plot_*.py`, env `envs/plots.yaml`).
 
 ## Setup
 
-1. Put the GRCh38 reference in `ref/` and the paired FASTQs under `$DATA` (see `config.yaml`).
-2. Download the GIAB HG002 GRCh38 benchmark VCF (+ `.tbi`) and BED into `truth/`.
-3. Edit `config.yaml` (paths, region, filter).
+1. Create and activate the conda environment (Snakemake 9 + tools):
+   ```bash
+   conda env create -f environment.yaml
+   conda activate genomic-variants
+   ```
+   Use this env's `snakemake`, not an older system one (e.g. 7.x), which may wrongly
+   flag finished steps (such as `bwa index`) for rerun.
+2. Put the GRCh38 reference in `ref/` and the paired FASTQs under `$DATA` (see `config.yaml`).
+3. Download the GIAB HG002 GRCh38 benchmark VCF (+ `.tbi`) and BED into `truth/`.
+4. Edit `config.yaml` (paths, region, filter).
 
 ## Run
 
 ```bash
-snakemake -n                       # dry run
+export DATA=/path/to/data          # raw reads are read from $DATA
+snakemake -n --use-conda           # dry run
 snakemake --use-conda --cores 8
+snakemake --lint                   # lint
 ```
 
 Requires the `DATA` environment variable and Docker (for DeepVariant).
@@ -25,9 +34,21 @@ Outputs:
 - GATK benchmark: `results/eval/<sample>/summary.txt`
 - DeepVariant benchmark: `results/eval_deepvariant/<sample>/summary.txt`
 - SnpEff annotation: `results/annot/<sample>.snpeff.vcf.gz` (+ `.html` report)
+- Plots: `results/plots/<sample>_precision_recall.png` (bcftools vs GATK vs DeepVariant,
+  all variants / SNVs / indels) and `results/plots/<sample>_snpeff.png` (impact classes,
+  most common effects)
+- Reports with plots: `results/qc/<sample>_fastp.html`, `results/annot/<sample>.snpeff.html`
 - Logs: `logs/<rule>/<sample>.log`
 
 ## Notes
 
 - Reference contig names must match the truth set (`chr20` vs `20`).
 - The SnpEff database (`snpeff_db`) is downloaded once into `snpeff_data_dir`.
+
+## Results (HG002, chr20, GIAB v4.2.1 high-confidence regions)
+
+| Caller | Filter | Precision | Recall | F1 |
+|---|---|---|---|---|
+| bcftools | `QUAL<20 \|\| DP<10` | 0.9862 | 0.9854 | 0.9858 |
+| GATK HaplotypeCaller | GATK hard filters without `MQ<40` | 0.9962 | 0.9917 | 0.9939 |
+| DeepVariant 1.10.0 | PASS only | 0.9993 | 0.9957 | 0.9975 |

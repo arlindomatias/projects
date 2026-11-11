@@ -1,4 +1,4 @@
-name: genomics-variants
+name: genomic-variants
 channels:
   - conda-forge
   - bioconda

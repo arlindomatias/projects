@@ -1,0 +1,10 @@
+# Plotting env, kept separate so it does not change envs/pipeline.yaml
+# (which would make Snakemake rerun indexing and alignment).
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - pandas
+  - matplotlib
+  - cyvcf2

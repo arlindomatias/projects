@@ -52,3 +52,10 @@ logs/
 dag.pdf
 
 CLAUDE*
+
+# Manual step-by-step runner (reading aid, not part of the project) and its outputs
+scripts/run_manual.sh
+manual_run/
+
+# Python bytecode
+__pycache__/
