@@ -6,10 +6,10 @@ dependencies:
   - python=3.12
   - snakemake
   - mamba  # default conda frontend for `snakemake --use-conda`
-  # pipeline tools
+  # pipeline tools (GATK and SnpEff are not here: Snakemake builds them from
+  # envs/gatk.yaml and envs/annotation.yaml)
   - fastp
   - bwa
-  - gatk4
   - samtools
   - bcftools
   - htslib
