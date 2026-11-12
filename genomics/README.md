@@ -26,6 +26,7 @@ export DATA=/path/to/data          # raw reads are read from $DATA
 snakemake -n --use-conda           # dry run
 snakemake --use-conda --cores 8
 snakemake --lint                   # lint
+snakemake --dag | dot -Tpdf > dag.pdf   # rule graph
 ```
 
 Requires the `DATA` environment variable and Docker (for DeepVariant).
@@ -40,6 +41,15 @@ Outputs:
 - Reports with plots: `results/qc/<sample>_fastp.html`, `results/annot/<sample>.snpeff.html`
 - Logs: `logs/<rule>/<sample>.log`
 
+## Layout
+
+- `Snakefile`: all rules, one per step
+- `config.yaml`: paths, region, filter expression, sample sheet
+- `envs/`: per-rule conda envs (`pipeline`, `gatk`, `annotation`, `plots`); DeepVariant runs via `docker run`
+- `scripts/`: plotting scripts called by rules (`plot_benchmark.py`, `plot_snpeff.py`, shared `plot_style.py`)
+- `figures/`: tracked copies of the plots and HTML reports linked below
+- `ref/`, `data/`, `truth/`, `results/`, `logs/`: large or generated files, git-ignored
+
 ## Notes
 
 - Reference contig names must match the truth set (`chr20` vs `20`).
@@ -47,13 +57,33 @@ Outputs:
 
 ## Results (HG002, chr20, GIAB v4.2.1 high-confidence regions)
 
-| Caller | Filter | Precision | Recall | F1 |
-|---|---|---|---|---|
-| bcftools | `QUAL<20 \|\| DP<10` | 0.9862 | 0.9854 | 0.9858 |
-| GATK HaplotypeCaller | GATK hard filters without `MQ<40` | 0.9962 | 0.9917 | 0.9939 |
-| DeepVariant 1.10.0 | PASS only | 0.9993 | 0.9957 | 0.9975 |
+| Caller | Filter | TP | FP | FN | Precision | Recall | F1 |
+|---|---|---|---|---|---|---|---|
+| bcftools | `QUAL<20 \|\| DP<10` | 81,384 | 1,140 | 1,205 | 0.9862 | 0.9854 | 0.9858 |
+| GATK HaplotypeCaller | GATK hard filters without `MQ<40` | 81,903 | 316 | 686 | 0.9962 | 0.9917 | 0.9939 |
+| DeepVariant 1.10.0 | PASS only | 82,230 | 59 | 359 | 0.9993 | 0.9957 | 0.9975 |
+
+TP = true positives (baseline), FP = false positives, FN = false negatives; values from vcfeval
+with no score threshold (`None` row of `summary.txt`).
 
 ![Precision vs recall: bcftools, GATK, DeepVariant](figures/HG002_precision_recall.png)
+
+### GATK filter tuning
+
+All runs use the same BAM and HaplotypeCaller calls (no BQSR); only the `bcftools filter` expression changes.
+
+| GATK filter | Precision | Recall | F1 |
+|---|---|---|---|
+| `QUAL<20 \|\| DP<10` (same as bcftools) | 0.9924 | 0.9938 | 0.9931 |
+| GATK recommended hard filters | 0.9967 | 0.9873 | 0.9920 |
+| Hard filters without `MQ<40` (current) | 0.9962 | 0.9917 | 0.9939 |
+
+The SNV `MQ<40` term alone removed ~400 true SNVs on chr20, so it was dropped.
+
+### Annotation (SnpEff, GRCh38.115)
+
+118,178 variants annotated in the filtered GATK VCF. By putative impact: HIGH 42,
+MODERATE 276, LOW 673, MODIFIER 117,187.
 
 ![SnpEff impact classes and most common effects](figures/HG002_snpeff.png)
 
