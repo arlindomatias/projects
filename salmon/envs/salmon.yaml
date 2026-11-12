@@ -1,0 +1,6 @@
+# Versão do Salmon fixada: todas as amostras devem usar a mesma versão (ver CLAUDE.md).
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - salmon=2.11.0
