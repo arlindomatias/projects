@@ -1,7 +1,0 @@
-# GATK lives in its own env so adding it does not change envs/pipeline.yaml
-# (which would make Snakemake rerun indexing and alignment).
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - gatk4=4.6.2.0

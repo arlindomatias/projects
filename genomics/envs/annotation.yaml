@@ -1,7 +1,0 @@
-# SnpEff in its own env so adding it does not change envs/pipeline.yaml.
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - snpeff=5.4.0c
-  - htslib
