@@ -1,0 +1,7 @@
+# Multiple sequence alignment and approximate ML tree for UniFrac.
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - mafft
+  - fasttree

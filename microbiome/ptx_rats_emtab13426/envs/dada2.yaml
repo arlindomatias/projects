@@ -1,0 +1,13 @@
+# DADA2 denoising, taxonomy and phyloseq object assembly.
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.5
+  - bioconductor-dada2=1.38
+  - bioconductor-phyloseq
+  - bioconductor-biostrings
+  - r-ggplot2
+  - r-phangorn
+  - r-gridextra
+  - r-jsonlite

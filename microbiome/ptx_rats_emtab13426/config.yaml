@@ -1,0 +1,38 @@
+# 16S rRNA (V3-V4) amplicon pipeline for E-MTAB-13426 (rat feces, paclitaxel vs vehicle).
+# Paths may use environment variables (e.g. $DATA); the Snakefile expands them.
+
+# ArrayExpress sample sheet (one row per FASTQ file, two per run). Shipped with the
+# ArrayExpress download; also defines groups and time points.
+sdrf: "$DATA/Microbiota/PTX Zhong/E-MTAB-13426 feces PTX rats/E-MTAB-13426.sdrf.txt"
+
+# Authors' processed genus table (relative abundance, QIIME 1.8 / MOTHUR), used only for a
+# sanity-check comparison in the report.
+authors_genus_table: "$DATA/Microbiota/PTX Zhong/E-MTAB-13426 feces PTX rats/otu_table_genus.txt"
+
+# Raw reads downloaded from ENA (PRJEB67467) are stored here, outside the repository.
+fastq_dir: "$DATA/Microbiota/PTX Zhong/E-MTAB-13426 feces PTX rats/fastq"
+
+# SILVA 138.2 formatted for DADA2 (https://zenodo.org/records/14169026).
+silva_dir: "$DATA/refdb/silva_138.2_dada2"
+silva_trainset_url: "https://zenodo.org/records/14169026/files/silva_nr99_v138.2_toGenus_trainset.fa.gz"
+silva_trainset_md5: "1764e2a36b4500ccb1c7d5261948a414"
+silva_species_url: "https://zenodo.org/records/14169026/files/silva_v138.2_assignSpecies.fa.gz"
+silva_species_md5: "62fd939bd1aa9832d2089847f9f0b87d"
+
+# Primers (Methods of Zhong et al. 2023). Mate orientation differs between runs: in about
+# half of them R1 starts with the reverse primer. scripts/trim_primers.sh tries both
+# orientations, so "fwd" reads always start after 338F.
+primer_fwd: "ACTCCTACGGGAGGCAGCA"   # 338F
+primer_rev: "GGACTACHVGGGTWTCTAAT"  # 806R
+
+# DADA2 filterAndTrim parameters (lengths after primer removal).
+# Two sequencing runs: week-4 samples are 2x250 (trimmed reads ~225 fwd / ~231 rev bp), all
+# other samples 2x300 (~274 / ~281 bp). One setting is used for both runs: 220 + 229 = 449 bp
+# leaves ~20 bp overlap on the ~429 bp amplicon (338F-806R without primers).
+trunc_len_fwd: 220
+trunc_len_rev: 229
+max_ee_fwd: 2
+max_ee_rev: 2
+
+# Random seed for rarefaction and permutation tests.
+seed: 2023
