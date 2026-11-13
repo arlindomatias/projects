@@ -17,12 +17,6 @@ This directory contains code used for behavioral analysis, including code (in R)
 
   <img width="806" height="411" alt="Fig  4A" src="https://github.com/user-attachments/assets/2ad1e75d-6946-4335-a3c0-0b0a30970713" />
 
-## * [salmon](salmon)
-Bash scripts for FASTQ data extraction and sample processing with Salmon.
-
-## * [single-cell-rna-seq](https://github.com/arlindomatias/single-cell-rna-seq)
-Single-cell RNA-seq analyses (Scanpy) moved to a dedicated repository.
-
 ## * [microbiome](microbiome)
 R scripts for microbiome data analysis.
 
@@ -45,5 +39,8 @@ Preliminary codes for analysis of DNA/RNA sequences.
 
 ## * [database](database)
 Codes in SQL and DBML for database projects.
+
+## * [AI_agents](AI_agents)
+Python command-line AI assistant for data science and bioinformatics (LiteLLM + Gemini), with saved conversation history.
 
 ---
