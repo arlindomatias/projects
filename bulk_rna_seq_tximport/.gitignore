@@ -1,7 +1,0 @@
-.snakemake/
-logs/
-cache/
-results/*.rds
-.Rhistory
-.RData
-logs_run.txt
