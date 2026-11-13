@@ -1,0 +1,37 @@
+# AutoDock Vina parameters. Boxes are filled in after receptor preparation,
+# from the centroid of the crystallographic reference ligand.
+
+engine: vina
+exhaustiveness:
+  taxane_site: 32
+  modulator_site: 32
+  whole_cavity: 64
+num_modes: 20
+energy_range: 4
+n_seeds: 10               # independent runs per ligand x site x receptor
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+sites:
+  taxane_site:
+    anchor: {pdb: 6QEX, ligand: TA1}
+    size: [26, 26, 26]
+    center: null          # computed from anchor ligand centroid
+  modulator_site:
+    anchor: {pdb: 7A6F, ligand: ZQU}
+    size: [26, 26, 26]
+    center: null
+  whole_cavity:
+    anchor: null          # computed from TMD cavity bounding box
+    size: null
+    center: null
+
+ligand_prep:
+  ph: 7.4
+  keep_neutral_variant_for_basic_amines: true
+
+validation:
+  redock_pairs:
+    - {pdb: 6QEX, ligand: TA1}
+    - {pdb: 7A6F, ligand: ZQU}
+    - {pdb: 7A69, ligand: R1Q}
+  rmsd_pass_threshold: 2.5   # Angstrom; above this the protocol is revised before interpretation

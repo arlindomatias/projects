@@ -1,0 +1,9 @@
+name,class,role,pubchem_cid,inchikey,notes
+paclitaxel,taxane,test,36314,RCINICONZNJXQF-MZXODVADSA-N,crystallographic reference TA1 in 6QEX
+docetaxel,taxane,test,148124,ZDZOTLJHXYCWBA-VCVYQWHSSA-N,
+cabazitaxel,taxane,test,9854073,BMQGVNUXMIRLCK-OAGWZNDDSA-N,expected lowest P-gp affinity
+zosuquidar,inhibitor,positive_control_inhibitor,3036703,IHOVFYSQUDPMCN-XAKVHENESA-N,crystallographic reference ZQU in 7A6F; basic amine
+vincristine,substrate,positive_control_substrate,5978,OGWKCGZFUXNPDA-XQKSVPLYSA-N,crystallographic reference R1Q in 7A69
+verapamil,substrate,substrate_anchor,2520,SGTNSNPWRIOYBX-UHFFFAOYSA-N,classical P-gp substrate; basic amine
+digoxin,substrate,substrate_anchor,2724385,LTMHDMANZUZIPE-PUGKRICDSA-N,non-taxane substrate chemotype
+diazepam,non_substrate,negative_control,3016,AAOVKJBEBIDNHE-UHFFFAOYSA-N,CNS-penetrant; should not rank as a strong binder

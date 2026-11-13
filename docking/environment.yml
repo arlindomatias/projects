@@ -1,0 +1,38 @@
+name: docking
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  # 3.10 rather than 3.11: that is what the stack below actually resolves to on
+  # conda-forge/bioconda with vina, pymol-open-source and snakemake together.
+  # environment.lock.yml records the exact resolved versions of a working env.
+  - python=3.10
+  # Docking engines
+  - vina=1.2.*            # AutoDock Vina (CLI + Python bindings)
+  - smina                 # optional rescoring / Vinardo scoring function
+  # Structure and ligand preparation
+  - meeko                 # ligand/receptor PDBQT preparation
+  - openbabel
+  - rdkit
+  - pdb2pqr               # PROPKA-based protonation at a given pH
+  - pdbfixer              # missing atoms / side chains
+  - openmm                # used by pdbfixer, optional minimization
+  - biopython
+  - prody
+  - mdanalysis
+  # Interaction analysis
+  - plip
+  - prolif
+  # Visualization and reporting
+  - pymol-open-source
+  - py3dmol
+  - matplotlib
+  - seaborn
+  - pandas
+  - numpy
+  - scipy
+  - jupyterlab
+  # Orchestration
+  - snakemake-minimal
+  - pyyaml
+  - requests

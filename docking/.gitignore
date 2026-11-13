@@ -1,0 +1,16 @@
+# Raw downloads and all regenerable artifacts
+data/raw/
+data/prepared/
+results/docking/
+results/figures/
+logs/
+
+# Keep small result tables under version control
+!results/analysis/
+results/analysis/**/*.pdbqt
+
+# Python / conda
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.snakemake/
