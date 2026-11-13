@@ -1,0 +1,8 @@
+# Generated outputs (reads and references live under $DATA)
+results/
+logs/
+.snakemake/
+*.fastq.gz
+*.fq.gz
+dag.pdf
+CLAUDE*

@@ -1,0 +1,286 @@
+# 16S rRNA V3-V4 amplicon pipeline for ArrayExpress E-MTAB-13426 (ENA PRJEB67467):
+# rat feces after paclitaxel (PTX, day 14 and day 28) or vehicle (control).
+# ENA FASTQ -> cutadapt (primers) -> DADA2 (ASVs) -> SILVA 138.2 taxonomy -> MAFFT/FastTree
+# -> phyloseq -> R Markdown report (composition, alpha/beta diversity, differential abundance).
+# Usage: snakemake --use-conda --cores 8
+
+import csv
+import os
+import re
+
+configfile: "config.yaml"
+
+if "DATA" not in os.environ:
+    raise ValueError("Environment variable DATA is not set (raw data are read from $DATA).")
+
+
+def cfg_path(key):
+    return os.path.expandvars(config[key])
+
+
+SDRF = cfg_path("sdrf")
+FASTQ_DIR = cfg_path("fastq_dir")
+SILVA_DIR = cfg_path("silva_dir")
+SILVA_TRAINSET = os.path.join(SILVA_DIR, "silva_nr99_v138.2_toGenus_trainset.fa.gz")
+SILVA_SPECIES = os.path.join(SILVA_DIR, "silva_v138.2_assignSpecies.fa.gz")
+
+
+def read_samples(sdrf):
+    """One entry per ENA run, named after the submitted file (C1 / PTX1_WK2 / PTX1_WK4)."""
+    samples = {}
+    with open(sdrf, newline="") as fh:
+        rows = csv.reader(fh, delimiter="\t")
+        header = next(rows)
+        col = {name: header.index(name) for name in
+               ("Source Name", "Comment[SUBMITTED_FILE_NAME]", "Comment[ENA_RUN]",
+                "Comment[ENA_SAMPLE]")}
+        for row in rows:
+            fname = row[col["Comment[SUBMITTED_FILE_NAME]"]]
+            m = re.search(r"-(C\d+|P\d+-week\d+)_R[12]\.fq\.gz$", fname)
+            if not m:
+                raise ValueError(f"Unexpected file name in SDRF: {fname}")
+            tag = m.group(1)
+            # Submitted file prefixes identify the sequencing run (ZTPSN19AG... = 2x300 run,
+            # ZTPSN19BD... = 2x250 run holding all week-4 samples).
+            seq_run = re.match(r"ZTPSN19([A-Z]+)\d+-", fname).group(1)
+            if tag.startswith("C"):
+                sample, rat, group, week = tag, tag, "Control", "NA"
+            else:
+                rat, week = re.match(r"P(\d+)-week(\d+)", tag).groups()
+                sample, rat, group = f"PTX{rat}_WK{week}", f"P{rat}", f"PTX_WK{week}"
+            samples[sample] = dict(
+                run=row[col["Comment[ENA_RUN]"]],
+                ena_sample=row[col["Comment[ENA_SAMPLE]"]],
+                source_name=row[col["Source Name"]],
+                rat=rat, group=group, week=week, seq_run=seq_run,
+            )
+    return samples
+
+
+SAMPLES = read_samples(SDRF)
+RUNS = {s: d["run"] for s, d in SAMPLES.items()}
+
+wildcard_constraints:
+    sample="|".join(SAMPLES),
+    run="|".join(RUNS.values()),
+
+
+rule all:
+    input:
+        "results/qc/quality_profiles.png",
+        "results/report/report.html",
+
+
+# ---------------------------------------------------------------- downloads
+
+rule download_fastq:
+    """Paired FASTQ from ENA, checked against the ENA md5 sums."""
+    output:
+        r1=os.path.join(FASTQ_DIR, "{run}_1.fastq.gz"),
+        r2=os.path.join(FASTQ_DIR, "{run}_2.fastq.gz"),
+    threads: 1
+    resources: downloads=1
+    log: "logs/download_fastq/{run}.log"
+    retries: 2
+    shell:
+        r"""
+        exec 2> {log:q}
+        report=$(curl -sf --retry 3 "https://www.ebi.ac.uk/ena/portal/api/filereport?accession={wildcards.run}&result=read_run&fields=fastq_ftp,fastq_md5&format=tsv" | tail -n 1)
+        urls=$(echo "$report" | cut -f2)
+        md5s=$(echo "$report" | cut -f3)
+        for i in 1 2; do
+            url=$(echo "$urls" | cut -d';' -f$i)
+            md5=$(echo "$md5s" | cut -d';' -f$i)
+            out="$(dirname {output.r1:q})/{wildcards.run}_$i.fastq.gz"
+            curl -sf --retry 3 -o "$out" "https://$url"
+            echo "$md5  $out" | md5sum -c - >&2
+        done
+        """
+
+
+rule download_silva:
+    """SILVA 138.2 reference files formatted for DADA2 (Zenodo), md5-checked."""
+    output:
+        trainset=SILVA_TRAINSET,
+        species=SILVA_SPECIES,
+    params:
+        trainset_url=config["silva_trainset_url"],
+        trainset_md5=config["silva_trainset_md5"],
+        species_url=config["silva_species_url"],
+        species_md5=config["silva_species_md5"],
+    threads: 1
+    log: "logs/download_silva/silva.log"
+    shell:
+        r"""
+        exec 2> {log:q}
+        curl -sfL --retry 3 -o {output.trainset:q} {params.trainset_url:q}
+        echo "{params.trainset_md5}  {output.trainset}" | md5sum -c - >&2
+        curl -sfL --retry 3 -o {output.species:q} {params.species_url:q}
+        echo "{params.species_md5}  {output.species}" | md5sum -c - >&2
+        """
+
+
+# ---------------------------------------------------------------- metadata
+
+rule sample_metadata:
+    """Sample sheet derived from the SDRF (group, rat, week, accessions)."""
+    input: SDRF
+    output: "results/metadata/samples.tsv"
+    threads: 1
+    log: "logs/sample_metadata/samples.log"
+    run:
+        fields = ["sample", "run", "ena_sample", "source_name", "rat", "group", "week", "seq_run"]
+        with open(output[0], "w", newline="") as fh:
+            w = csv.writer(fh, delimiter="\t", lineterminator="\n")
+            w.writerow(fields)
+            for s, d in SAMPLES.items():
+                w.writerow([s] + [d[f] for f in fields[1:]])
+        with open(log[0], "w") as fh:
+            fh.write(f"{len(SAMPLES)} samples written\n")
+
+
+# ---------------------------------------------------------------- primers and QC
+
+rule cutadapt:
+    """Remove primers and keep only pairs with both primers found.
+    Runs differ in mate orientation (R1 starts with 338F in some, with 806R in others), so
+    both orientations are tried and outputs are re-oriented: *_fwd always follows 338F."""
+    input:
+        r1=lambda wc: os.path.join(FASTQ_DIR, f"{RUNS[wc.sample]}_1.fastq.gz"),
+        r2=lambda wc: os.path.join(FASTQ_DIR, f"{RUNS[wc.sample]}_2.fastq.gz"),
+    output:
+        fwd="results/trimmed/{sample}_fwd.fastq.gz",
+        rev="results/trimmed/{sample}_rev.fastq.gz",
+        json="results/trimmed/{sample}.cutadapt.json",
+    params:
+        fwd=config["primer_fwd"],
+        rev=config["primer_rev"],
+    threads: 2
+    conda: "envs/cutadapt.yaml"
+    log: "logs/cutadapt/{sample}.log"
+    shell:
+        "scripts/trim_primers.sh {input.r1:q} {input.r2:q} {params.fwd} {params.rev} "
+        "{output.fwd} {output.rev} {output.json} {threads} > {log} 2>&1"
+
+
+rule quality_profiles:
+    """Aggregate DADA2 quality profiles of primer-trimmed reads (used to choose truncLen)."""
+    input:
+        fwd=expand("results/trimmed/{sample}_fwd.fastq.gz", sample=SAMPLES),
+        rev=expand("results/trimmed/{sample}_rev.fastq.gz", sample=SAMPLES),
+    output: "results/qc/quality_profiles.png"
+    threads: 1
+    conda: "envs/dada2.yaml"
+    log: "logs/quality_profiles/quality_profiles.log"
+    script: "scripts/quality_profiles.R"
+
+
+# ---------------------------------------------------------------- DADA2
+
+rule filter_trim:
+    input:
+        fwd="results/trimmed/{sample}_fwd.fastq.gz",
+        rev="results/trimmed/{sample}_rev.fastq.gz",
+    output:
+        fwd="results/filtered/{sample}_fwd.fastq.gz",
+        rev="results/filtered/{sample}_rev.fastq.gz",
+        stats="results/filtered/{sample}.filter.tsv",
+    params:
+        trunc_len=[config["trunc_len_fwd"], config["trunc_len_rev"]],
+        max_ee=[config["max_ee_fwd"], config["max_ee_rev"]],
+    threads: 1
+    conda: "envs/dada2.yaml"
+    log: "logs/filter_trim/{sample}.log"
+    script: "scripts/filter_trim.R"
+
+
+rule dada2_denoise:
+    """Error models (per sequencing run x mate orientation batch), sample inference,
+    pair merging, chimera removal, read tracking."""
+    input:
+        fwd=expand("results/filtered/{sample}_fwd.fastq.gz", sample=SAMPLES),
+        rev=expand("results/filtered/{sample}_rev.fastq.gz", sample=SAMPLES),
+        stats=expand("results/filtered/{sample}.filter.tsv", sample=SAMPLES),
+        cutadapt=expand("results/trimmed/{sample}.cutadapt.json", sample=SAMPLES),
+    output:
+        seqtab="results/dada2/seqtab_nochim.rds",
+        fasta="results/dada2/asvs.fasta",
+        track="results/dada2/read_tracking.tsv",
+        errors="results/qc/error_models.png",
+    params:
+        samples=list(SAMPLES),
+        seq_runs=[d["seq_run"] for d in SAMPLES.values()],
+        seed=config["seed"],
+    threads: 8
+    conda: "envs/dada2.yaml"
+    log: "logs/dada2_denoise/dada2.log"
+    script: "scripts/dada2_denoise.R"
+
+
+rule assign_taxonomy:
+    input:
+        seqtab="results/dada2/seqtab_nochim.rds",
+        trainset=SILVA_TRAINSET,
+        species=SILVA_SPECIES,
+    output:
+        taxa="results/dada2/taxonomy.tsv",
+    params:
+        seed=config["seed"],
+    threads: 8
+    conda: "envs/dada2.yaml"
+    log: "logs/assign_taxonomy/taxonomy.log"
+    script: "scripts/assign_taxonomy.R"
+
+
+rule align_asvs:
+    input: "results/dada2/asvs.fasta"
+    output: "results/tree/asvs_aligned.fasta"
+    threads: 8
+    conda: "envs/tree.yaml"
+    log: "logs/align_asvs/mafft.log"
+    shell: "mafft --auto --thread {threads} {input} > {output} 2> {log}"
+
+
+rule build_tree:
+    input: "results/tree/asvs_aligned.fasta"
+    output: "results/tree/asvs.nwk"
+    threads: 1
+    conda: "envs/tree.yaml"
+    log: "logs/build_tree/fasttree.log"
+    shell: "FastTree -nt -gtr -quiet {input} > {output} 2> {log}"
+
+
+rule build_phyloseq:
+    input:
+        seqtab="results/dada2/seqtab_nochim.rds",
+        taxa="results/dada2/taxonomy.tsv",
+        tree="results/tree/asvs.nwk",
+        metadata="results/metadata/samples.tsv",
+    output:
+        ps="results/phyloseq/ps.rds",
+        counts="results/phyloseq/asv_counts.tsv",
+    threads: 1
+    conda: "envs/dada2.yaml"
+    log: "logs/build_phyloseq/phyloseq.log"
+    script: "scripts/build_phyloseq.R"
+
+
+# ---------------------------------------------------------------- report
+
+rule report:
+    input:
+        rmd="report.Rmd",
+        ps="results/phyloseq/ps.rds",
+        track="results/dada2/read_tracking.tsv",
+        quality="results/qc/quality_profiles.png",
+        errors="results/qc/error_models.png",
+        authors_genus=cfg_path("authors_genus_table"),
+    output:
+        html="results/report/report.html",
+        tables=directory("results/report/tables"),
+    params:
+        seed=config["seed"],
+    threads: 4
+    conda: "envs/report.yaml"
+    log: "logs/report/report.log"
+    script: "scripts/render_report.R"

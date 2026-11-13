@@ -1,0 +1,19 @@
+# Downstream statistics and the R Markdown report.
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.5
+  - bioconductor-phyloseq
+  - bioconductor-deseq2
+  - bioconductor-ancombc
+  - r-vegan
+  - r-ggplot2
+  - r-patchwork
+  - r-dplyr
+  - r-tidyr
+  - r-tibble
+  - r-readr
+  - r-knitr
+  - r-rmarkdown
+  - pandoc
