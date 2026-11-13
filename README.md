@@ -20,8 +20,8 @@ This directory contains code used for behavioral analysis, including code (in R)
 ## * [salmon](salmon)
 Bash scripts for FASTQ data extraction and sample processing with Salmon.
 
-## * [single_cell_rna_seq](single_cell_rna_seq)
-Python scripts for single-cell data analysis.
+## * [single-cell-rna-seq](https://github.com/arlindomatias/single-cell-rna-seq)
+Single-cell RNA-seq analyses (Scanpy) moved to a dedicated repository.
 
 ## * [microbiome](microbiome)
 R scripts for microbiome data analysis.
