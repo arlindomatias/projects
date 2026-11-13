@@ -1,0 +1,72 @@
+# Receptor structures. All human ABCB1 (P-glycoprotein, UniProt P08183), cryo-EM.
+#
+# Verified against RCSB on 2026-11-13 by scripts/00_fetch_receptors.py: for every entry the
+# resolution below matches `_em_3d_reconstruction.resolution` in the deposited mmCIF, and every
+# declared `reference_ligand` was found among the file's chemical components. Chain assignments
+# come from the entity table written by the same step (data/raw/pdb/entities.csv) — in all six
+# nanodisc structures ABCB1 is chain A and the Fab light/heavy chains are B and C.
+
+receptors:
+  6QEX:
+    description: Nanodisc-reconstituted human ABCB1 with UIC2 Fab and taxol
+    resolution: 3.6
+    conformation: inward-facing
+    reference_ligand: TA1      # taxol / paclitaxel
+    role: primary
+    keep_chains: [A]           # Multidrug resistance protein 1
+    fab_chains: [B, C]         # UIC2 Fab light chain, UIC2 Fab heavy chain
+  7A6F:
+    description: Nanodisc-reconstituted human ABCB1 with MRK16 Fab and zosuquidar
+    resolution: 3.5
+    conformation: inward-facing
+    reference_ligand: ZQU      # zosuquidar (inhibitor)
+    role: inhibitor_reference
+    keep_chains: [A]
+    fab_chains: [B, C]         # MRK16 Fab light chain, MRK16 Fab heavy chain
+  7A69:
+    description: Nanodisc-reconstituted human ABCB1 with MRK16 Fab and vincristine
+    resolution: 3.2
+    conformation: inward-facing
+    reference_ligand: R1Q      # vincristine (substrate)
+    role: substrate_reference
+    keep_chains: [A]
+    fab_chains: [B, C]
+  7A65:
+    description: Nanodisc-reconstituted, drug-free human ABCB1 with MRK16 Fab
+    resolution: 3.9
+    conformation: inward-facing
+    reference_ligand: null
+    role: apo_control
+    keep_chains: [A]
+    fab_chains: [B, C]
+  7A6C:
+    description: human ABCB1 with elacridar
+    resolution: 3.6
+    conformation: inward-facing
+    reference_ligand: R0Z
+    role: optional_inhibitor
+    keep_chains: [A]
+    fab_chains: [B, C]         # entity 2 is deposited as "If kappa light chain"
+  7A6E:
+    description: human ABCB1 with tariquidar
+    resolution: 3.6
+    conformation: inward-facing
+    reference_ligand: R1H
+    role: optional_inhibitor
+    keep_chains: [A]
+    fab_chains: [B, C]
+  6C0V:
+    description: ATP-bound, outward-facing human P-gp (figures/discussion only, cavity collapsed)
+    resolution: 3.4
+    conformation: outward-facing
+    reference_ligand: null
+    role: discussion_only
+    keep_chains: [A]           # single polymer entity; no Fab in this deposition
+    fab_chains: []
+    dock: false
+
+# Heteroatoms to remove during cleaning; cholesterol handled by a dedicated flag.
+# NAG occurs only in 6QEX; 3PE (nanodisc phospholipid) only in 6QEX; CLR is in all six
+# nanodisc structures; ATP and MG only in 6C0V.
+strip_heteroatoms: [NAG, 3PE, ATP, MG, HOH]
+keep_cholesterol: false   # sensitivity check runs with true

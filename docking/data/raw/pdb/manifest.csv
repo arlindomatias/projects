@@ -1,0 +1,2 @@
+pdb_id,role,title,resolution_file,resolution_source,resolution_config,resolution_matches_config,reference_ligand,reference_ligand_present,polymer_chains,n_polymer_entities,has_cholesterol_CLR,cif_sha256,pdb_format_available,downloaded_utc
+6QEX,primary,Nanodisc reconstituted human ABCB1 in complex with UIC2 fab and taxol,3.6,em_3d_reconstruction,3.6,True,TA1,True,"A,B,C",3,True,af43c611329ff6818ccd73075d6e0f0509db6c8ee070ab9947396bde8fd8f9fc,True,2026-11-13T17:04:16Z

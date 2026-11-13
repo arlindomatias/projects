@@ -1,0 +1,16 @@
+# Regenerable artifacts (raw downloads in data/raw/ are versioned so the project
+# does not depend on RCSB/PubChem availability)
+data/prepared/
+results/docking/
+results/figures/
+logs/
+
+# Keep small result tables under version control
+!results/analysis/
+results/analysis/**/*.pdbqt
+
+# Python / conda
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.snakemake/
