@@ -1,0 +1,8 @@
+pdb_id,entity_id,entity_type,description,chains,comp_id
+6QEX,1,polymer,Multidrug resistance protein 1,A,
+6QEX,2,polymer,UIC2 Fab lightchain,B,
+6QEX,3,polymer,UIC2 Fab heavy chain,C,
+6QEX,4,non-polymer,2-acetamido-2-deoxy-beta-D-glucopyranose,,NAG
+6QEX,5,non-polymer,CHOLESTEROL,,CLR
+6QEX,6,non-polymer,TAXOL,,TA1
+6QEX,7,non-polymer,"1,2-Distearoyl-sn-glycerophosphoethanolamine",,3PE
