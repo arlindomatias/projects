@@ -35,7 +35,7 @@ affinity/pose hypotheses to be read against published transport data.
 config/        all parameters (targets, ligands, docking boxes)
 scripts/       numbered CLI steps: 00_fetch, 10_prepare, 20_dock, 30_analyze
 workflow/      Snakefile
-data/          raw downloads and prepared inputs (gitignored, regenerable)
+data/          raw downloads (versioned) and prepared inputs (gitignored, regenerable)
 results/       poses, score tables, figures
 docs/          receptor preparation, validation, decision log
 notebooks/     exploratory analysis and reporting
