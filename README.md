@@ -17,10 +17,10 @@ This directory contains code used for behavioral analysis, including code (in R)
 
   <img width="806" height="411" alt="Fig  4A" src="https://github.com/user-attachments/assets/2ad1e75d-6946-4335-a3c0-0b0a30970713" />
 
-## * [microbiome](microbiome)
-Microbiome data analysis:
+## * [microbiome](https://github.com/arlindomatias/microbiome)
+Microbiome data analysis (moved to its own repository, [arlindomatias/microbiome](https://github.com/arlindomatias/microbiome)):
 
-- [ptx_rats_emtab13426](microbiome/ptx_rats_emtab13426): Snakemake + R Markdown 16S rRNA (V3-V4) pipeline (cutadapt, DADA2, SILVA 138.2, phyloseq, DESeq2/ANCOM-BC2) re-analysing gut microbiota of paclitaxel-treated rats (E-MTAB-13426) from raw reads.
+- [ptx_rats_emtab13426](https://github.com/arlindomatias/microbiome/tree/main/ptx_rats_emtab13426): Snakemake + R Markdown 16S rRNA (V3-V4) pipeline (cutadapt, DADA2, SILVA 138.2, phyloseq, DESeq2/ANCOM-BC2) re-analysing gut microbiota of paclitaxel-treated rats (E-MTAB-13426) from raw reads.
 
 ## * [text_analysis](text_analysis)
 Codes for analysis of text data with R and Python, including:

@@ -1,6 +1,0 @@
-# Primer removal.
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - cutadapt=5.*
