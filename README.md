@@ -22,6 +22,11 @@ Microbiome data analysis (moved to its own repository, [arlindomatias/microbiome
 
 - [ptx_rats_emtab13426](https://github.com/arlindomatias/microbiome/tree/main/ptx_rats_emtab13426): Snakemake + R 16S rRNA (V3-V4) pipeline (cutadapt, DADA2, SILVA 138.2, phyloseq, DESeq2/ANCOM-BC2) re-analysing gut microbiota of paclitaxel-treated rats (E-MTAB-13426) from raw reads. **Report:** [Gut microbiota of paclitaxel-treated rats](https://arlindomatias.github.io/microbiome/ptx_rats_emtab13426/reports/report.html).
 
+## * [micro-rna-seq](https://github.com/arlindomatias/micro-rna-seq)
+Circulating microRNA (small RNA-seq) analysis, in its own repository ([arlindomatias/micro-rna-seq](https://github.com/arlindomatias/micro-rna-seq)):
+
+- [GSE260661](https://github.com/arlindomatias/micro-rna-seq/tree/main/GSE260661): Snakemake + edgeR re-analysis of plasma miRNAs from 8 colorectal cancer patients sampled at 2–3 and 6–8 FOLFOX cycles (paired design, no control group), with the change related to chemotherapy-induced peripheral neuropathy and validated-target enrichment. **Report:** [Circulating miRNAs during FOLFOX chemotherapy](https://arlindomatias.github.io/micro-rna-seq/GSE260661/reports/report.html).
+
 ## * [text_analysis](text_analysis)
 Codes for analysis of text data with R and Python, including:
 
